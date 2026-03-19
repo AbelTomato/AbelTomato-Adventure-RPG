@@ -6,7 +6,9 @@
 #include "monster.hpp"
 #include "global.hpp"
 
-battle_result start_battle(Creature &object1, Creature &object2)
+// TODO:设计一个UI交互类
+
+battle_result start_battle(Creature &object1, Creature &object2) // TODO:完善战斗逻辑
 {
     std::cout << "\n===遭遇战：" << object2.get_name() << "出现了！===\n";
 
@@ -74,7 +76,7 @@ int main()
     std::cout << "--- 欢迎加入番茄勇者Abel的旅程 ---" << std::endl;
 
     Player hero("Abel", 120, 15, 0, 1, 0.2);
-    Monster slime("史莱姆", 100, 10, 0.15);
+    Monster slime("史莱姆", 100, 10, 0.15, 10);
 
     start_battle(hero, slime);
 

@@ -2,18 +2,26 @@
 #define CREATURE_HPP
 
 #include <string>
+#include "definitions.hpp"
 
 class Creature
 {
 protected:
-    int hp, attack_power;
-    double critical_hit_rate;
+    Attributes attrs;
+    DerivedStats stats;
+    int level;
+    int current_hp, current_mp, current_sp;
+    int free_attribute_points;
     std::string name;
 
 public:
-    Creature(std::string n, int h, int ap, double chr);
+    Creature(std::string n, int lvl, int fap, const Attributes &a);
 
     virtual ~Creature() = default;
+
+    virtual void refresh_stats();
+
+    void set_attributes(const Attributes &new_attrs);
 
     virtual void attack(Creature &target);
 

@@ -1,7 +1,7 @@
 #include "monster.hpp"
 #include <iostream>
 
-Monster::Monster(std::string n, int h, int ap, double crh) : Creature(n, h, ap, crh) {}
+Monster::Monster(std::string n, int h, int ap, double crh, int er) : Creature(n, h, ap, crh), exp_reward(er) {}
 
 void Monster::attack(Creature &target)
 {

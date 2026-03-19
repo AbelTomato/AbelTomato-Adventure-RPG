@@ -9,6 +9,7 @@ class Player : public Creature
 protected:
     int exp;
     int level;
+    int exp_to_next_level;
 
 public:
     Player(std::string n, int h, int ap, int e, int l, double chr);
@@ -24,6 +25,10 @@ public:
     void level_up();
 
     void death_reaction(Creature *death_source) override;
+
+    int get_exp() const { return exp; }
+
+    int get_exp_to_next_level() const { return exp_to_next_level; }
 };
 
 #endif

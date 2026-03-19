@@ -6,8 +6,11 @@
 
 class Monster : public Creature
 {
+private:
+    int exp_reward;
+
 public:
-    Monster(std::string n, int h, int ap, double crh);
+    Monster(std::string n, int h, int ap, double crh, int er);
 
     void attack(Creature &target) override;
 
