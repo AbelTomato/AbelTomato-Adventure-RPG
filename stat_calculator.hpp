@@ -169,6 +169,11 @@ public:
     {
         return bonus.magical_damage_reduction_bonus + race_magical_damage_reduction;
     }
+
+    static double calc_block_rate(const BonusStats &bonus)
+    {
+        return bonus.block_rate_bonus;
+    }
 };
 
 #endif

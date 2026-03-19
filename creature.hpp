@@ -15,6 +15,7 @@ protected:
     Attributes attrs;
     DerivedStats stats;
     BonusStats bonus;
+    RaceData races;
     int level;
     int current_hp, current_mp, current_sp;
     int free_attribute_points;
@@ -36,7 +37,7 @@ public:
 
     void calculate_derived_values();
 
-    void sync_current_status();
+    void sync_current_status(const int old_max_hp, const int old_max_mp, const int old_max_sp);
 
     virtual void attack(Creature &target);
 
