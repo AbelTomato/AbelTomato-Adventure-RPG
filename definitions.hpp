@@ -18,30 +18,89 @@ struct Attributes
     int luck;         // 幸运
 };
 
+struct RaceData // TODO:增加初始数据
+{
+    std::string race_name;
+    Attributes base_attr;
+    int init_hp, init_mp;
+    int init_evasion_value, init_hit_value;
+    double init_physical_crit_rate, init_magical_crit_rate;
+    double init_physical_damage_reduction, init_magical_damage_reduction;
+    double init_ignore_defense_rate;
+};
+
 struct DerivedStats
 {
-    int max_hp;                            // 最大生命值
-    int max_mp;                            // 最大法力值
-    int max_sp;                            // 最大精力值
-    int base_physical_attack_power;        // 基础物理攻击力
-    int base_magical_attack_power;         // 基础魔法攻击力
-    double block_rate;                     // 格挡率
-    int evasion_value;                     // 闪避值
-    int hit_value;                         // 命中值
-    double physical_crit_rate;             // 物理暴击率
-    double magical_crit_rate;              // 魔法暴击率
-    double physical_critical_damage_bonus; // 物理爆伤加成
-    double magical_critical_damage_bonus;  // 魔法爆伤加成
-    double physical_damage_bonus;          // 物理伤害加成
-    double magical_damage_bonus;           // 魔法伤害加成
-    int defense;                           // 防御力
-    double physical_damage_reduction;      // 物理减伤
-    double magical_damage_reduction;       // 魔法减伤
-    double ignore_defense_rate;            // 物理无视防御几率
-    double hp_percent_bonus;               // 百分比生命值加成
-    int hp_flat_bonus;                     // 固定数值生命值加成
-    double mp_percent_bonus;               // 百分比法力值加成
-    int mp_flat_bonus;                     // 固定数值法力值加成
+    int max_hp;                       // 最大生命值
+    int max_mp;                       // 最大法力值
+    int max_sp;                       // 最大精力值
+    int base_physical_attack_power;   // 基础物理攻击力
+    int base_magical_attack_power;    // 基础魔法攻击力
+    double block_rate;                // 格挡率
+    int evasion_value;                // 闪避值
+    int hit_value;                    // 命中值
+    double physical_crit_rate;        // 物理暴击率
+    double magical_crit_rate;         // 魔法暴击率
+    int defense;                      // 防御力
+    double physical_damage_reduction; // 物理减伤
+    double magical_damage_reduction;  // 魔法减伤
+    double ignore_defense_rate;       // 物理无视防御几率
+};
+
+struct Mod
+{
+    double pct = 0.0;
+    int flat = 0;
+
+    void clear()
+    {
+        pct = 0.0;
+        flat = 0;
+    }
+
+    Mod &operator+=(const Mod &other)
+    {
+        pct += other.pct;
+        flat += other.flat;
+
+        return *this;
+    }
+};
+
+struct FinalAttributes
+{
+    void clear()
+    {
+        *this = {};
+    }
+
+    int strength, physique, dexterity, esthesia, bewitchment, willpower;
+    int life_growth, magic_growth;
+    int speed, luck;
+};
+
+struct BonusStats
+{
+    void clear()
+    {
+        *this = {};
+    }
+
+    Mod strength, physique, dexterity, esthesia, bewitchment, willpower;
+    Mod life_growth, magic_growth, speed, luck;
+    Mod max_hp, max_mp, base_physical_attack_power, base_magical_attack_power;
+    Mod evasion_value, hit_value;
+    Mod defense;
+    Mod physical_damage, magical_damage;
+
+    double physical_critical_damage_bonus;  // 物理爆伤加成
+    double magical_critical_damage_bonus;   // 魔法爆伤加成
+    double physical_crit_rate_bonus;        // 物理暴击率加成
+    double magical_crit_rate_bonus;         // 魔法暴击率加成
+    double block_rate_bonus;                // 格挡率加成
+    double physical_damage_reduction_bonus; // 物理减伤加成
+    double magical_damage_reduction_bonus;  // 魔法减伤加成
+    double ignore_defense_rate_bonus;       // 物理无视防御几率加成
 };
 
 namespace Config

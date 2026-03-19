@@ -14,42 +14,29 @@ Creature::Creature(std::string n, int lvl, int fap, const Attributes &a)
 
 void Creature::refresh_stats() // TODO: 完善更新逻辑，增加依赖树，添加脏标记处理
 {
-    using namespace Config::Attr;
-    using namespace Config::Growth;
-    using namespace Config::Battle;
+    int old_max_hp = stats.max_hp, old_max_mp = stats.max_mp, old_max_sp = stats.max_sp;
 
-    int old_max_hp = stats.max_hp;
-    double base_hp = (attrs.strength * ATTR_HP_PER_STRENGTH) +
-                     (attrs.physique * ATTR_HP_PER_PHYSIQUE) +
-                     (attrs.willpower * ATTR_HP_PER_WILLPOWER);
-    base_hp += (attrs.life_growth * level * GROWTH_HP_PER_LIFE_GROWTH_PER_LEVEL);
-    stats.max_hp = static_cast<int>(base_hp * (1 + stats.hp_percent_bonus) + stats.hp_flat_bonus);
+    reset_and_collect_bonuses(); // 重置并重新计算所有加成
 
-    if (old_max_hp > 0)
-    {
-        current_hp = (current_hp / old_max_hp) * stats.max_hp;
-    }
-    if (current_hp > stats.max_hp)
-    {
-        current_hp = stats.max_hp;
-    }
+    calculate_derived_values(); // 按照现有加成重新计算二级属性
 
-    int old_max_mp = stats.max_mp;
-    double base_mp = (attrs.bewitchment * ATTR_MP_PER_BEWITCHMENT) +
-                     (attrs.esthesia * ATTR_MP_PER_ESTHESIA) +
-                     (attrs.willpower * ATTR_MP_PER_WILLPOWER);
-    base_mp += (attrs.magic_growth * level * GROWTH_MP_PER_MAGIC_GROWTH_PER_LEVEL);
-    stats.max_mp = static_cast<int>(base_mp * (1 + stats.hp_percent_bonus) + stats.mp_flat_bonus);
+    sync_current_status(); // 属性对齐
 
-    if (old_max_mp > 0)
-    {
-        current_mp = (current_mp / old_max_mp) * stats.max_mp;
-    }
-    if (current_mp > stats.max_mp)
-    {
-        current_mp = stats.max_mp;
-    }
+    is_stats_dirty = false;
 }
+
+void Creature::reset_and_collect_bonuses() // TODO:完善装备、buff、负重加成
+{
+    bonus.clear(); // 清空原有加成
+
+    // TODO:枚举装备和buff列表等等
+}
+
+void Creature::calculate_derived_values()
+{
+}
+
+void Creature::sync_current_status() {} // TODO:完成状态维护
 
 void Creature::attack(Creature &target) // TODO:重写攻击逻辑
 {

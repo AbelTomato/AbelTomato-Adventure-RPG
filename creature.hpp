@@ -6,9 +6,15 @@
 
 class Creature
 {
+private:
+    bool is_stats_dirty = true;
+
+    void refresh_stats();
+
 protected:
     Attributes attrs;
     DerivedStats stats;
+    BonusStats bonus;
     int level;
     int current_hp, current_mp, current_sp;
     int free_attribute_points;
@@ -19,9 +25,18 @@ public:
 
     virtual ~Creature() = default;
 
-    virtual void refresh_stats();
+    const DerivedStats &get_stats()
+    {
+        if (is_stats_dirty)
+            refresh_stats();
+        return stats;
+    }
 
-    void set_attributes(const Attributes &new_attrs);
+    void reset_and_collect_bonuses();
+
+    void calculate_derived_values();
+
+    void sync_current_status();
 
     virtual void attack(Creature &target);
 
