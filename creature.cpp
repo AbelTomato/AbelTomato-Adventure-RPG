@@ -1,5 +1,7 @@
 #include "creature.hpp"
 #include "stat_calculator.hpp"
+#include "definitions.hpp"
+#include "battle_system.hpp"
 #include <iostream>
 #include <random>
 
@@ -39,18 +41,27 @@ void Creature::calculate_derived_values()
 
     stats.max_hp = StatCalculator::calc_max_hp(f_attrs, level, bonus, races.init_hp);
     stats.max_mp = StatCalculator::calc_max_mp(f_attrs, level, bonus, races.init_mp);
-    stats.max_sp = StatCalculator::calc_max_sp(f_attrs, bonus);
+    stats.max_sp = StatCalculator::calc_max_sp(f_attrs, bonus, races.init_sp);
     stats.base_physical_attack_power = StatCalculator::calc_base_physical_attack_power(f_attrs, bonus);
     stats.base_magical_attack_power = StatCalculator::calc_base_magical_attack_power(f_attrs, bonus);
+    stats.base_true_attack_power = StatCalculator::calc_base_true_attack_power(f_attrs, bonus);
     stats.block_rate = StatCalculator::calc_block_rate(bonus);
     stats.evasion_value = StatCalculator::calc_evasion_value(f_attrs, bonus, races.init_evasion_value);
-    stats.hit_value = StatCalculator::calc_hit_value(f_attrs, bonus, races.init_hit_value);
+    stats.physical_hit_value = StatCalculator::calc_physical_hit_value(f_attrs, bonus, races.init_physical_hit_value);
+    stats.magical_hit_value = StatCalculator::calc_magical_hit_value(f_attrs, bonus, races.init_magical_hit_value);
     stats.physical_crit_rate = StatCalculator::calc_physical_crit_rate(f_attrs, bonus, races.init_physical_crit_rate);
     stats.magical_crit_rate = StatCalculator::calc_magical_crit_rate(f_attrs, bonus, races.init_magical_crit_rate);
+    stats.true_crit_rate = StatCalculator::calc_true_crit_rate(bonus, races.init_true_crit_rate);
     stats.defense = StatCalculator::calc_defense(f_attrs, bonus);
     stats.physical_damage_reduction = StatCalculator::calc_physical_damage_reduction(bonus, races.init_physical_damage_reduction);
     stats.magical_damage_reduction = StatCalculator::calc_magical_damage_reduction(bonus, races.init_magical_damage_reduction);
+    stats.true_damage_reduction = StatCalculator::calc_true_damage_reduction(bonus, races.init_true_damage_reduction);
     stats.ignore_defense_rate = StatCalculator::calc_ignore_defense_rate(f_attrs, bonus, races.init_ignore_defense_rate);
+    stats.physical_crit_damage = StatCalculator::calc_physical_crit_damage(bonus);
+    stats.magical_crit_damage = StatCalculator::calc_magical_crit_damage(bonus);
+    stats.true_crit_damage = StatCalculator::calc_true_crit_damage(bonus);
+    stats.physical_damage_increase = StatCalculator::calc_physical_damage_increase(bonus);
+    stats.magical_damage_increase = StatCalculator::calc_magical_damage_increase(bonus);
 }
 
 void Creature::sync_current_status(const int old_max_hp, const int old_max_mp, const int old_max_sp)
@@ -63,38 +74,24 @@ void Creature::sync_current_status(const int old_max_hp, const int old_max_mp, c
     current_hp = calc_cur_stats_res(old_max_hp, current_hp, stats.max_hp);
     current_mp = calc_cur_stats_res(old_max_mp, current_mp, stats.max_mp);
     current_sp = calc_cur_stats_res(old_max_sp, current_sp, stats.max_sp);
-} // TODO:完成状态维护
+}
 
-void Creature::attack(Creature &target) // TODO:重写攻击逻辑
+AttackResult Creature::attack(Creature &target, CombatIntent &intent)
 {
-    std::cout << name << "发起了攻击！\n";
-
-    if (critical_hit())
-    {
-        std::cout << name << "发现了对方弱点，触发了会心一击！\n";
-        target.take_damage(attack_power * 2, this);
-    }
-    else
-        target.take_damage(attack_power, this);
+    return BattleSystem::execute_attack(*this, target, intent);
 }
 
 void Creature::take_damage(int damage, Creature *source) // TODO:重写受伤逻辑
 {
-    hp -= damage;
+    current_hp = std::max(0, current_hp - damage);
+
+    if (!is_alive())
+        death_reaction(source);
 }
 
 bool Creature::is_alive()
 {
-    return hp > 0;
-}
-
-bool Creature::critical_hit() // TODO:重写暴击逻辑
-{
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    std::bernoulli_distribution d(critical_hit_rate);
-
-    return d(gen);
+    return current_hp > 0;
 }
 
 const std::string &Creature::get_name() const
@@ -104,7 +101,22 @@ const std::string &Creature::get_name() const
 
 const int &Creature::get_hp() const
 {
-    return hp;
+    return current_hp;
+}
+
+const int &Creature::get_mp() const
+{
+    return current_mp;
+}
+
+const int &Creature::get_sp() const
+{
+    return current_sp;
+}
+
+const int &Creature::get_level() const
+{
+    return level;
 }
 
 void Creature::death_reaction(Creature *death_source) // TODO:重写死亡逻辑

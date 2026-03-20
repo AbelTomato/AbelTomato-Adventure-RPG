@@ -39,7 +39,7 @@ public:
 
     void sync_current_status(const int old_max_hp, const int old_max_mp, const int old_max_sp);
 
-    virtual void attack(Creature &target);
+    virtual AttackResult attack(Creature &target, CombatIntent &intent);
 
     virtual void take_damage(int damage, Creature *source);
 
@@ -47,11 +47,15 @@ public:
 
     virtual void death_reaction(Creature *death_source);
 
-    bool critical_hit();
-
     const std::string &get_name() const;
 
     const int &get_hp() const;
+
+    const int &get_mp() const;
+
+    const int &get_sp() const;
+
+    const int &get_level() const;
 };
 
 #endif

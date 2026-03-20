@@ -1,6 +1,7 @@
 #ifndef STAT_CALCULATOR_HPP
 #define STAT_CALCULATOR_HPP
 #include "definitions.hpp"
+#include "config.hpp"
 
 class StatCalculator
 {
@@ -53,13 +54,14 @@ public:
         return apply_standard(base_mp, bonus.max_mp.pct, bonus.max_mp.flat);
     }
 
-    static int calc_max_sp(const FinalAttributes &f, const BonusStats &bonus)
+    static int calc_max_sp(const FinalAttributes &f, const BonusStats &bonus, const int race_sp)
     {
         using namespace Config::Attr;
 
         return (f.strength * ATTR_SP_PER_STRENGTH) +
                (f.physique * ATTR_SP_PER_PHYSIQUE) +
-               (f.willpower * ATTR_SP_PER_WILLPOWER);
+               (f.willpower * ATTR_SP_PER_WILLPOWER) +
+               race_sp;
     }
 
     static int calc_evasion_value(const FinalAttributes &f, const BonusStats &bonus, const int race_evasion_value)
@@ -75,17 +77,29 @@ public:
         return apply_standard(base_evasion_value, bonus.evasion_value.pct, bonus.evasion_value.flat);
     }
 
-    static int calc_hit_value(const FinalAttributes &f, const BonusStats &bonus, const int race_hit_value)
+    static int calc_physical_hit_value(const FinalAttributes &f, const BonusStats &bonus, const int race_physical_hit_value)
     {
         using namespace Config::Attr;
 
-        double base_hit_value = (f.dexterity * ATTR_HIT_PER_DEXTERITY) +
-                                (f.esthesia * ATTR_HIT_PER_ESTHESIA) +
-                                (f.speed * ATTR_HIT_PER_SPEED) +
-                                (f.luck * ATTR_HIT_PER_LUCK) +
-                                race_hit_value;
+        double base_physical_hit_value = (f.dexterity * ATTR_PHYSICAL_HIT_PER_DEXTERITY) +
+                                         (f.esthesia * ATTR_PHYSICAL_HIT_PER_ESTHESIA) +
+                                         (f.speed * ATTR_PHYSICAL_HIT_PER_SPEED) +
+                                         (f.luck * ATTR_PHYSICAL_HIT_PER_LUCK) +
+                                         race_physical_hit_value;
 
-        return apply_standard(base_hit_value, bonus.hit_value.pct, bonus.hit_value.flat);
+        return apply_standard(base_physical_hit_value, bonus.physical_hit_value.pct, bonus.physical_hit_value.flat);
+    }
+
+    static int calc_magical_hit_value(const FinalAttributes &f, const BonusStats &bonus, const int race_magical_hit_value)
+    {
+        using namespace Config::Attr;
+
+        const int base_magical_hit_value = (f.esthesia * ATTR_MAGICAL_HIT_PER_ESTHESIA) +
+                                           (f.bewitchment * ATTR_MAGICAL_HIT_PER_BEWITCHMENT) +
+                                           (f.luck * ATTR_MAGICAL_HIT_PER_LUCK) +
+                                           race_magical_hit_value;
+
+        return apply_standard(base_magical_hit_value, bonus.magical_hit_value.pct, bonus.magical_hit_value.flat);
     }
 
     static int calc_speed(const FinalAttributes &f, const BonusStats &bonus, int race_speed)
@@ -140,6 +154,11 @@ public:
         return base_magical_crit_rate + bonus.magical_crit_rate_bonus;
     }
 
+    static double calc_true_crit_rate(const BonusStats &bonus, double race_true_crit_rate)
+    {
+        return bonus.true_crit_rate_bonus + race_true_crit_rate;
+    }
+
     static int calc_base_physical_attack_power(const FinalAttributes &f, const BonusStats &bonus)
     {
         using namespace Config::Battle;
@@ -160,6 +179,16 @@ public:
         return apply_standard(base_base_magical_attack_power, bonus.base_magical_attack_power.pct, bonus.base_magical_attack_power.flat);
     }
 
+    static int calc_base_true_attack_power(const FinalAttributes &f, const BonusStats &bonus)
+    {
+        using namespace Config::Battle;
+
+        double base_base_true_attack_power = (f.strength * BATTLE_BASE_TRUE_ATTACK_POWER_PER_STRENGTH) +
+                                             (f.bewitchment * BATTLE_BASE_TRUE_ATTACK_POWER_PER_BEWITCHMENT);
+
+        return apply_standard(base_base_true_attack_power, bonus.base_true_attack_power.pct, bonus.base_true_attack_power.flat);
+    }
+
     static double calc_physical_damage_reduction(const BonusStats &bonus, double race_physical_damage_reduction)
     {
         return bonus.physical_damage_reduction_bonus + race_physical_damage_reduction;
@@ -170,9 +199,39 @@ public:
         return bonus.magical_damage_reduction_bonus + race_magical_damage_reduction;
     }
 
+    static double calc_true_damage_reduction(const BonusStats &bonus, double race_true_damage_reduction)
+    {
+        return bonus.true_damage_reduction_bonus + race_true_damage_reduction;
+    }
+
     static double calc_block_rate(const BonusStats &bonus)
     {
         return bonus.block_rate_bonus;
+    }
+
+    static double calc_physical_crit_damage(const BonusStats &bonus)
+    {
+        return bonus.physical_critical_damage_bonus;
+    }
+
+    static double calc_magical_crit_damage(const BonusStats &bonus)
+    {
+        return bonus.magical_critical_damage_bonus;
+    }
+
+    static double calc_true_crit_damage(const BonusStats &bonus)
+    {
+        return bonus.true_critical_damage_bonus;
+    }
+
+    static double calc_physical_damage_increase(const BonusStats &bonus)
+    {
+        return bonus.physical_damage_increase_bonus;
+    }
+
+    static double calc_magical_damage_increase(const BonusStats &bonus)
+    {
+        return bonus.magical_damage_increase_bonus;
     }
 };
 

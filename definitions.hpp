@@ -2,6 +2,7 @@
 #define DEFINITIONS_HPP
 
 #include <string>
+class Creature;
 
 struct Attributes
 {                    // 基本属性
@@ -18,14 +19,24 @@ struct Attributes
     int luck;         // 幸运
 };
 
-struct RaceData // TODO:增加初始数据
+struct RaceData
 {
+    RaceData()
+    {
+        race_name = "生物";
+        base_attr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        init_hp = init_mp = init_sp = 0;
+        init_evasion_value = init_physical_hit_value = init_magical_hit_value = 0;
+        init_physical_crit_rate = init_magical_crit_rate = init_true_crit_rate = 0.0;
+        init_physical_damage_reduction = init_magical_damage_reduction = init_true_damage_reduction = 0.0;
+        init_ignore_defense_rate = 0.0;
+    }
     std::string race_name;
     Attributes base_attr;
-    int init_hp, init_mp;
-    int init_evasion_value, init_hit_value;
-    double init_physical_crit_rate, init_magical_crit_rate;
-    double init_physical_damage_reduction, init_magical_damage_reduction;
+    int init_hp, init_mp, init_sp;
+    int init_evasion_value, init_physical_hit_value, init_magical_hit_value;
+    double init_physical_crit_rate, init_magical_crit_rate, init_true_crit_rate;
+    double init_physical_damage_reduction, init_magical_damage_reduction, init_true_damage_reduction;
     double init_ignore_defense_rate;
 };
 
@@ -36,15 +47,24 @@ struct DerivedStats
     int max_sp;                       // 最大精力值
     int base_physical_attack_power;   // 基础物理攻击力
     int base_magical_attack_power;    // 基础魔法攻击力
+    int base_true_attack_power;       // 基础真实攻击力
     double block_rate;                // 格挡率
     int evasion_value;                // 闪避值
-    int hit_value;                    // 命中值
+    int physical_hit_value;           // 物理命中值
+    int magical_hit_value;            // 法术命中值
     double physical_crit_rate;        // 物理暴击率
     double magical_crit_rate;         // 魔法暴击率
+    double true_crit_rate;            // 真实暴击率
     int defense;                      // 防御力
     double physical_damage_reduction; // 物理减伤
     double magical_damage_reduction;  // 魔法减伤
+    double true_damage_reduction;     // 真实减伤
     double ignore_defense_rate;       // 物理无视防御几率
+    double physical_crit_damage;      // 物理爆伤
+    double magical_crit_damage;       // 魔法爆伤
+    double true_crit_damage;          // 真实爆伤
+    double physical_damage_increase;  // 物理增伤
+    double magical_damage_increase;   // 魔法增伤
 };
 
 struct Mod
@@ -88,82 +108,86 @@ struct BonusStats
 
     Mod strength, physique, dexterity, esthesia, bewitchment, willpower;
     Mod life_growth, magic_growth, speed, luck;
-    Mod max_hp, max_mp, base_physical_attack_power, base_magical_attack_power;
-    Mod evasion_value, hit_value;
+    Mod max_hp, max_mp, base_physical_attack_power, base_magical_attack_power, base_true_attack_power;
+    Mod evasion_value, physical_hit_value, magical_hit_value;
     Mod defense;
     Mod physical_damage, magical_damage;
 
     double physical_critical_damage_bonus;  // 物理爆伤加成
     double magical_critical_damage_bonus;   // 魔法爆伤加成
+    double true_critical_damage_bonus;      // 真实爆伤加成
     double physical_crit_rate_bonus;        // 物理暴击率加成
     double magical_crit_rate_bonus;         // 魔法暴击率加成
+    double true_crit_rate_bonus;            // 真实暴击率加成
     double block_rate_bonus;                // 格挡率加成
     double physical_damage_reduction_bonus; // 物理减伤加成
     double magical_damage_reduction_bonus;  // 魔法减伤加成
+    double true_damage_reduction_bonus;     // 真实减伤加成
     double ignore_defense_rate_bonus;       // 物理无视防御几率加成
+    double physical_damage_increase_bonus;  // 物理增伤加成
+    double magical_damage_increase_bonus;   // 魔法增伤加成
 };
 
-namespace Config
+enum class HitResult
 {
-    namespace Attr
-    { // 属性换算
-        static constexpr int ATTR_HP_PER_STRENGTH = 8;
-        static constexpr int ATTR_HP_PER_PHYSIQUE = 15;
-        static constexpr int ATTR_HP_PER_WILLPOWER = 3;
+    Miss,
+    Hit,
+    Critical,
+    Block
+};
 
-        static constexpr int ATTR_MP_PER_ESTHESIA = 3;
-        static constexpr int ATTR_MP_PER_BEWITCHMENT = 12;
-        static constexpr int ATTR_MP_PER_WILLPOWER = 7;
+struct AttackResult
+{
+    HitResult type;
+    int damage;
+};
 
-        static constexpr double ATTR_SP_PER_STRENGTH = 0.3;
-        static constexpr double ATTR_SP_PER_PHYSIQUE = 0.5;
-        static constexpr double ATTR_SP_PER_WILLPOWER = 0.2;
+enum class DamageType
+{
+    Physical,
+    Magical,
+    True
+};
 
-        static constexpr int ATTR_EVASION_PER_DEXTERITY = 2;
-        static constexpr int ATTR_EVASION_PER_ESTHESIA = 1;
-        static constexpr int ATTR_EVASION_PER_SPEED = 3;
-        static constexpr int ATTR_EVASION_PER_LUCK = 5;
+struct SpecialEffects
+{
+};
 
-        static constexpr int ATTR_HIT_PER_DEXTERITY = 1;
-        static constexpr int ATTR_HIT_PER_ESTHESIA = 2;
-        static constexpr int ATTR_HIT_PER_SPEED = 2;
-        static constexpr int ATTR_HIT_PER_LUCK = 3;
+enum class SkillType
+{
+    CombatSkill,
+    Magic
+};
 
-        static constexpr double ATTR_SPEED_PER_DEXTERITY = 0.2;
-
-        static constexpr double ATTR_DEFENSE_PER_PHYSIQUE = 3;
-
-        static constexpr double ATTR_IGNORE_DEFENSE_RATE_PER_ESTHESIA = 0.0007;
-        static constexpr double ATTR_IGNORE_DEFENSE_RATE_PER_LUCK = 0.001;
-
-        static constexpr double ATTR_PHYSICAL_CRIT_RATE_PER_ESTHESIA = 0.0002;
-        static constexpr double ATTR_PHYSICAL_CRIT_RATE_PER_LUCK = 0.0005;
-
-        static constexpr double ATTR_MAGICAL_CRIT_RATE_PER_ESTHESIA = 0.0001;
-        static constexpr double ATTR_MAGICAL_CRIT_RATE_PER_LUCK = 0.0003;
+struct SkillData
+{
+    SkillData()
+    {
+        id = 0;
+        skill_name = "普通攻击";
+        description = "技能";
+        damage_attribute = DamageType::Physical;
+        skill_type = SkillType::CombatSkill;
+        consume_hp = consume_mp = consume_sp = 0;
+        damage_multiplier = 1.0;
+        effects = {};
     }
 
-    namespace Growth
-    { // 成长与级别
-        static constexpr int GROWTH_HP_PER_LIFE_GROWTH_PER_LEVEL = 5;
-        static constexpr int GROWTH_MP_PER_MAGIC_GROWTH_PER_LEVEL = 4;
+    int id = 0;
+    std::string skill_name;
+    std::string description;
+    DamageType damage_attribute;
+    SkillType skill_type;
+    int consume_hp, consume_mp, consume_sp;
+    double damage_multiplier;
+    SpecialEffects effects;
+};
 
-        static constexpr int GROWTH_FREE_ATTRIBUTE_PER_LEVEL = 10;
-    }
-
-    namespace Battle
-    { // 战斗机制
-        static constexpr int BATTLE_BASE_PHYSICAL_ATTACK_POWER_PER_STRENGTH = 5;
-        static constexpr int BATTLE_BASE_PHYSICAL_ATTACK_POWER_PER_PHYSIQUE = 1;
-
-        static constexpr int BATTLE_BASE_MAGICAL_ATTACK_POWER_PER_BEWITCHMENT = 6;
-        static constexpr int BATTLE_BASE_MAGICAL_ATTACK_POWER_PER_WILLPOWER = 1;
-    }
-
-    namespace Initial
-    { // 初始状态
-
-    }
-}
+struct CombatIntent
+{
+    SkillData skill;
+    Creature *attacker = nullptr;
+    Creature *target = nullptr;
+};
 
 #endif
