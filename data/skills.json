@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "name": "普通攻击",
+        "description": "这是最朴实的攻击，梦想的开始！",
+        "cost_mp": 0,
+        "target_type": 1,
+        "damages": [
+            {
+                "type": 0,
+                "multiplier": 1.0,
+                "fixed_bonus": 0
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "火球术",
+        "description": "每个法师学徒都会学习的第一个技能，也许最大的用处是用来点火。",
+        "cost_mp": 5,
+        "target_type": 1,
+        "damages": [
+            {
+                "type": 1,
+                "multiplier": 1.1,
+                "fixed_bonus": 0
+            }
+        ],
+        "effect_triggers": [
+            {
+                "effect_id": 1,
+                "chance": 0.1,
+                "power": 10
+            }
+        ]
+    }
+]

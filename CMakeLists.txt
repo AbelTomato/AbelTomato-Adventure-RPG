@@ -1,14 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
+project(TomatoHeroAbel VERSION 1.0)
 
-project(爱吃番茄的勇者Abel LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-file(GLOB SOURCES "*.cpp")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(爱吃番茄的勇者Abel ${SOURCES})
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
-if(MSVC)
-    add_compile_options(/utf-8)
-endif()
+file(GLOB_RECURSE SOURCES "src/*.cpp" "main.cpp")
+
+add_executable(TomatoHeroAbel ${SOURCES})
