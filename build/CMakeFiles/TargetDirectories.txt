@@ -1,3 +1,0 @@
-D:/AbelTomato_Files/Programming/C++/Code(NewStart)/OOP_Exercises/爱吃番茄的勇者Abel/build/CMakeFiles/TomatoHeroAbel.dir
-D:/AbelTomato_Files/Programming/C++/Code(NewStart)/OOP_Exercises/爱吃番茄的勇者Abel/build/CMakeFiles/edit_cache.dir
-D:/AbelTomato_Files/Programming/C++/Code(NewStart)/OOP_Exercises/爱吃番茄的勇者Abel/build/CMakeFiles/rebuild_cache.dir
