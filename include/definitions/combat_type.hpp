@@ -14,21 +14,10 @@ enum class battle_result
 
 enum class HitResult  // 攻击结果类型
 {
-    Miss,
-    Hit,
-    Critical,
-    Block
+    Miss,      // 闪避
+    Hit,       // 命中
+    Critical,  // 暴击
+    Block      // 格挡
 };
-
-enum class DamageType  // 伤害类型
-{
-    Physical,
-    Magical,
-    True
-};
-
-NLOHMANN_JSON_SERIALIZE_ENUM(DamageType, {{DamageType::Physical, "physical"},
-                                          {DamageType::Magical, "magical"},
-                                          {DamageType::True, "true"}});
 
 #endif

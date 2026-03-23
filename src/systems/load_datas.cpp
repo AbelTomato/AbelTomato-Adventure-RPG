@@ -2,10 +2,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <optional>
-
-#include "datas/race_data.hpp"
-#include "datas/skill_data.hpp"
 
 DataManager& DataManager::instance()
 {
@@ -13,12 +9,13 @@ DataManager& DataManager::instance()
     return inst;
 }
 
-bool DataManager::load_all_races_datas(const std::string& path)
+template <typename T>
+bool load_file(DataRepository<T>& repo, const std::string& path, const std::string& data_type_name)
 {
     std::ifstream file(path);
     if (!file.is_open())
     {
-        std::cerr << "无法打开生物初始属性文件：" << path << std::endl;
+        std::cerr << "无法打开" << data_type_name << "文件：" << path << std::endl;
         return false;
     }
 
@@ -26,123 +23,42 @@ bool DataManager::load_all_races_datas(const std::string& path)
     {
         json j;
         file >> j;
-
-        auto race_list = j.get<std::vector<RaceData>>();
-
-        for (auto& r : race_list)
+        if (!repo.load(j))
         {
-            int id = r.get_id();
-            std::string name = r.get_name();
-
-            races_id.emplace(id, r);
-            races_name.emplace(name, std::move(r));
+            return false;
         }
     }
-    catch (json::parse_error& e)
+    catch (const std::exception& e)
     {
-        std::cerr << "JSON 解析失败：" << e.what() << std::endl;
+        std::cerr << data_type_name << "解析失败：" << e.what() << std::endl;
         return false;
     }
 
-    std::cout << "生物初始属性加载成功！" << std::endl;
+    std::cout << data_type_name << "加载成功！" << std::endl;
     return true;
 }
 
-bool DataManager::load_all_skills_datas(const std::string& path)
+bool DataManager::load_all_races_data(const std::string& path)
 {
-    std::ifstream file(path);
-    if (!file.is_open())
-    {
-        std::cerr << "无法打开技能数据文件：" << path << std::endl;
-        return false;
-    }
-
-    try
-    {
-        json j;
-        file >> j;
-
-        auto skill_list = j.get<std::vector<SkillData>>();
-
-        for (auto& s : skill_list)
-        {
-            int id = s.get_id();
-            std::string name = s.get_name();
-
-            skills_id.emplace(id, s);
-            skills_name.emplace(name, std::move(s));
-        }
-    }
-    catch (json::parse_error& e)
-    {
-        std::cerr << "JSON 解析失败：" << e.what() << std::endl;
-        return false;
-    }
-
-    std::cout << "技能数据加载成功！" << std::endl;
-    return true;
+    return load_file(races, path, "种族数据");
 }
 
-std::optional<RaceData> DataManager::get_race_by_id(const int id)
+bool DataManager::load_all_skills_data(const std::string& path)
 {
-    auto it = races_id.find(id);
-    if (it != races_id.end()) return it->second;
-
-    return std::nullopt;
+    return load_file(skills, path, "技能数据");
 }
 
-std::optional<RaceData> DataManager::get_race_by_name(const std::string& name)
+bool DataManager::load_all_effects_data(const std::string& path)
 {
-    auto it = races_name.find(name);
-    if (it != races_name.end()) return it->second;
-
-    return std::nullopt;
+    return load_file(effects, path, "效果数据");
 }
 
-std::optional<SkillData> DataManager::get_skill_by_id(const int id)
+bool DataManager::load_all_buffs_data(const std::string& path)
 {
-    auto it = skills_id.find(id);
-    if (it != skills_id.end()) return it->second;
-
-    return std::nullopt;
+    return load_file(buffs, path, "Buff数据");
 }
 
-std::optional<SkillData> DataManager::get_skill_by_name(const std::string& name)
+bool DataManager::load_all_jobs_data(const std::string& path)
 {
-    auto it = skills_name.find(name);
-    if (it != skills_name.end()) return it->second;
-
-    return std::nullopt;
-}
-
-const RaceData* DataManager::get_race_ptr_by_id(const int id)
-{
-    auto it = races_id.find(id);
-    if (it != races_id.end()) return &(it->second);
-
-    return nullptr;
-}
-
-const RaceData* DataManager::get_race_ptr_by_name(const std::string& name)
-{
-    auto it = races_name.find(name);
-    if (it != races_name.end()) return &(it->second);
-
-    return nullptr;
-}
-
-const SkillData* DataManager::get_skill_ptr_by_id(const int id)
-{
-    auto it = skills_id.find(id);
-    if (it != skills_id.end()) return &(it->second);
-
-    return nullptr;
-}
-
-const SkillData* DataManager::get_skill_ptr_by_name(const std::string& name)
-{
-    auto it = skills_name.find(name);
-    if (it != skills_name.end()) return &(it->second);
-
-    return nullptr;
+    return load_file(jobs, path, "职业数据");
 }

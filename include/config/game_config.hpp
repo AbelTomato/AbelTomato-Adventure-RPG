@@ -4,7 +4,7 @@
 #include <definitions/core_attributes.hpp>
 #include <nlohmann/json.hpp>
 
-struct Config
+struct Config  // TODO: 更改为map映射模式存储
 {
     struct AttrConfig
     {
