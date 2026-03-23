@@ -1,27 +1,30 @@
-#include "battle_system.hpp"
+#include "systems/battle_system.hpp"
 
-bool BattleSystem::check_hit(Creature &attacker, Creature &target, CombatIntent &intent) // TODO:增加真实命中？
+bool BattleSystem::check_hit(Creature& attacker, Creature& target,
+                             CombatIntent& intent)  // TODO:增加真实命中？
 {
     using namespace Config::Battle;
     using namespace Global;
 
-    int hit_value = (intent.skill.damage_attribute == DamageType::Physical) ? attacker.get_stats().physical_hit_value : attacker.get_stats().magical_hit_value;
+    int hit_value = (intent.skill.damage_attribute == DamageType::Physical)
+                        ? attacker.get_stats().physical_hit_value
+                        : attacker.get_stats().magical_hit_value;
     int evasion_value = target.get_stats().evasion_value;
     int level_diff = attacker.get_level() - target.get_level();
 
-    double attr_factor = static_cast<double>(hit_value) / (hit_value + evasion_value * BATTLE_HIT_ATTR_BASELINE + 1);
+    double attr_factor =
+        static_cast<double>(hit_value) / (hit_value + evasion_value * BATTLE_HIT_ATTR_BASELINE + 1);
 
-    double final_rate = attr_factor * BATTLE_HIT_BASELINE_HIT + (level_diff * BATTLE_HIT_GRADE_DIFFERENCE_WEIGHT);
+    double final_rate =
+        attr_factor * BATTLE_HIT_BASELINE_HIT + (level_diff * BATTLE_HIT_GRADE_DIFFERENCE_WEIGHT);
 
-    if (final_rate > BATTLE_HIT_UPPER_BOUNDARY)
-        final_rate = BATTLE_HIT_UPPER_BOUNDARY;
-    if (final_rate < BATTLE_HIT_BOTTOM_BOUNDARY)
-        final_rate = BATTLE_HIT_BOTTOM_BOUNDARY;
+    if (final_rate > BATTLE_HIT_UPPER_BOUNDARY) final_rate = BATTLE_HIT_UPPER_BOUNDARY;
+    if (final_rate < BATTLE_HIT_BOTTOM_BOUNDARY) final_rate = BATTLE_HIT_BOTTOM_BOUNDARY;
 
     return get_random_double() < final_rate;
 }
 
-bool BattleSystem::check_crit(Creature &attacker, CombatIntent &intent)
+bool BattleSystem::check_crit(Creature& attacker, CombatIntent& intent)
 {
     using namespace Global;
 
@@ -37,7 +40,7 @@ bool BattleSystem::check_crit(Creature &attacker, CombatIntent &intent)
     return get_random_double() < crit_rate;
 }
 
-int BattleSystem::calc_attack_value(Creature &attacker, CombatIntent &intent, bool is_crit)
+int BattleSystem::calc_attack_value(Creature& attacker, CombatIntent& intent, bool is_crit)
 {
     int base_attack_value;
     double damage_increase, crit_damage;
@@ -62,26 +65,28 @@ int BattleSystem::calc_attack_value(Creature &attacker, CombatIntent &intent, bo
         crit_damage = attacker_stats.true_crit_damage;
     }
 
-    int attack_value = (base_attack_value * (1.0 + damage_increase)) * ((is_crit) ? (2.0 * (1.0 + crit_damage)) : 1);
+    int attack_value = (base_attack_value * (1.0 + damage_increase)) *
+                       ((is_crit) ? (2.0 * (1.0 + crit_damage)) : 1);
 
     return attack_value;
 }
 
-bool BattleSystem::check_ignore_defense(Creature &attacker, CombatIntent &intent)
+bool BattleSystem::check_ignore_defense(Creature& attacker, CombatIntent& intent)
 {
     using namespace Global;
 
     return get_random_double() < attacker.get_stats().ignore_defense_rate;
 }
 
-bool BattleSystem::check_block(Creature &target, CombatIntent &intent)
+bool BattleSystem::check_block(Creature& target, CombatIntent& intent)
 {
     using namespace Global;
 
     return get_random_double() < target.get_stats().block_rate;
 }
 
-int BattleSystem::calc_reduction(Creature &target, CombatIntent &intent, int init_damage_value, bool is_blocked, bool is_ignore_defense)
+int BattleSystem::calc_reduction(Creature& target, CombatIntent& intent, int init_damage_value,
+                                 bool is_blocked, bool is_ignore_defense)
 {
     using namespace Config::Battle;
 
@@ -94,8 +99,7 @@ int BattleSystem::calc_reduction(Creature &target, CombatIntent &intent, int ini
     if (!is_ignore_defense)
     {
         cur_damage -= defense;
-        if (cur_damage < 0)
-            cur_damage = 0;
+        if (cur_damage < 0) cur_damage = 0;
     }
 
     if (intent.skill.damage_attribute == DamageType::Physical)
@@ -105,15 +109,15 @@ int BattleSystem::calc_reduction(Creature &target, CombatIntent &intent, int ini
 
     cur_damage *= (1.0 - true_damage_reduction);
 
-    if (is_blocked)
-        cur_damage *= (1.0 - BATTLE_BLOCK_DAMAGE_REDUCTION_RATIO);
+    if (is_blocked) cur_damage *= (1.0 - BATTLE_BLOCK_DAMAGE_REDUCTION_RATIO);
 
     int final_damage = static_cast<int>(cur_damage);
 
     return (final_damage < 1) ? 1 : final_damage;
 }
 
-AttackResult BattleSystem::execute_attack(Creature &attacker, Creature &target, CombatIntent &intent)
+AttackResult BattleSystem::execute_attack(Creature& attacker, Creature& target,
+                                          CombatIntent& intent)
 {
     AttackResult atk_res;
 
@@ -132,7 +136,8 @@ AttackResult BattleSystem::execute_attack(Creature &attacker, Creature &target, 
 
     bool is_blocked = check_block(target, intent);
 
-    int damage_value_after_reduction = calc_reduction(target, intent, init_damage_value, is_blocked, is_ignore_defense);
+    int damage_value_after_reduction =
+        calc_reduction(target, intent, init_damage_value, is_blocked, is_ignore_defense);
 
     HitResult hit_res;
 
