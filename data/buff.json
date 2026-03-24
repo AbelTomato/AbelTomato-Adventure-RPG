@@ -1,0 +1,32 @@
+[
+  {
+    "id": 3001,
+    "name": "维C爆发",
+    "description": "提升全属性，不要小瞧了番茄之神的力量啊混蛋！",
+    "trigger_type": "passive_attr",
+    "max_stack": 1,
+    "dispellable": true,
+    "stance": "buff",
+    "tick_effect_ids": []
+  },
+  {
+    "id": 4001,
+    "name": "脱水",
+    "description": "每回合结束流失生命值。",
+    "trigger_type": "on_turn_end",
+    "max_stack": 5,
+    "dispellable": true,
+    "stance": "debuff",
+    "tick_effect_ids": [2002]
+  },
+  {
+    "id": 4002,
+    "name": "灼烧",
+    "description": "每回合结束受到灼烧伤害。",
+    "trigger_type": "on_turn_end",
+    "max_stack": 5,
+    "dispellable": true,
+    "stance": "debuff",
+    "tick_effect_ids": [2003]
+  }
+]

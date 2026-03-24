@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1001,
+    "name": "番茄族",
+    "description": "多汁且易怒，受伤后会喷射番茄汁。",
+    "base_attr": {
+      "strength": 12,
+      "physique": 10,
+      "dexterity": 15,
+      "esthesia": 8,
+      "bewitchment": 5,
+      "willpower": 8,
+      "life_growth": 120,
+      "magic_growth": 80,
+      "speed": 110,
+      "luck": 20
+    },
+    "init_hp": 150,
+    "init_mp": 60,
+    "init_sp": 100,
+    "race_skills": [5001]
+  }
+]

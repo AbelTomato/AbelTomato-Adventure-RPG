@@ -3,13 +3,13 @@
 
 #include <string>
 
-class BaseData
+struct BaseData
 {
-public:
     int id;
     std::string name;
+    std::string description;
 
-    ~BaseData() = default;
+    virtual ~BaseData() = default;
 };
 
 #endif

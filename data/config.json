@@ -1,0 +1,55 @@
+{
+  "settings": {
+    "attr": {
+      "hp_per_strength": 8.0,
+      "hp_per_physique": 15.0,
+      "hp_per_willpower": 3.0,
+      "mp_per_esthesia": 3.0,
+      "mp_per_bewitchment": 12.0,
+      "mp_per_willpower": 7.0,
+      "sp_per_strength": 0.3,
+      "sp_per_physique": 0.5,
+      "sp_per_willpower": 0.2,
+      "evasion_per_dexterity": 2.0,
+      "evasion_per_esthesia": 1.0,
+      "evasion_per_speed": 3.0,
+      "evasion_per_luck": 5.0,
+      "physical_hit_per_dexterity": 1.0,
+      "physical_hit_per_esthesia": 2.0,
+      "physical_hit_per_speed": 2.0,
+      "physical_hit_per_luck": 3.0,
+      "magical_hit_per_esthesia": 1.0,
+      "magical_hit_per_bewitchment": 2.0,
+      "magical_hit_per_luck": 2.0,
+      "speed_per_dexterity": 0.2,
+      "defense_per_physique": 3.0,
+      "ignore_defense_rate_per_esthesia": 0.0007,
+      "ignore_defense_rate_per_luck": 0.001,
+      "physical_crit_rate_per_esthesia": 0.0002,
+      "physical_crit_rate_per_luck": 0.0005,
+      "magical_crit_rate_per_esthesia": 0.0001,
+      "magical_crit_rate_per_luck": 0.0003
+    },
+    "growth": {
+      "hp_per_life_growth_per_level": 5.0,
+      "mp_per_magic_growth_per_level": 4.0,
+      "free_attribute_per_level": 10.0
+    },
+    "battle": {
+      "physical_attack_per_strength": 5.0,
+      "physical_attack_per_physique": 1.0,
+      "magical_attack_per_bewitchment": 6.0,
+      "magical_attack_per_willpower": 1.0,
+      "true_attack_per_strength": 1.0,
+      "true_attack_per_bewitchment": 1.0,
+      "hit_attr_baseline": 0.8,
+      "hit_grade_difference_weight": 0.05,
+      "hit_baseline_hit": 0.85,
+      "hit_upper_boundary": 0.98,
+      "hit_bottom_boundary": 0.05,
+      "block_damage_reduction_ratio": 0.7,
+      "max_crit_rate": 0.95
+    },
+    "initial": {}
+  }
+}

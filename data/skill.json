@@ -1,0 +1,32 @@
+[
+  {
+    "id": 5001,
+    "name": "番茄汁喷射",
+    "description": "我猜你也想来点番茄酱？",
+    "display_effect": "消耗自身20%生命值，对对方造成200%法术攻击的真实伤害。",
+    "cost_hp": 20,
+    "cost_mp": 0,
+    "cost_sp": 10,
+    "cooldown": 3,
+    "target_type": "single_enemy",
+    "hit_rate_bonus": 0.1,
+    "crit_rate_bonus": 0.0,
+    "damages": [{ "type": "true", "multiplier": 2.0, "fixed_bonus": 5 }],
+    "effect_triggers": [{ "effect_id": 2201, "chance": 0.8, "power": 1 }]
+  },
+  {
+    "id": 5002,
+    "name": "普通攻击",
+    "description": "这是最朴实的一击，梦想的起点！",
+    "display_effect": "造成100%物理伤害",
+    "cost_hp": 0,
+    "cost_mp": 0,
+    "cost_sp": 0,
+    "cooldown": 0,
+    "target_type": "single_enemy",
+    "hit_rate_bonus": 0,
+    "crit_rate_bonus": 0,
+    "damages": [{ "type": "physical", "multiplier": 1.0, "fixed_bonus": 0 }],
+    "effect_triggers": []
+  }
+]

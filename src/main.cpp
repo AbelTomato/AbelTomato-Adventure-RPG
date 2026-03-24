@@ -1,16 +1,11 @@
 #include <windows.h>
 
 #include <iostream>
-#include <limits>
 #include <string>
 
-#include "core/global.hpp"
 #include "datas/skill_data.hpp"
-#include "entities/monster.hpp"
-#include "entities/player.hpp"
 #include "systems/load_configs.hpp"
 #include "systems/load_datas.hpp"
-#include "systems/skill_manager.hpp"
 
 // TODO:设计一个UI交互类
 
@@ -90,7 +85,7 @@ int main()
     }
 
     const auto* skill1 = dm.skills.get_by_name("普通攻击");
-    std::cout << skill1.description << std::endl;
+    std::cout << skill1->description << std::endl;
 
     std::cin.get();
 

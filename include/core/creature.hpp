@@ -2,7 +2,12 @@
 #define CREATURE_HPP
 
 #include <string>
-#include "definitions.hpp"
+
+#include "datas/race_data.hpp"
+#include "definitions/combat_type.hpp"
+#include "definitions/core_attributes.hpp"
+#include "definitions/property_containers.hpp"
+
 
 class Creature
 {
@@ -21,14 +26,13 @@ protected:
     std::string name;
 
 public:
-    Creature(std::string n, int lvl, const Attributes &a);
+    Creature(std::string n, int lvl, const Attributes& a);
 
     virtual ~Creature() = default;
 
-    const DerivedStats &get_stats()
+    const DerivedStats& get_stats()
     {
-        if (is_stats_dirty)
-            refresh_stats();
+        if (is_stats_dirty) refresh_stats();
         return stats;
     }
 
@@ -38,23 +42,23 @@ public:
 
     void sync_current_status(const int old_max_hp, const int old_max_mp, const int old_max_sp);
 
-    virtual AttackResult attack(Creature &target, CombatIntent &intent);
+    virtual AttackResult attack(Creature& target, CombatIntent& intent);
 
-    virtual void take_damage(int damage, Creature *source);
+    virtual void take_damage(int damage, Creature* source);
 
     bool is_alive();
 
-    virtual void death_reaction(Creature *death_source);
+    virtual void death_reaction(Creature* death_source);
 
-    const std::string &get_name() const;
+    const std::string& get_name() const;
 
-    const int &get_hp() const;
+    const int& get_hp() const;
 
-    const int &get_mp() const;
+    const int& get_mp() const;
 
-    const int &get_sp() const;
+    const int& get_sp() const;
 
-    const int &get_level() const;
+    const int& get_level() const;
 };
 
 #endif

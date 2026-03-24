@@ -1,0 +1,29 @@
+[
+  {
+    "id": 2001,
+    "name": "基础治疗",
+    "description": "回复生命值",
+    "effect_type": "attribute_change",
+    "value_scaler": 0.5,
+    "duration_scaler": 0.0,
+    "target_sub_type_id": 1
+  },
+  {
+    "id": 2201,
+    "name": "施加脱水",
+    "description": "尝试给对手挂个脱水Buff",
+    "effect_type": "apply_buff",
+    "value_scaler": 1.0,
+    "duration_scaler": 1.0,
+    "target_sub_type_id": 4001
+  },
+  {
+    "id": 2202,
+    "name": "施加灼烧",
+    "description": "尝试为对手施加灼烧",
+    "effect_type": "apply_buff",
+    "value_scaler": 1.0,
+    "duration_scaler": 1.2,
+    "target_sub_type_id": 4002
+  }
+]

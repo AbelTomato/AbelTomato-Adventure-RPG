@@ -24,9 +24,14 @@ bool ConfigManager::load_all_configs(const std::string& path)
         file >> j;
         configs = j.get<Config>();
     }
-    catch (json::parse_error& e)
+    catch (const nlohmann::json::exception& e)
     {
-        std::cerr << "JSON 解析失败：" << e.what() << std::endl;
+        std::cerr << "[Config Error] 加载失败: " << e.what() << std::endl;
+        return false;
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "[Unknown Error] 发生了意料之外的崩溃: " << e.what() << std::endl;
         return false;
     }
 
