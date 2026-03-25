@@ -1,8 +1,6 @@
 #ifndef BASE_TYPE_HPP
 #define BASE_TYPE_HPP
 
-#include <malloc.h>
-
 #include <nlohmann/json.hpp>
 
 enum class TargetType  // 目标类型
@@ -33,13 +31,17 @@ NLOHMANN_JSON_SERIALIZE_ENUM(DamageType, {{DamageType::Physical, "physical"},
                                           {DamageType::Magical, "magical"},
                                           {DamageType::True, "true"}});
 
-enum class SkillType  // 技能类型
+enum class StatusType  // 状态类型
 {
-    Initiative,  // 主动
-    Passive      // 被动
+    HP,
+    MP,
+    SP,
+    EXP
 };
 
-NLOHMANN_JSON_SERIALIZE_ENUM(SkillType, {{SkillType::Initiative, "initiative"},
-                                         {SkillType::Passive, "passive"}});
+NLOHMANN_JSON_SERIALIZE_ENUM(StatusType, {{StatusType::HP, "hp"},
+                                          {StatusType::MP, "mp"},
+                                          {StatusType::SP, "sp"},
+                                          {StatusType::EXP, "exp"}});
 
 #endif

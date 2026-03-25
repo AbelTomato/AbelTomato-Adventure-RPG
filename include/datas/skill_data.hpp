@@ -7,39 +7,47 @@
 
 #include "base_data.hpp"
 #include "definitions/base_type.hpp"
+#include "definitions/skill_type.hpp"
 
-struct SkillData : public BaseData
+struct SkillData : public BaseData  // 技能仅用来触发效果，由效果决定强度
 {
-    struct DamageInfo
-    {
-        DamageType type;
-        double multiplier;
-        int fixed_bonus;
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(DamageInfo, type, multiplier, fixed_bonus);
-    };
-
     struct EffectTrigger
     {
-        int effect_id;
-        double chance;
-        int power;
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(EffectTrigger, effect_id, chance, power);
+        int effect_id;                                // 对应触发的效果id
+        double chance;                                // 触发几率
+        EffectSettlementType effect_settlement_type;  // 触发强度结算方式
+        double magnification;                         // 效果倍率
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(EffectTrigger, effect_id, chance, effect_settlement_type,
+                                       magnification);
     };
 
-    std::string display_effect;
+    /*例如技能为治疗术，触发效果为基础治疗，id为2001,触发几率为100%，
+    强度结算方式为自身魔法攻击，效果倍率为150%*/
 
-    int cost_hp, cost_mp, cost_sp;
-    int cooldown;  // 冷却时间
-    TargetType target_type;
-    double hit_rate_bonus = 0.0;   // 命中修正
-    double crit_rate_bonus = 0.0;  // 暴击修正
+    struct Costs
+    {
+        StatusType status_type;
+        CostMethod cost_method;
+        double value;
 
-    std::vector<DamageInfo> damages;
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Costs, status_type, cost_method, value);
+    };
+
+    /*衡量释放代价，例如释放火球术，status_type=MP,cost_method=FLAT(固定值)
+    value=10，则意思就是，固定消耗10点法力*/
+
+    std::string display_effect;  // 对于技能在数据方面的描述
+
+    std::vector<Costs> cost;
+    int cooldown;            // 冷却时间
+    double hit_correction;   // 命中修正
+    double crit_correction;  // 暴击修正
+    TargetType target_type;  // 针对的目标类型
+
     std::vector<EffectTrigger> effect_triggers;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SkillData, id, name, description, display_effect, cost_hp,
-                                   cost_mp, cost_sp, cooldown, target_type, hit_rate_bonus,
-                                   crit_rate_bonus, damages, effect_triggers);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SkillData, id, name, description, display_effect, cost, cooldown,
+                                   target_type, effect_triggers);
 };
 
 #endif
