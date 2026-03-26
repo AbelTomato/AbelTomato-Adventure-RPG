@@ -5,15 +5,15 @@
 
 enum class TriggerType
 {
-    On_Turn_Start,  // 回合开始时触发
-    On_Turn_End,    // 回合结束时触发
-    On_Action,      // 每次行动时触发
-    Passive_Attr    // 持有即触发
+    OnTurnStart,  // 回合开始时触发
+    OnTurnEnd,    // 回合结束时触发
+    OnAction,     // 每次行动时触发
+    PassiveAttr   // 持续生效
 };
 
-NLOHMANN_JSON_SERIALIZE_ENUM(TriggerType, {{TriggerType::On_Turn_Start, "on_turn_start"},
-                                           {TriggerType::On_Turn_End, "on_turn_end"},
-                                           {TriggerType::On_Action, "on_action"},
-                                           {TriggerType::Passive_Attr, "passive_attr"}});
+NLOHMANN_JSON_SERIALIZE_ENUM(TriggerType, {{TriggerType::OnTurnStart, "on_turn_start"},
+                                           {TriggerType::OnTurnEnd, "on_turn_end"},
+                                           {TriggerType::OnAction, "on_action"},
+                                           {TriggerType::PassiveAttr, "passive_attr"}});
 
 #endif

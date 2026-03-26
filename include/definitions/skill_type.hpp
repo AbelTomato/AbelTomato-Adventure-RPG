@@ -14,36 +14,62 @@ NLOHMANN_JSON_SERIALIZE_ENUM(SkillType, {{SkillType::Initiative, "initiative"},
 
 enum class EffectSettlementType  // 技能触发效果强度结算方式
 {
-    PHYSICAL_ATTACK_POWER,  // 基于物理攻击
-    MAGICAL_ATTACK_POWER,   // 基于魔法攻击
-    TRUE_ATTACK_POWER,      // 基于真实攻击
-    MAX_HP,                 // 基于最大生命
-    CURRENT_HP,             // 基于当前生命
-    MAX_MP,                 // 基于最大法力
-    CURRENT_MP,             // 基于当前法力
-    DEFENSE                 // 基于防御
+    PhysicalAttackPower,  // 基于物理攻击
+    MagicalAttackPower,   // 基于魔法攻击
+    MaxHP,                // 基于最大生命
+    CurrentHP,            // 基于当前生命
+    MaxMP,                // 基于最大法力
+    CurrentMP,            // 基于当前法力
+    PhysicalDefense,      // 基于物理防御
+    MagicalDefense        // 基于魔法防御
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(EffectSettlementType,
-                             {{EffectSettlementType::PHYSICAL_ATTACK_POWER,
-                               "physical_attack_power"},
-                              {EffectSettlementType::MAGICAL_ATTACK_POWER, "magical_attack_power"},
-                              {EffectSettlementType::TRUE_ATTACK_POWER, "true_attack_power"},
-                              {EffectSettlementType::MAX_HP, "max_hp"},
-                              {EffectSettlementType::CURRENT_HP, "cur_hp"},
-                              {EffectSettlementType::MAX_MP, "max_mp"},
-                              {EffectSettlementType::CURRENT_MP, "cur_mp"},
-                              {EffectSettlementType::DEFENSE, "defense"}});
+                             {{EffectSettlementType::PhysicalAttackPower, "physical_attack_power"},
+                              {EffectSettlementType::MagicalAttackPower, "magical_attack_power"},
+                              {EffectSettlementType::MaxHP, "max_hp"},
+                              {EffectSettlementType::CurrentHP, "cur_hp"},
+                              {EffectSettlementType::MaxMP, "max_mp"},
+                              {EffectSettlementType::CurrentMP, "cur_mp"},
+                              {EffectSettlementType::PhysicalDefense, "physical_defense"},
+                              {EffectSettlementType::MagicalDefense, "magical_defense"}});
 
 enum class CostMethod  // 消耗类型
 {
-    FLAT,         // 固定值
-    PERCENT_MAX,  // 最大百分比
-    PERCENT_CUR   // 当前百分比
+    Flat,        // 固定值
+    PercentMax,  // 最大百分比
+    PercentCur   // 当前百分比
 };
 
-NLOHMANN_JSON_SERIALIZE_ENUM(CostMethod, {{CostMethod::FLAT, "flat"},
-                                          {CostMethod::PERCENT_MAX, "percent_max"},
-                                          {CostMethod::PERCENT_CUR, "percent_cur"}});
+NLOHMANN_JSON_SERIALIZE_ENUM(CostMethod, {{CostMethod::Flat, "flat"},
+                                          {CostMethod::PercentMax, "percent_max"},
+                                          {CostMethod::PercentCur, "percent_cur"}});
 
+enum class ShapeType
+{
+    Point,
+    Rectangle,
+    Circle,
+    Cross,
+    Line,
+    Sector
+};
+
+NLOHMANN_JSON_SERIALIZE_ENUM(ShapeType, {{ShapeType::Point, "point"},
+                                         {ShapeType::Rectangle, "rectangle"},
+                                         {ShapeType::Circle, "circle"},
+                                         {ShapeType::Cross, "cross"},
+                                         {ShapeType::Line, "line"},
+                                         {ShapeType::Sector, "sector"}});
+
+enum class TargetFilter
+{
+    All,
+    Ally,
+    Enemy
+};
+
+NLOHMANN_JSON_SERIALIZE_ENUM(TargetFilter, {{TargetFilter::All, "all"},
+                                            {TargetFilter::Ally, "ally"},
+                                            {TargetFilter::Enemy, "enemy"}});
 #endif

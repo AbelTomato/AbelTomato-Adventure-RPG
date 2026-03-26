@@ -5,13 +5,6 @@
 
 class Creature;
 
-enum class battle_result
-{
-    VICTORY,
-    DEFEAT,
-    ESCAPED
-};
-
 enum class HitResult  // 攻击结果类型
 {
     Miss,      // 闪避

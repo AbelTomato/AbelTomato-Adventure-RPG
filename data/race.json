@@ -1,6 +1,24 @@
 [
   {
-    "id": 1001,
+    "id": 10001,
+    "name": "人类",
+    "description": "具有极高适应能力和学习能力的种族。",
+    "base_attr": {
+      "strength": 5,
+      "physique": 5,
+      "dexterity": 5,
+      "esthesia": 5,
+      "bewitchment": 5,
+      "willpower": 5,
+      "life_growth": 10,
+      "magic_growth": 10,
+      "speed": 5,
+      "luck": 10
+    },
+    "race_skills": [20001]
+  },
+  {
+    "id": 10002,
     "name": "番茄族",
     "description": "多汁且易怒，受伤后会喷射番茄汁。",
     "base_attr": {
@@ -15,9 +33,6 @@
       "speed": 110,
       "luck": 20
     },
-    "init_hp": 150,
-    "init_mp": 60,
-    "init_sp": 100,
     "race_skills": [5001]
   }
 ]
