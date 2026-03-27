@@ -33,6 +33,25 @@
       "speed": 110,
       "luck": 20
     },
-    "race_skills": [5001]
-  }
+    "race_skills": [5001,5003,5004]
+  },
+  {
+      "id": 10003,
+      "name": "芳香烃族",
+      "description": "无时无刻散发出具有魅惑功效的气味，蠢萌且可爱",
+      "base_attr": {
+        "strength": 4,
+        "physique":3 ,
+        "dexterity":7 ,
+        "esthesia": 25,
+        "bewitchment":20 ,
+        "willpower": 18,
+        "life_growth": 95,
+        "magic_growth": 110,
+        "speed": 5,
+        "luck": 15
+        
+      },
+      "race_skills": [5101]
+    }
 ]

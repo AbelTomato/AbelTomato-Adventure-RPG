@@ -29,5 +29,106 @@
     "cooldown": 0,
     "target_type": "single_enemy",
     "effect_triggers": []
-  }
+  },
+  {
+    "id": 5003,
+    "name": "番茄冲击",
+    "description": "吃我一击吧！！",
+    "display_effect": "消耗35%sp，对敌方造成185%+(等级)物理攻击的物理伤害，并且有15%的几率使地方眩晕",
+    "cost": [
+      {
+        "status_type": "sp",
+        "cost_method": "percent_max",
+        "value": 0.35
+      }
+    ],
+    "cooldown": 7,
+    "target_type": "single_enemy",
+    "effect_triggers": [{ "effect_id":2202 , "chance": 0.95, "power":1  }]
+  },
+  {
+    "id":5004 ,
+    "name": "番茄大爆炸",
+    "description": "朋友，见过毁灭菇，没见过毁灭番茄吧。",
+    "display_effect": "消耗自身90%最大生命值，对敌方造成650%法术攻击的法术伤害，并削减对方25%的感知",
+    "cost": [
+      {
+        "status_type": "hp",
+        "cost_method": "percent_max",
+        "value": 0.95
+      },
+      {
+        "status_type": "sp",
+        "cost_method": "flat",
+        "value": 90
+      }
+    ],
+    "cooldown": 25,
+    "target_type": "single_enemy",
+    "effect_triggers": [{ "effect_id": 2203, "chance":0.95 , "power":1.5  }]
+    },
+  {
+    "id":5101 ,
+    "name": "芳香I型重力场",
+    "description": "据说没有人能够在15min内逃离",
+    "display_effect": "消耗15%法力，向敌方施加减速效果，并降低敌方20%速度，15%意志",
+    "cost": [
+      {
+        "status_type": "mp",
+        "cost_method": "percent_max",
+        "value": 0.15
+      },
+      {
+        "status_type": "sp",
+        "cost_method": "flat",
+        "value":25
+      }
+      
+    ],
+    "cooldown":5 ,
+    "target_type": "single_enemy",
+    "effect_triggers": [{ "effect_id":2204 , "chance":0.6 , "power":1  }]
+    },
+  {
+      "id": 5102,
+      "name": "芳香IV型毒雾",
+      "description": "一种特殊的化学物质",
+      "display_effect": "以自身为半径，形成一定半径的毒气圈，每秒消耗4%法力值，向处于圈内的敌人造成50%法术攻击的法术伤害，降低敌方35%速度，持续时间9秒",
+      "cost": [
+        {
+          "status_type": "mp",
+          "cost_method": "percent_max",
+          "value": 0.04
+        },
+        {
+          "status_type": "sp",
+          "cost_method": "flat",
+          "value": 45
+        }
+      ],
+      "cooldown": 25,
+      "target_type": "single_enemy",
+      "effect_triggers": [{ "effect_id":2205 , "chance":0.8 , "power":1  }]
+    },
+  {
+      "id": 5103,
+      "name": "芳香IX型超声波",
+      "description": "",
+      "display_effect": "消耗50%法力值，向8个方向发射超声波，对沿途路径的敌人造成400%法术攻击的法术伤害，",
+      "cost": [
+        {
+          "status_type": "mp",
+          "cost_method": "percent_max",
+          "value": 0.5
+        },
+        {
+          "status_type": "sp",
+          "cost_method": "flat",
+          "value": 90
+        }
+      ],
+      "cooldown":40 ,
+      "target_type": "single_enemy",
+      "effect_triggers": [{ "effect_id":2206 , "chance":0.85 , "power":1.5 }]
+    }
 ]
