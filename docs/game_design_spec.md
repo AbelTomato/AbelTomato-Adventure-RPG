@@ -281,8 +281,6 @@
 
 ### 2.5.Buff Data
 
-#### 2.5.1.基本设定
-
 |      属性名       |               类型                |          作用          |         备注          |
 | :---------------: | :-------------------------------: | :--------------------: | :-------------------: |
 |       `id`        |               `int`               |          标识          | 50000 - 59999表示buff |
@@ -293,3 +291,246 @@
 |   `dispellable`   |              `bool`               |      是否可被驱散      |           -           |
 |     `stance`      |             `string`              | 技能立场，正面或是负面 |           -           |
 | `tick_effect_ids` |            `list[int]`            |      触发效果列表      |           -           |
+
+## 3.Core Game Design
+
+### 3.1.Skill Release & Effect Application Process
+
+#### 3.1.1.Process Definition
+
+定义技能释放和效果应用为如下核心流程：
+
+$$
+生物 \\
+\Downarrow \\
+释放技能 \\
+\Downarrow \\
+触发效果(\text{effect}) \\
+\Downarrow \\
+根据生物属性、技能效果倍率、爆伤等加成计算强度(\text{power}) \\
+\Downarrow \\
+将对应\text{effect}[\text{power}]施加至作用对象 \\
+\Downarrow \\
+作用对象接收信息 \\
+\Downarrow \\
+触发抵抗效果 \\
+\Downarrow \\
+根据作用对象抵抗属性等因素计算强度(\text{power}) \\
+\Downarrow \\
+两\text{effect}拮抗抵消 \\
+\Downarrow \\
+触发减益效果 \\
+\Downarrow \\
+根据两者强度计算减益效果强度 \\
+\Downarrow \\
+施加至作用对象属性 \\
+\Downarrow \\
+作用对象属性变化
+$$
+
+#### 3.1.2.Process Example
+
+以最简单的普通攻击为例：
+
+释放「普通攻击」，触发「物理伤害」效果，根据角色基础物理攻击力，物理伤害加成，物理暴击伤害加成，计算得到强度 $\text{power}_{1} = 120$，传参至受击目标。
+
+受击目标接收「物理伤害」效果，触发「物理减伤」效果，根据受击目标物理防御力，物理伤害减免，真实伤害减免，计算得到强度 $\text{power}_{2} = 30$，调用自身$\text{hp\_decrease(\text{power}\_{1}, \, \text{power}\_{2})}$函数。
+
+$\text{hp\_decrease(\text{power}\_{1}, \, \text{power}\_{2})}$内，触发「生命降低」效果，根据$\text{power}_{1}, \, \text{power}_{2}$，计算得到$\text{power}_{3} = 90$(这里以减法模拟)，受击目标$\text{hp}$降低$90$点。
+
+### 3.2.Base Formula & Parameter Setting
+
+#### 3.2.1.Primary To Derived
+
+##### 3.2.1.1.BaseMaxHP
+
+$$
+\text{BaseMaxHP = Strength} \times \text{HPPerStrength} + \text{Physique} \times \text{HPPerPhysique} + \text{Willpower} \times \text{HPPerWillpower}
+$$
+
+|          参数           |  值   |
+| :---------------------: | :---: |
+| $\text{HPPerStrength}$  |  $8$  |
+| $\text{HPPerPhysique}$  | $15$  |
+| $\text{HPPerWillpower}$ |  $3$  |
+
+##### 3.2.1.2.BaseMaxMP
+
+$$
+\text{BaseMaxMP} = \text{Esthesia} \times \text{MPPerEsthesia} + \text{Bewitchment} \times \text{MPPerBewitchment} + \text{Willpower} \times \text{MPPerWillpower}
+$$
+
+|           参数            |  值   |
+| :-----------------------: | :---: |
+|  $\text{MPPerEsthesia}$   |  $3$  |
+| $\text{MPPerBewitchment}$ | $12$  |
+|  $\text{MPPerWillpower}$  |  $7$  |
+
+##### 3.2.1.3.BaseMaxSP
+
+$$
+\text{BaseMaxSP} = \text{Strength} \times \text{SPPerStrength} + \text{Physique} \times \text{SPPerPhysique} + \text{Willpower} \times \text{SPPerWillpower}
+$$
+
+|          参数           |  值   |
+| :---------------------: | :---: |
+| $\text{SPPerStrength}$  | $0.3$ |
+| $\text{SPPerPhysique}$  | $0.5$ |
+| $\text{SPPerWillpower}$ | $0.2$ |
+
+##### 3.2.1.4.Evasion
+
+$$
+\text{Evasion} = \text{Dexterity} \times \text{EvasionPerDexterity} + \text{Esthesia} \times \text{EvasionPerEsthesia} + \text{Speed} \times \text{EvasionPerSpeed} + \text{Luck} \times \text{EvasionPerLuck}
+$$
+
+|             参数             |  值   |
+| :--------------------------: | :---: |
+| $\text{EvasionPerDexterity}$ |  $2$  |
+| $\text{EvasionPerEsthesia}$  |  $1$  |
+|   $\text{EvasionPerSpeed}$   |  $3$  |
+|   $\text{EvasionPerLuck}$    |  $5$  |
+
+##### 3.2.1.5.PhysicalHit
+
+$$
+\text{PhysicalHit} = \text{Dexterity} \times \text{PhysicalHitPerDexterity} + \text{Esthesia} \times \text{PhysicalHitPerEsthesia} + \text{Speed} \times \text{PhysicalHitPerSpeed} + \text{Luck} \times \text{PhysicalHitPerLuck}
+$$
+
+|               参数               |  值   |
+| :------------------------------: | :---: |
+| $\text{PhysicalHitPerDexterity}$ |  $1$  |
+| $\text{PhysicalHitPerEsthesia}$  |  $2$  |
+|   $\text{PhysicalHitPerSpeed}$   |  $2$  |
+|   $\text{PhysicalHitPerLuck}$    |  $3$  |
+
+##### 3.2.1.6.MagicalHit
+
+$$
+\text{MagicalHit} = \text{Esthesia} \times \text{MagicalHitPerEsthesia} + \text{Bewitchment} \times \text{MagicalHitPerBewitchment} + \text{Luck} \times \text{MagicalHitPerLuck}
+$$
+
+|               参数                |  值   |
+| :-------------------------------: | :---: |
+|  $\text{MagicalHitPerEsthesia}$   |  $1$  |
+| $\text{MagicalHitPerBewitchment}$ |  $2$  |
+|    $\text{MagicalHitPerLuck}$     |  $2$  |
+
+##### 3.2.1.7.Speed
+
+$$
+\text{Speed} = \text{Dexterity} \times \text{SpeedPerDexterity}
+$$
+
+|            参数            |  值   |
+| :------------------------: | :---: |
+| $\text{SpeedPerDexterity}$ | $0.2$ |
+
+##### 3.2.1.8.PhysicalDefense
+
+$$
+\text{PhysicalDefense} = \text{Physique} \times \text{PhysicalDefensePerPhysique}
+$$
+
+|                参数                 |  值   |
+| :---------------------------------: | :---: |
+| $\text{PhysicalDefensePerPhysique}$ |  $3$  |
+
+##### 3.2.1.9.MagicalDefense
+
+$$
+\text{MagicalDefense} = \text{Physique} \times \text{MagicalDefensePerPhysique} + \text{Bewitchment} \times \text{MagicalDefensePerBewitchment}
+$$
+
+|                 参数                  |  值   |
+| :-----------------------------------: | :---: |
+|  $\text{MagicalDefensePerPhysique}$   |  $1$  |
+| $\text{MagicalDefensePerBewitchment}$ |  $2$  |
+
+##### 3.2.1.10.IgnorePhysicalDefenseRate
+
+$$
+\text{IgnorePhysicalDefenseRate} = \text{Strength} \times \text{IgnorePhysicalDefenseRatePerStrength} + \text{Esthesia} \times \text{IgnorePhysicalDefenseRatePerEsthesia} + \text{Luck} \times \text{IgnorePhysicalDefenseRatePerLuck}
+$$
+
+|                     参数                      |         值         |
+| :-------------------------------------------: | :----------------: |
+| $\text{IgnorePhysicalDefenseRatePerStrength}$ | $3 \times 10^{-5}$ |
+| $\text{IgnorePhysicalDefenseRatePerEsthesia}$ | $7 \times 10^{-5}$ |
+|   $\text{IgnorePhysicalDefenseRatePerLuck}$   | $1 \times 10^{-4}$ |
+
+##### 3.2.1.11.IgnoreMagicalDefenseRate
+
+$$
+\text{IgnoreMagicalDefenseRate} = \text{Bewitchment} \times \text{IgnoreMagicalDefenseRatePerBewitchment} + \text{Esthesia} \times \text{IgnoreMagicalDefenseRatePerEsthesia} + \text{Luck} \times \text{IgnoreMagicalDefenseRatePerLuck}
+$$
+
+|                      参数                       |         值         |
+| :---------------------------------------------: | :----------------: |
+| $\text{IgnoreMagicalDefenseRatePerBewitchment}$ | $4 \times 10^{-5}$ |
+|  $\text{IgnoreMagicalDefenseRatePerEsthesia}$   | $5 \times 10^{-5}$ |
+|    $\text{IgnoreMagicalDefenseRatePerLuck}$     | $1 \times 10^{-4}$ |
+
+##### 3.2.1.12.PhysicalCritRate
+
+$$
+\text{PhysicalCritRate} = \text{Esthesia} \times \text{PhysicalCritRatePerEsthesia} + \text{Luck} \times \text{PhysicalCritRatePerLuck}
+$$
+
+|                 参数                 |         值         |
+| :----------------------------------: | :----------------: |
+| $\text{PhysicalCritRatePerEsthesia}$ | $2 \times 10^{-4}$ |
+|   $\text{PhysicalCritRatePerLuck}$   | $5 \times 10^{-4}$ |
+
+##### 3.2.1.13.MagicalCritRate
+
+$$
+\text{MagicalCritRate} = \text{Esthesia} \times \text{MagicalCritRatePerEsthesia} + \text{Luck} \times \text{MagicalCritRatePerLuck}
+$$
+
+|                参数                 |         值         |
+| :---------------------------------: | :----------------: |
+| $\text{MagicalCritRatePerEsthesia}$ | $1 \times 10^{-4}$ |
+|   $\text{MagicalCritRatePerLuck}$   | $3 \times 10^{-4}$ |
+
+##### 3.2.1.14.GrowthHPPerLevel
+
+$$
+\text{GrowthHPPerLevel} = \text{LifeGrowth} \times \text{HPPerLifeGrowthPerLevel}
+$$
+
+|               参数               |  值   |
+| :------------------------------: | :---: |
+| $\text{HPPerLifeGrowthPerLevel}$ |  $5$  |
+
+##### 3.2.1.15.GrowthMPPerLevel
+
+$$
+\text{GrowthMPPerLevel} = \text{MagicGrowth} \times \text{MPPerMagicGrowthPerLevel}
+$$
+
+|               参数                |  值   |
+| :-------------------------------: | :---: |
+| $\text{MPPerMagicGrowthPerLevel}$ |  $4$  |
+
+##### 3.2.1.16.BasePhysicalAttackPower
+
+$$
+\text{BasePhysicalAttackPower} = \text{Strength} \times \text{BasePhysicalAttackPowerPerStrength} + \text{Physique} \times \text{BasePhysicalAttackPowerPerPhysique}
+$$
+
+|                    参数                     |  值   |
+| :-----------------------------------------: | :---: |
+| $\text{BasePhysicalAttackPowerPerStrength}$ |  $5$  |
+| $\text{BasePhysicalAttackPowerPerPhysique}$ |  $1$  |
+
+##### 3.2.1.17.BaseMagicalAttackPower
+
+$$
+\text{BaseMagicalAttackPower} = \text{Bewitchment} \times \text{BaseMagicalAttackPowerPerBewitchment} + \text{Willpower} \times \text{BaseMagicalAttackPowerPerWillpower}
+$$
+
+|                     参数                      |  值   |
+| :-------------------------------------------: | :---: |
+| $\text{BaseMagicalAttackPowerPerBewitchment}$ |  $6$  |
+|  $\text{BaseMagicalAttackPowerPerWillpower}$  |  $1$  |
