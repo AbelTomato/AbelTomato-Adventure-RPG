@@ -1,7 +1,11 @@
 #ifndef BASE_TYPE_HPP
 #define BASE_TYPE_HPP
 
+#include <cstdint>
 #include <nlohmann/json.hpp>
+
+
+using ValueType = int64_t;
 
 enum class DamageType  // 伤害类型
 {

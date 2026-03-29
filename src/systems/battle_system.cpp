@@ -1,7 +1,6 @@
 #include "systems/battle_system.hpp"
 
-bool BattleSystem::check_hit(Creature& attacker, Creature& target,
-                             CombatIntent& intent)  // TODO:增加真实命中？
+bool BattleSystem::check_hit(Creature& attacker, Creature& target, CombatIntent& intent)
 {
     using namespace Config::Battle;
     using namespace Global;

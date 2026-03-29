@@ -1,4 +1,4 @@
-# Data Schema
+# Game Desigh Spec
 
 ## 1.Base Definition
 
@@ -45,7 +45,8 @@
 |      `magical_hit_value`       |  `int`   |    法术命中值    |    -    |
 |      `physical_crit_rate`      | `double` |    物理暴击率    | 上限95% |
 |      `magical_crit_rate`       | `double` |    魔法暴击率    | 上限95% |
-|           `defense`            |  `int`   |      防御力      |    -    |
+|       `physical_defense`       |  `int`   |    物理防御力    |    -    |
+|       `magical_defense`        |  `int`   |    魔法防御力    |    -    |
 |  `physical_damage_reduction`   | `double` |     物理减伤     | 上限50% |
 |   `magical_damage_reduction`   | `double` |     魔法减伤     | 上限50% |
 |    `true_damage_reduction`     | `double` |     真实减伤     | 上限50% |
@@ -91,6 +92,109 @@
 | `ignore_magical_defense_rate`  |     `double`      | 无视魔法防御几率加成 |   -   |
 |   `physical_damage_increase`   |     `double`      |     物理增伤加成     |   -   |
 |   `magical_damage_increase`    |     `double`      |     魔法增伤加成     |   -   |
+
+## 1.2.Attribute Map
+
+约定了在生物实例内，定义的一级属性、二级属性、实时状态数组下标与属性之间的映射关系。
+
+此表定义了 `Attr::ID` 枚举值及其对应的数组索引，用于 `AttributeManager` 的统一结算。
+
+| 对应枚举名 (`Attr::ID::...`) |   类型   | 描述 (Category)              | 数组索引 |
+| :--------------------------- | :------: | :--------------------------- | :------: |
+| **BaseStrength**             |  `int`   | 基础一级属性                 |   $1$    |
+| **BasePhysique**             |  `int`   | 基础一级属性                 |   $2$    |
+| **BaseDexterity**            |  `int`   | 基础一级属性                 |   $3$    |
+| **BaseEsthesia**             |  `int`   | 基础一级属性                 |   $4$    |
+| **BaseBewitchment**          |  `int`   | 基础一级属性                 |   $5$    |
+| **BaseWillpower**            |  `int`   | 基础一级属性                 |   $6$    |
+| **BaseLifeGrowth**           |  `int`   | 基础一级属性                 |   $7$    |
+| **BaseMagicGrowth**          |  `int`   | 基础一级属性                 |   $8$    |
+| **BaseSpeed**                |  `int`   | 基础一级属性                 |   $9$    |
+| **BaseLuck**                 |  `int`   | 基础一级属性                 |   $10$   |
+| **DerivedPhysAtk**           |  `int`   | 二级属性基准 (公式产出)      |  $101$   |
+| **DerivedMagAtk**            |  `int`   | 二级属性基准 (公式产出)      |  $102$   |
+| **DerivedBlockRate**         | `double` | 二级属性基准 (公式产出)      |  $103$   |
+| **DerivedEvasion**           |  `int`   | 二级属性基准 (公式产出)      |  $104$   |
+| **DerivedPhysHit**           |  `int`   | 二级属性基准 (公式产出)      |  $105$   |
+| **DerivedMagHit**            |  `int`   | 二级属性基准 (公式产出)      |  $106$   |
+| **DerivedPhysCritRate**      | `double` | 二级属性基准 (公式产出)      |  $107$   |
+| **DerivedMagCritRate**       | `double` | 二级属性基准 (公式产出)      |  $108$   |
+| **DerivedPhysDef**           |  `int`   | 二级属性基准 (公式产出)      |  $109$   |
+| **DerivedMagDef**            |  `int`   | 二级属性基准 (公式产出)      |  $110$   |
+| **DerivedPhysDamageRed**     | `double` | 二级属性基准 (公式产出)      |  $111$   |
+| **DerivedMagDamageRed**      | `double` | 二级属性基准 (公式产出)      |  $112$   |
+| **DerivedTrueDamageRed**     | `double` | 二级属性基准 (公式产出)      |  $113$   |
+| **DerivedIgnorePhysDef**     | `double` | 二级属性基准 (公式产出)      |  $114$   |
+| **DerivedIgnoreMagDef**      | `double` | 二级属性基准 (公式产出)      |  $115$   |
+| **DerivedPhysCritDmg**       | `double` | 二级属性基准 (公式产出)      |  $117$   |
+| **DerivedMagCritDmg**        | `double` | 二级属性基准 (公式产出)      |  $118$   |
+| **DerivedPhysDamageInc**     | `double` | 二级属性基准 (公式产出)      |  $119$   |
+| **DerivedMagDamageInc**      | `double` | 二级属性基准 (公式产出)      |  $120$   |
+| **ModStrength**              |  `Mod`   | 属性加成 (支持固定值/百分比) |  $301$   |
+| **ModPhysique**              |  `Mod`   | 属性加成 (支持固定值/百分比) |  $302$   |
+| **ModDexterity**             |  `Mod`   | 属性加成 (支持固定值/百分比) |  $303$   |
+| **ModEsthesia**              |  `Mod`   | 属性加成 (支持固定值/百分比) |  $304$   |
+| **ModBewitchment**           |  `Mod`   | 属性加成 (支持固定值/百分比) |  $305$   |
+| **ModWillpower**             |  `Mod`   | 属性加成 (支持固定值/百分比) |  $306$   |
+| **ModLifeGrowth**            |  `Mod`   | 属性加成 (支持固定值/百分比) |  $307$   |
+| **ModMagicGrowth**           |  `Mod`   | 属性加成 (支持固定值/百分比) |  $308$   |
+| **ModSpeed**                 |  `Mod`   | 属性加成 (支持固定值/百分比) |  $309$   |
+| **ModLuck**                  |  `Mod`   | 属性加成 (支持固定值/百分比) |  $310$   |
+| **ModMaxHP**                 |  `Mod`   | 属性加成 (支持固定值/百分比) |  $311$   |
+| **ModMaxMP**                 |  `Mod`   | 属性加成 (支持固定值/百分比) |  $312$   |
+| **ModPhysAtk**               |  `Mod`   | 属性加成 (支持固定值/百分比) |  $313$   |
+| **ModMagAtk**                |  `Mod`   | 属性加成 (支持固定值/百分比) |  $314$   |
+| **ModEvasion**               |  `Mod`   | 属性加成 (支持固定值/百分比) |  $315$   |
+| **ModPhysHit**               |  `Mod`   | 属性加成 (支持固定值/百分比) |  $316$   |
+| **ModMagHit**                |  `Mod`   | 属性加成 (支持固定值/百分比) |  $317$   |
+| **ModPhysDef**               |  `Mod`   | 属性加成 (支持固定值/百分比) |  $318$   |
+| **ModMagDef**                |  `Mod`   | 属性加成 (支持固定值/百分比) |  $319$   |
+| **ModPhysCritDmg**           | `double` | 率加成 (直接加法结算)        |  $320$   |
+| **ModMagCritDmg**            | `double` | 率加成 (直接加法结算)        |  $321$   |
+| **ModPhysCritRate**          | `double` | 率加成 (直接加法结算)        |  $322$   |
+| **ModMagCritRate**           | `double` | 率加成 (直接加法结算)        |  $323$   |
+| **ModBlockRate**             | `double` | 率加成 (直接加法结算)        |  $324$   |
+| **ModPhysDamageRed**         | `double` | 率加成 (直接加法结算)        |  $325$   |
+| **ModMagDamageRed**          | `double` | 率加成 (直接加法结算)        |  $326$   |
+| **ModTrueDamageRed**         | `double` | 率加成 (直接加法结算)        |  $327$   |
+| **ModIgnorePhysDef**         | `double` | 率加成 (直接加法结算)        |  $328$   |
+| **ModIgnoreMagDef**          | `double` | 率加成 (直接加法结算)        |  $329$   |
+| **ModPhysDamageInc**         | `double` | 率加成 (直接加法结算)        |  $330$   |
+| **ModMagDamageInc**          | `double` | 率加成 (直接加法结算)        |  $331$   |
+| **FinalStrength**            |  `int`   | 最终属性 (用于战斗/逻辑)     |  $501$   |
+| **FinalPhysique**            |  `int`   | 最终属性 (用于战斗/逻辑)     |  $502$   |
+| **FinalDexterity**           |  `int`   | 最终属性 (用于战斗/逻辑)     |  $503$   |
+| **FinalEsthesia**            |  `int`   | 最终属性 (用于战斗/逻辑)     |  $504$   |
+| **FinalBewitchment**         |  `int`   | 最终属性 (用于战斗/逻辑)     |  $505$   |
+| **FinalWillpower**           |  `int`   | 最终属性 (用于战斗/逻辑)     |  $506$   |
+| **FinalLifeGrowth**          |  `int`   | 最终属性 (用于战斗/逻辑)     |  $507$   |
+| **FinalMagicGrowth**         |  `int`   | 最终属性 (用于战斗/逻辑)     |  $508$   |
+| **FinalSpeed**               |  `int`   | 最终属性 (用于战斗/逻辑)     |  $509$   |
+| **FinalLuck**                |  `int`   | 最终属性 (用于战斗/逻辑)     |  $510$   |
+| **FinalPhysAtk**             |  `int`   | 最终属性 (用于战斗/逻辑)     |  $511$   |
+| **FinalMagAtk**              |  `int`   | 最终属性 (用于战斗/逻辑)     |  $512$   |
+| **FinalBlockRate**           | `double` | 最终属性 (用于战斗/逻辑)     |  $513$   |
+| **FinalEvasion**             |  `int`   | 最终属性 (用于战斗/逻辑)     |  $514$   |
+| **FinalPhysHit**             |  `int`   | 最终属性 (用于战斗/逻辑)     |  $515$   |
+| **FinalMagHit**              |  `int`   | 最终属性 (用于战斗/逻辑)     |  $516$   |
+| **FinalPhysCritRate**        | `double` | 最终属性 (用于战斗/逻辑)     |  $517$   |
+| **FinalMagCritRate**         | `double` | 最终属性 (用于战斗/逻辑)     |  $518$   |
+| **FinalPhysDef**             |  `int`   | 最终属性 (用于战斗/逻辑)     |  $519$   |
+| **FinalMagDef**              |  `int`   | 最终属性 (用于战斗/逻辑)     |  $520$   |
+| **FinalPhysDamageRed**       | `double` | 最终属性 (用于战斗/逻辑)     |  $521$   |
+| **FinalMagDamageRed**        | `double` | 最终属性 (用于战斗/逻辑)     |  $522$   |
+| **FinalTrueDamageRed**       | `double` | 最终属性 (用于战斗/逻辑)     |  $523$   |
+| **FinalIgnorePhysDef**       | `double` | 最终属性 (用于战斗/逻辑)     |  $524$   |
+| **FinalIgnoreMagDef**        | `double` | 最终属性 (用于战斗/逻辑)     |  $525$   |
+| **FinalPhysCritDmg**         | `double` | 最终属性 (用于战斗/逻辑)     |  $526$   |
+| **FinalMagCritDmg**          | `double` | 最终属性 (用于战斗/逻辑)     |  $527$   |
+| **FinalPhysDamageInc**       | `double` | 最终属性 (用于战斗/逻辑)     |  $528$   |
+| **FinalMagDamageInc**        | `double` | 最终属性 (用于战斗/逻辑)     |  $529$   |
+| **CurMaxHP**                 |  `int`   | 实时状态 (当前上限)          |  $701$   |
+| **CurMaxMP**                 |  `int`   | 实时状态 (当前上限)          |  $702$   |
+| **CurMaxSP**                 |  `int`   | 实时状态 (当前上限)          |  $703$   |
+| **CurLevel**                 |  `int`   | 实时状态                     |  $704$   |
+| **CurExp**                   |  `int`   | 实时状态                     |  $705$   |
 
 ### 1.2.Base Types
 
@@ -416,17 +520,7 @@ $$
 | $\text{MagicalHitPerBewitchment}$ |  $2$  |
 |    $\text{MagicalHitPerLuck}$     |  $2$  |
 
-##### 3.2.1.7.Speed
-
-$$
-\text{Speed} = \text{Dexterity} \times \text{SpeedPerDexterity}
-$$
-
-|            参数            |  值   |
-| :------------------------: | :---: |
-| $\text{SpeedPerDexterity}$ | $0.2$ |
-
-##### 3.2.1.8.PhysicalDefense
+##### 3.2.1.7.PhysicalDefense
 
 $$
 \text{PhysicalDefense} = \text{Physique} \times \text{PhysicalDefensePerPhysique}
@@ -436,7 +530,7 @@ $$
 | :---------------------------------: | :---: |
 | $\text{PhysicalDefensePerPhysique}$ |  $3$  |
 
-##### 3.2.1.9.MagicalDefense
+##### 3.2.1.8.MagicalDefense
 
 $$
 \text{MagicalDefense} = \text{Physique} \times \text{MagicalDefensePerPhysique} + \text{Bewitchment} \times \text{MagicalDefensePerBewitchment}
@@ -447,7 +541,7 @@ $$
 |  $\text{MagicalDefensePerPhysique}$   |  $1$  |
 | $\text{MagicalDefensePerBewitchment}$ |  $2$  |
 
-##### 3.2.1.10.IgnorePhysicalDefenseRate
+##### 3.2.1.9.IgnorePhysicalDefenseRate
 
 $$
 \text{IgnorePhysicalDefenseRate} = \text{Strength} \times \text{IgnorePhysicalDefenseRatePerStrength} + \text{Esthesia} \times \text{IgnorePhysicalDefenseRatePerEsthesia} + \text{Luck} \times \text{IgnorePhysicalDefenseRatePerLuck}
@@ -459,7 +553,7 @@ $$
 | $\text{IgnorePhysicalDefenseRatePerEsthesia}$ | $7 \times 10^{-5}$ |
 |   $\text{IgnorePhysicalDefenseRatePerLuck}$   | $1 \times 10^{-4}$ |
 
-##### 3.2.1.11.IgnoreMagicalDefenseRate
+##### 3.2.1.10.IgnoreMagicalDefenseRate
 
 $$
 \text{IgnoreMagicalDefenseRate} = \text{Bewitchment} \times \text{IgnoreMagicalDefenseRatePerBewitchment} + \text{Esthesia} \times \text{IgnoreMagicalDefenseRatePerEsthesia} + \text{Luck} \times \text{IgnoreMagicalDefenseRatePerLuck}
@@ -471,7 +565,7 @@ $$
 |  $\text{IgnoreMagicalDefenseRatePerEsthesia}$   | $5 \times 10^{-5}$ |
 |    $\text{IgnoreMagicalDefenseRatePerLuck}$     | $1 \times 10^{-4}$ |
 
-##### 3.2.1.12.PhysicalCritRate
+##### 3.2.1.11.PhysicalCritRate
 
 $$
 \text{PhysicalCritRate} = \text{Esthesia} \times \text{PhysicalCritRatePerEsthesia} + \text{Luck} \times \text{PhysicalCritRatePerLuck}
@@ -482,7 +576,7 @@ $$
 | $\text{PhysicalCritRatePerEsthesia}$ | $2 \times 10^{-4}$ |
 |   $\text{PhysicalCritRatePerLuck}$   | $5 \times 10^{-4}$ |
 
-##### 3.2.1.13.MagicalCritRate
+##### 3.2.1.12.MagicalCritRate
 
 $$
 \text{MagicalCritRate} = \text{Esthesia} \times \text{MagicalCritRatePerEsthesia} + \text{Luck} \times \text{MagicalCritRatePerLuck}
@@ -493,7 +587,7 @@ $$
 | $\text{MagicalCritRatePerEsthesia}$ | $1 \times 10^{-4}$ |
 |   $\text{MagicalCritRatePerLuck}$   | $3 \times 10^{-4}$ |
 
-##### 3.2.1.14.GrowthHPPerLevel
+##### 3.2.1.13.GrowthHPPerLevel
 
 $$
 \text{GrowthHPPerLevel} = \text{LifeGrowth} \times \text{HPPerLifeGrowthPerLevel}
@@ -503,7 +597,7 @@ $$
 | :------------------------------: | :---: |
 | $\text{HPPerLifeGrowthPerLevel}$ |  $5$  |
 
-##### 3.2.1.15.GrowthMPPerLevel
+##### 3.2.1.14.GrowthMPPerLevel
 
 $$
 \text{GrowthMPPerLevel} = \text{MagicGrowth} \times \text{MPPerMagicGrowthPerLevel}
@@ -513,7 +607,7 @@ $$
 | :-------------------------------: | :---: |
 | $\text{MPPerMagicGrowthPerLevel}$ |  $4$  |
 
-##### 3.2.1.16.BasePhysicalAttackPower
+##### 3.2.1.15.BasePhysicalAttackPower
 
 $$
 \text{BasePhysicalAttackPower} = \text{Strength} \times \text{BasePhysicalAttackPowerPerStrength} + \text{Physique} \times \text{BasePhysicalAttackPowerPerPhysique}
@@ -524,7 +618,7 @@ $$
 | $\text{BasePhysicalAttackPowerPerStrength}$ |  $5$  |
 | $\text{BasePhysicalAttackPowerPerPhysique}$ |  $1$  |
 
-##### 3.2.1.17.BaseMagicalAttackPower
+##### 3.2.1.16.BaseMagicalAttackPower
 
 $$
 \text{BaseMagicalAttackPower} = \text{Bewitchment} \times \text{BaseMagicalAttackPowerPerBewitchment} + \text{Willpower} \times \text{BaseMagicalAttackPowerPerWillpower}
