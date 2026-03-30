@@ -121,5 +121,5 @@ bool ConfigManager::sync_cache(const Config& conf)
     }
 
     std::cout << "缓存加载成功！" << std::endl;
-    return false;
+    return true;
 }

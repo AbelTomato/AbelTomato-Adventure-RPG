@@ -251,6 +251,23 @@
 |    `Displace`     |     位移     |               -               |     "displace"     |
 |  `SpecialScript`  | 触发特殊效果 |               -               |  "special_script"  |
 
+##### 1.2.4.2.EffectTriggerType
+
+|      类型名       |       含义       | 备注  |        JSON         |
+| :---------------: | :--------------: | :---: | :-----------------: |
+| `OnReleaseAttack` |  释放攻击时触发  |   -   | "on_release_attack" |
+|   `OnHitTarget`   |  命中目标时触发  |   -   |   "on_hit_target"   |
+|   `OnTurnStart`   |  回合开始时触发  |   -   |   "on_turn_start"   |
+|    `OnTurnEnd`    |  回合结束时触发  |   -   |    "on_turn_end"    |
+|  `OnCritTarget`   |  暴击目标时触发  |   -   |  "on_crit_target"   |
+|    `OnUseItem`    |  使用物品时触发  |   -   |    "on_use_item"    |
+| `OnBeforeDamaged` |    受击前触发    |   -   | "on_before_damaged" |
+| `OnAfterDamaged`  |    受击后触发    |   -   | "on_after_damaged"  |
+|  `OnKillTarget`   |  击杀目标后触发  |   -   |  "on_kill_target"   |
+|   `OnBeKilled`    |   被击杀后触发   |   -   |   "on_be_killed"    |
+|  `OnMissAttack`   |  闪避攻击后触发  |   -   |  "on_miss_attack"   |
+|   `OnBeMissed`    | 攻击被闪避后触发 |   -   |   "on_be_missed"    |
+
 #### 1.2.5.Skill Type
 
 ##### 1.2.5.1.SkillType
@@ -299,6 +316,19 @@
 |  `All`  |   无差别   |   -   |  "all"  |
 | `Ally`  | 仅友方生效 |   -   | "ally"  |
 | `Enemy` | 仅敌方生效 |   -   | "enemy" |
+
+#### 1.2.6.Item Type
+
+##### 1.2.6.1.ItemType
+
+|    类型名     |    含义    | 备注  |     JSON      |
+| :-----------: | :--------: | :---: | :-----------: |
+|   `Weapon`    |    武器    |   -   |   "weapon"    |
+|    `Armor`    |    防具    |   -   |    "armor"    |
+| `Accessories` |    饰品    |   -   | "accessories" |
+| `Comsumable`  | 可消耗物品 |   -   | "comsumable"  |
+|  `Material`   |    材料    |   -   |  "material"   |
+|    `Quest`    |  任务物品  |   -   |    "quest"    |
 
 ## 2.Data Struct
 

@@ -18,4 +18,33 @@ NLOHMANN_JSON_SERIALIZE_ENUM(EffectType, {{EffectType::AttributeChange, "attribu
                                           {EffectType::Displace, "displace"},
                                           {EffectType::SpeicialScript, "special_script"}});
 
+enum class EffectTriggerType
+{
+    OnReleaseAttack,
+    OnHitTarget,
+    OnTurnStart,
+    OnTurnEnd,
+    OnCritTarget,
+    OnUseItem,
+    OnBeforeDamaged,
+    OnAfterDamaged,
+    OnKillTarget,
+    OnBeKilled,
+    OnMissAttack,
+    OnBeMissed
+};
+
+NLOHMANN_JSON_SERIALIZE_ENUM(EffectTriggerType,
+                             {{EffectTriggerType::OnReleaseAttack, "on_release_attack"},
+                              {EffectTriggerType::OnHitTarget, "on_hit_target"},
+                              {EffectTriggerType::OnTurnStart, "on_turn_start"},
+                              {EffectTriggerType::OnTurnEnd, "on_turn_end"},
+                              {EffectTriggerType::OnCritTarget, "on_crit_target"},
+                              {EffectTriggerType::OnUseItem, "on_use_item"},
+                              {EffectTriggerType::OnBeforeDamaged, "on_before_damaged"},
+                              {EffectTriggerType::OnAfterDamaged, "on_after_damaged"},
+                              {EffectTriggerType::OnKillTarget, "on_kill_target"},
+                              {EffectTriggerType::OnBeKilled, "on_be_killed"},
+                              {EffectTriggerType::OnMissAttack, "on_miss_attack"},
+                              {EffectTriggerType::OnBeMissed, "on_be_missed"}});
 #endif
