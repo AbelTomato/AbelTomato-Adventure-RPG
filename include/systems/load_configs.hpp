@@ -18,7 +18,7 @@ public:
 
     bool load_all_configs(const std::string& path);
 
-    void sync_cache();
+    bool sync_cache(const Config& conf);
 
 private:
     ConfigManager() {}

@@ -6,13 +6,13 @@
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 
-
 struct Config
 {
     std::map<std::string, std::map<std::string, double>> settings;
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, settings);
 
+    // category为类型名，key为键名
     double get(const std::string& category, const std::string& key) const
     {
         try

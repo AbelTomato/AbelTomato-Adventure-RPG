@@ -3,7 +3,6 @@
 
 #include <array>
 
-#include "config/game_config.hpp"
 #include "config_cache.hpp"
 #include "definitions/attribute_id.hpp"
 #include "systems/config_cache.hpp"

@@ -44,8 +44,15 @@ void AttributeManager::apply_secondary_mods()
             _mods[static_cast<int>(m_id)].pct);
     };
 
+    calc_final(ID::CurMaxHP, ID::ModMaxHP, ID::CurMaxHP);
+    calc_final(ID::CurMaxMP, ID::ModMaxMP, ID::CurMaxMP);
     calc_final(ID::DerivedPhysAtk, ID::ModPhysAtk, ID::FinalPhysAtk);
-    // TODO: 完成其他二级属性的计算
+    calc_final(ID::DerivedMagAtk, ID::ModMagAtk, ID::FinalMagAtk);
+    calc_final(ID::DerivedEvasion, ID::ModEvasion, ID::FinalEvasion);
+    calc_final(ID::DerivedPhysHit, ID::ModPhysHit, ID::FinalPhysHit);
+    calc_final(ID::DerivedMagHit, ID::ModMagHit, ID::FinalMagHit);
+    calc_final(ID::DerivedPhysDef, ID::ModPhysDef, ID::FinalPhysDef);
+    calc_final(ID::DerivedMagDef, ID::ModMagDef, ID::FinalMagDef);
 
     // 对于“率”类属性进行特殊处理，改为直接加法
     auto apply_rate = [&](ID d_id, ID m_id, ID f_id)
@@ -54,7 +61,18 @@ void AttributeManager::apply_secondary_mods()
             _data[static_cast<int>(d_id)] + _data[static_cast<int>(m_id)];
     };
 
+    apply_rate(ID::DerivedPhysCritDmg, ID::ModPhysCritDmg, ID::FinalPhysCritDmg);
+    apply_rate(ID::DerivedMagCritDmg, ID::ModMagCritDmg, ID::FinalMagCritDmg);
     apply_rate(ID::DerivedPhysCritRate, ID::ModPhysCritRate, ID::FinalPhysCritRate);
+    apply_rate(ID::DerivedMagCritRate, ID::ModMagCritRate, ID::FinalMagCritRate);
+    apply_rate(ID::DerivedBlockRate, ID::ModBlockRate, ID::FinalBlockRate);
+    apply_rate(ID::DerivedPhysDamageRed, ID::ModPhysDamageRed, ID::FinalPhysDamageRed);
+    apply_rate(ID::DerivedMagDamageRed, ID::ModMagDamageRed, ID::FinalMagDamageRed);
+    apply_rate(ID::DerivedTrueDamageRed, ID::ModTrueDamageRed, ID::FinalTrueDamageRed);
+    apply_rate(ID::DerivedIgnorePhysDef, ID::ModIgnorePhysDef, ID::FinalIgnorePhysDef);
+    apply_rate(ID::DerivedIgnoreMagDef, ID::ModIgnoreMagDef, ID::FinalIgnoreMagDef);
+    apply_rate(ID::DerivedPhysDamageInc, ID::ModPhysDamageInc, ID::FinalPhysDamageInc);
+    apply_rate(ID::DerivedMagDamageInc, ID::ModMagDamageInc, ID::FinalMagDamageInc);
 }
 
 double AttributeManager::get(Attr::ID id)

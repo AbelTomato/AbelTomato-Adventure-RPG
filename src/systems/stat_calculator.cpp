@@ -10,8 +10,6 @@ void StatCalculator::compute_derived_bases(std::array<double, Attr::MaxCount>& d
 {
     using namespace Attr;
 
-    // TODO: 完成计算逻辑
-
     double str = data[static_cast<int>(ID::FinalStrength)];
     double vit = data[static_cast<int>(ID::FinalPhysique)];
     double dex = data[static_cast<int>(ID::FinalDexterity)];
