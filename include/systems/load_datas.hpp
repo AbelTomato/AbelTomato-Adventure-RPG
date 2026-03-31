@@ -61,8 +61,8 @@ public:
     }
 
 private:
-    std::map<int, T> data_map;
-    std::map<std::string, int> name_to_id;
+    std::map<int, T> data_map;              // 从id到data的映射
+    std::map<std::string, int> name_to_id;  // 从name到id的映射
 };
 
 class DataManager
