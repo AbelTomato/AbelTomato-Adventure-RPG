@@ -14,6 +14,8 @@ struct ItemData : BaseData
     ItemType type;
     double weight;  // 重量
     int rarity;     // 品质
+    bool stackable;
+    
 
     struct AttrRange
     {
