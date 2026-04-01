@@ -1,4 +1,4 @@
-#include "InventorySlot.hpp"
+#include "inventory/inventory_slot.hpp"
 
 void InventorySlot::refresh_UI()
 {

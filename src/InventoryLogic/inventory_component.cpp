@@ -1,4 +1,4 @@
-#include"Inventory/inventory_component.hpp"
+#include"inventory/inventory_component.hpp"
 
 
 void Inventory::add_item(const ItemData& item,int in_count)
@@ -18,7 +18,7 @@ void Inventory::add_item(const ItemData& item,int in_count)
                 I.count += can_add;
                 left_over_count -= can_add;
                 
-                // 【核心】：数据改变了，通知 UI 刷新这个格子！
+                //数据改变了，通知 UI 刷新这个格子
                 if (OnSlotUpdatedDelegate) OnSlotUpdatedDelegate(i);
 
                 if (left_over_count <= 0) return;
@@ -122,14 +122,7 @@ void Inventory::remove_item(const ItemStack& item,int out_count)
         //广播
         if (OnSlotUpdatedDelegate) OnSlotUpdatedDelegate(num);
 
-
     }
-
-
-
-
-
-    
 }
 
 void Inventory::swap_item(int slot_index1,int slot_index2)

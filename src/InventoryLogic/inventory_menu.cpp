@@ -1,4 +1,4 @@
-﻿#include "Inventory/InventoryMenu.hpp"
+﻿#include "inventory/inventory_menu.hpp"
 
 void InventoryMenu::inicialize_menu(std::shared_ptr<Inventory> inv_ptr)
 {
@@ -61,6 +61,7 @@ void InventoryMenu::handle_capacity_updated(int new_capacity)
     
     if (new_capacity <= Slots.size()) return; 
 
+    // 若此处获得的背包指针合法
     if (auto inv_ptr = inventory.lock())
     {
         for (int i = Slots.size(); i < new_capacity; ++i)
@@ -73,7 +74,7 @@ void InventoryMenu::handle_capacity_updated(int new_capacity)
             Slots.push_back(std::move(new_slot));
         }
         
-        // 追加完毕后，让新生成的格子去拿数据
+        // 追加完毕后，让新生成的格子拿数据
         refresh_all_slots();
     }
 }
