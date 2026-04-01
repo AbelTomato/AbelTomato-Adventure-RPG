@@ -1,0 +1,2 @@
+﻿#include "InventoryDragDropOperation.hpp"
+
