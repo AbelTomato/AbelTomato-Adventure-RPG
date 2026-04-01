@@ -2,13 +2,14 @@
 #define GAME_CONFIG_HPP
 
 #include <definitions/core_attributes.hpp>
+#include <exception>
 #include <map>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 
 struct Config
 {
-    std::map<std::string, std::map<std::string, double>> settings;
+    std::map<std::string, std::map<std::string, double>> settings;  // 从配置参数名到值的映射
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, settings);
 
@@ -21,8 +22,16 @@ struct Config
         }
         catch (const std::out_of_range& e)
         {
-            throw std::runtime_error("Config Error: Cannot find key '" + key + "' in category '" +
-                                     category);
+            throw std::runtime_error("[Config Error]: Key '" + key + "' not found in category '" +
+                                     category + "'.");
+        }
+        catch (const std::exception& e)
+        {
+            throw std::runtime_error(std::string("[Internal Error]: '") + e.what() + "'.");
+        }
+        catch (...)
+        {
+            throw std::runtime_error("[Unknown Error]: Catched in Config access!");
         }
     }
 };

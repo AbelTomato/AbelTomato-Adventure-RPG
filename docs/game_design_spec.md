@@ -330,14 +330,30 @@
 
 ##### 1.2.6.1.ItemType
 
-|    类型名     |    含义    | 备注  |     JSON      |
-| :-----------: | :--------: | :---: | :-----------: |
-|   `Weapon`    |    武器    |   -   |   "weapon"    |
-|    `Armor`    |    防具    |   -   |    "armor"    |
-| `Accessories` |    饰品    |   -   | "accessories" |
-| `Comsumable`  | 可消耗物品 |   -   | "comsumable"  |
-|  `Material`   |    材料    |   -   |  "material"   |
-|    `Quest`    |  任务物品  |   -   |    "quest"    |
+|    类型名    |    含义    | 备注  |     JSON     |
+| :----------: | :--------: | :---: | :----------: |
+|   `Weapon`   |    武器    |   -   |   "weapon"   |
+|   `Armor`    |    防具    |   -   |   "armor"    |
+| `Accessory`  |    饰品    |   -   | "accessory"  |
+| `Comsumable` | 可消耗物品 |   -   | "comsumable" |
+|  `Material`  |    材料    |   -   |  "material"  |
+|   `Quest`    |  任务物品  |   -   |   "quest"    |
+
+#### 1.2.7.Error Type
+
+##### 1.2.7.1.ErrorCode
+
+|         类型名         |      含义      |   备注    | JSON  |
+| :--------------------: | :------------: | :-------: | :---: |
+|       `Success`        |     无异常     | 默认值为0 |   -   |
+|     `FileNotFound`     |   未找到文件   |     -     |   -   |
+| `FilePermissionDenied` | 文件访问被拒绝 |     -     |   -   |
+|    `JsonParseError`    |  JSON解析错误  |     -     |   -   |
+| `MissingRequiredField` |  缺失需求部分  |     -     |   -   |
+|   `DataTypeMismatch`   | 数据类型不匹配 |     -     |   -   |
+|     `DuplicateId`      |    重复的ID    |     -     |   -   |
+|   `ResourceNotFound`   |   未找到源头   |     -     |   -   |
+|   `InvalidOperation`   |    非法操作    |     -     |   -   |
 
 ## 2.Data Struct
 
