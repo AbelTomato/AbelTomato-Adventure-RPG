@@ -1,5 +1,4 @@
-#ifndef ERROR_TYPE_HPP
-#define ERROR_TYPE_HPP
+#pragma once
 
 #include <string>
 
@@ -38,5 +37,3 @@ inline std::string_view to_string(ErrorCode code)
             return "未知错误";
     }
 }
-
-#endif

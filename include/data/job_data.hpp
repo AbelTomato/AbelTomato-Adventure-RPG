@@ -1,5 +1,4 @@
-#ifndef JOB_DATA_HPP
-#define JOB_DATA_HPP
+#pragma once
 
 #include "base_data.hpp"
 #include "definitions/core_attributes.hpp"
@@ -12,5 +11,3 @@ struct JobData : public BaseData
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(JobData, id, name, description, base_attr, job_skills);
 };
-
-#endif

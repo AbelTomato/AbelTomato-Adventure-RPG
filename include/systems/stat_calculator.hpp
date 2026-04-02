@@ -1,5 +1,4 @@
-#ifndef STAT_CALCULATOR_HPP
-#define STAT_CALCULATOR_HPP
+#pragma once
 
 #include <array>
 
@@ -17,5 +16,3 @@ public:
     static void compute_derived_bases(std::array<double, Attr::MaxCount>& data,
                                       const CalcCoefficients& coeffs);
 };
-
-#endif

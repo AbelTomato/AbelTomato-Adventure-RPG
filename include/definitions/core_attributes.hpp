@@ -1,5 +1,4 @@
-#ifndef CORE_ATTRIBUTES_HPP
-#define CORE_ATTRIBUTES_HPP
+#pragma once
 
 #include <nlohmann/json.hpp>
 

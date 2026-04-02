@@ -1,5 +1,4 @@
-#ifndef CONFIG_CACHE_HPP
-#define CONFIG_CACHE_HPP
+#pragma once
 
 // 属性转换系数（基础属性 → 衍生属性）
 // 对应 spec 中 3.2.1 节的各个公式参数
@@ -76,5 +75,3 @@ struct CalcCoefficients
     double BaseMagicalAttackPowerPerBewitchment;
     double BaseMagicalAttackPowerPerWillpower;
 };
-
-#endif  // CONFIG_CACHE_HPP

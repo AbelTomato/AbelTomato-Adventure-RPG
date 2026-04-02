@@ -1,5 +1,4 @@
-#ifndef GAME_CONFIG_HPP
-#define GAME_CONFIG_HPP
+#pragma once
 
 #include <definitions/core_attributes.hpp>
 #include <exception>
@@ -35,5 +34,3 @@ struct Config
         }
     }
 };
-
-#endif

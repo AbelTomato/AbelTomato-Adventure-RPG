@@ -1,5 +1,4 @@
-#ifndef ATTRIBUTE_ID_HPP
-#define ATTRIBUTE_ID_HPP
+#pragma once
 
 namespace Attr
 {
@@ -116,5 +115,3 @@ enum class ID : int
     CurExp = 705
 };
 }  // namespace Attr
-
-#endif

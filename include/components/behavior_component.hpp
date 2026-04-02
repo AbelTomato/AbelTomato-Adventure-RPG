@@ -1,33 +1,26 @@
-#ifndef EFFECT_COMPONENT_HPP
-#define EFFECT_COMPONENT_HPP
+#pragma once
 
 #include <vector>
 
-#include "definitions/effect_type.hpp"
+#include "data/condition_data.hpp"
 #include "nlohmann/json.hpp"
 
 struct PassiveAction
 {
-    // 触发时机类型
-    EffectTriggerType trigger_type;
+    std::string trigger_type;               // 触发时机
+    double chance;                          // 触发几率
+    std::vector<ConditionData> conditions;  // 触发条件
+    std::string action_type;                // 触发动作类型
+    int action_id;                          // 触发动作id
+    std::map<std::string, double> params;   // 参数列表
 
-    // 触发几率
-    double chance;
-
-    // 触发动作目标类型
-    ActionTargetType action_type;
-
-    // 触发动作目标id
-    int target_id;
-
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PassiveAction, trigger_type, chance, action_type, target_id);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(PassiveAction, trigger_type, chance, conditions, action_type,
+                                   action_id, params);
 };
 
 struct BehaviorComponent
 {
-    std::vector<PassiveAction> behaviors;
+    std::vector<PassiveAction> actions;  // 行为列表
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(BehaviorComponent, behaviors);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(BehaviorComponent, actions);
 };
-
-#endif

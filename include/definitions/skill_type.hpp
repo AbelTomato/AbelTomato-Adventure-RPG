@@ -1,5 +1,4 @@
-#ifndef SKILL_TYPE_HPP
-#define SKILL_TYPE_HPP
+#pragma once
 
 #include "nlohmann/json.hpp"
 
@@ -72,4 +71,3 @@ enum class TargetFilter
 NLOHMANN_JSON_SERIALIZE_ENUM(TargetFilter, {{TargetFilter::All, "all"},
                                             {TargetFilter::Ally, "ally"},
                                             {TargetFilter::Enemy, "enemy"}});
-#endif

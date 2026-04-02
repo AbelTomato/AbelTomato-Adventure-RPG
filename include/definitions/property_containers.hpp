@@ -1,5 +1,4 @@
-#ifndef PROPERTY_CONTAINERS_HPP
-#define PROPERTY_CONTAINERS_HPP
+#pragma once
 
 #include <definitions/core_attributes.hpp>
 
@@ -55,5 +54,3 @@ struct BonusStats
     double physical_damage_increase;      // 物理增伤加成
     double magical_damage_increase;       // 魔法增伤加成
 };
-
-#endif

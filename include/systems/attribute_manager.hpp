@@ -1,5 +1,4 @@
-#ifndef ATTRIBUTE_MANAGER_HPP
-#define ATTRIBUTE_MANAGER_HPP
+#pragma once
 
 #include <array>
 #include <cmath>
@@ -32,5 +31,3 @@ public:
 
     void update_rate_mod(Attr::ID id, double delta);  // 更新double类型的二级属性加成项
 };
-
-#endif

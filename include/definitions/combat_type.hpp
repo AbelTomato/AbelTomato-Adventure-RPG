@@ -1,5 +1,4 @@
-#ifndef COMBAT_TYPE_HPP
-#define COMBAT_TYPE_HPP
+#pragma once
 
 #include <nlohmann/json.hpp>
 
@@ -12,5 +11,3 @@ enum class HitResult  // 攻击结果类型
     Critical,  // 暴击
     Block      // 格挡
 };
-
-#endif

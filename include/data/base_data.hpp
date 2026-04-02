@@ -1,9 +1,8 @@
-#ifndef BASE_DATA_HPP
-#define BASE_DATA_HPP
+#pragma once
 
 #include <string>
 
-struct BaseData
+struct BaseData  // data基类
 {
     int id;
     std::string name;
@@ -11,5 +10,3 @@ struct BaseData
 
     virtual ~BaseData() = default;
 };
-
-#endif

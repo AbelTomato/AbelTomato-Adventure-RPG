@@ -1,5 +1,4 @@
-#ifndef LOAD_DATAS_HPP
-#define LOAD_DATAS_HPP
+#pragma once
 
 #include <exception>
 #include <iostream>
@@ -119,5 +118,3 @@ private:
 
     DataManager() {}
 };
-
-#endif

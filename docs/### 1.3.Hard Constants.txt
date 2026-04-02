@@ -1,0 +1,170 @@
+### 1.3.Hard Constants
+
+#### 1.2.1.Base Type
+
+##### 1.2.1.1.DamageType
+
+|   类型名   |   含义   | 备注  |   JSON名   |
+| :--------: | :------: | :---: | :--------: |
+| `Physical` | 物理伤害 |   -   | "physical" |
+| `Magical`  | 魔法伤害 |   -   | "magical"  |
+|   `True`   | 真实伤害 |   -   |   "true"   |
+
+##### 1.2.1.2.StatusType
+
+| 类型名 |  含义  | 备注  | JSON名 |
+| :----: | :----: | :---: | :----: |
+|  `HP`  |  生命  |   -   |  "hp"  |
+|  `MP`  |  法力  |   -   |  "mp"  |
+|  `SP`  |  精力  |   -   |  "sp"  |
+| `EXP`  | 经验值 |   -   | "exp"  |
+
+#### 1.2.2.Buff Type
+
+##### 1.2.2.1.TriggerType
+
+|    类型名     |      含义      | 备注  |     JSON名      |
+| :-----------: | :------------: | :---: | :-------------: |
+| `OnTurnStart` | 回合开始时触发 |   -   | "on_turn_start" |
+|  `OnTurnEnd`  | 回合结束时触发 |   -   |  "on_turn_end"  |
+|  `OnAction`   | 每次行动时触发 |   -   |   "on_action"   |
+| `PassiveAttr` |    持续生效    |   -   | "passive_attr"  |
+
+##### 1.2.3.Combat Type
+
+##### 1.2.3.1.HitResult
+
+|   类型名   | 含义  | 备注  | JSON名 |
+| :--------: | :---: | :---: | :----: |
+|   `Miss`   | 闪避  |   -   |   -    |
+|   `Hit`    | 命中  |   -   |   -    |
+| `Critical` | 暴击  |   -   |   -    |
+|  `Block`   | 格挡  |   -   |   -    |
+
+#### 1.2.4.Effect Type
+
+##### 1.2.4.1.EffectType
+
+|      类型名       |     含义     |             备注              |       JSON名       |
+| :---------------: | :----------: | :---------------------------: | :----------------: |
+| `AttributeChange` |  属性的改变  | 如回血，受到伤害，六维降低20% | "attribute_change" |
+|    `ApplyBuff`    |   施加buff   |               -               |    "apply_buff"    |
+|   `RemoveBuff`    |   驱散buff   |               -               |   "remove_buff"    |
+|    `Displace`     |     位移     |               -               |     "displace"     |
+|  `SpecialScript`  | 触发特殊效果 |               -               |  "special_script"  |
+
+##### 1.2.4.2.EffectTriggerType
+
+|      类型名       |       含义       | 备注  |        JSON         |
+| :---------------: | :--------------: | :---: | :-----------------: |
+| `OnReleaseAttack` |  释放攻击时触发  |   -   | "on_release_attack" |
+|   `OnHitTarget`   |  命中目标时触发  |   -   |   "on_hit_target"   |
+|   `OnTurnStart`   |  回合开始时触发  |   -   |   "on_turn_start"   |
+|    `OnTurnEnd`    |  回合结束时触发  |   -   |    "on_turn_end"    |
+|  `OnCritTarget`   |  暴击目标时触发  |   -   |  "on_crit_target"   |
+|    `OnUseItem`    |  使用物品时触发  |   -   |    "on_use_item"    |
+| `OnBeforeDamaged` |    受击前触发    |   -   | "on_before_damaged" |
+| `OnAfterDamaged`  |    受击后触发    |   -   | "on_after_damaged"  |
+|  `OnKillTarget`   |  击杀目标后触发  |   -   |  "on_kill_target"   |
+|   `OnBeKilled`    |   被击杀后触发   |   -   |   "on_be_killed"    |
+|  `OnMissAttack`   |  闪避攻击后触发  |   -   |  "on_miss_attack"   |
+|   `OnBeMissed`    | 攻击被闪避后触发 |   -   |   "on_be_missed"    |
+
+##### 1.2.4.3.ActionTargetType
+
+|  类型名  |   含义   | 备注  |  JSON名  |
+| :------: | :------: | :---: | :------: |
+|  `None`  |   空值   |   -   |  "none"  |
+| `Effect` | 触发效果 |   -   | "effect" |
+| `Skill`  | 触发技能 |   -   | "skill"  |
+|  `Buff`  | 触发buff |   -   |  "buff"  |
+
+#### 1.2.5.Skill Type
+
+##### 1.2.5.1.SkillType
+
+|    类型名    |   含义   | 备注  |    JSON名    |
+| :----------: | :------: | :---: | :----------: |
+| `Initiative` | 主动技能 |   -   | "initiative" |
+|  `Passive`   | 被动技能 |   -   |  "passive"   |
+
+##### 1.2.5.2.EffectSettlementType
+
+|        类型名         |     含义     | 备注  |         JSON名          |
+| :-------------------: | :----------: | :---: | :---------------------: |
+| `PhysicalAttackPower` | 基于物理攻击 |   -   | "physical_attack_power" |
+| `MagicalAttackPower`  | 基于魔法攻击 |   -   | "magical_attack_power"  |
+|        `MaxHP`        | 基于最大生命 |   -   |        "max_hp"         |
+|      `CurrentHP`      | 基于当前生命 |   -   |        "cur_hp"         |
+|        `MaxMP`        | 基于最大法力 |   -   |        "max_mp"         |
+|      `CurrentMP`      | 基于当前法力 |   -   |        "cur_mp"         |
+|   `PhysicalDefense`   | 基于物理防御 |   -   |   "physical_defense"    |
+|   `MagicalDefense`    | 基于魔法防御 |   -   |    "magical_defense"    |
+
+##### 1.2.5.3.CostMethod
+
+|    类型名    |    含义    | 备注  |    JSON名     |
+| :----------: | :--------: | :---: | :-----------: |
+|    `Flat`    |   固定值   |   -   |    "flat"     |
+| `PercentMax` | 最大百分比 |   -   | "percent_max" |
+| `PercentCur` | 当前百分比 |   -   | "percent_cur" |
+
+##### 1.2.5.4.ShapeType
+
+|   类型名    | 含义  | 备注  |   JSON名    |
+| :---------: | :---: | :---: | :---------: |
+|   `Point`   | 单点  |   -   |   "point"   |
+| `Rectangle` | 矩形  |   -   | "rectangle" |
+|  `Circle`   | 圆形  |   -   |  "circle"   |
+|   `Cross`   | 十字  |   -   |   "cross"   |
+|   `Line`    | 直线  |   -   |   "line"    |
+|  `Sector`   | 扇形  |   -   |  "sector"   |
+
+##### 1.2.5.5.TargetFilter
+
+| 类型名  |    含义    | 备注  | JSON名  |
+| :-----: | :--------: | :---: | :-----: |
+|  `All`  |   无差别   |   -   |  "all"  |
+| `Ally`  | 仅友方生效 |   -   | "ally"  |
+| `Enemy` | 仅敌方生效 |   -   | "enemy" |
+
+#### 1.2.6.Item Type
+
+##### 1.2.6.1.ItemType
+
+|    类型名    |    含义    | 备注  |     JSON     |
+| :----------: | :--------: | :---: | :----------: |
+|   `Weapon`   |    武器    |   -   |   "weapon"   |
+|   `Armor`    |    防具    |   -   |   "armor"    |
+| `Accessory`  |    饰品    |   -   | "accessory"  |
+| `Comsumable` | 可消耗物品 |   -   | "comsumable" |
+|  `Material`  |    材料    |   -   |  "material"  |
+|   `Quest`    |  任务物品  |   -   |   "quest"    |
+
+##### 1.2.6.2.RarityType
+
+|   类型名    |    含义    | 备注  |    JSON     |
+| :---------: | :--------: | :---: | :---------: |
+|   `Junk`    | 垃圾，灰色 |   -   |   "junk"    |
+|  `Common`   | 基础，白色 |   -   |  "common"   |
+| `Uncommon`  | 精良，绿色 |   -   | "uncommon"  |
+|   `Rare`    | 稀有，蓝色 |   -   |   "rare"    |
+|   `Epic`    | 史诗，紫色 |   -   |   "epic"    |
+| `Legendary` | 传说，橙色 |   -   | "legendary" |
+| `Artifact`  | 神话，红色 |   -   | "artifact"  |
+
+#### 1.2.7.Error Type
+
+##### 1.2.7.1.ErrorCode
+
+|         类型名         |      含义      |   备注    | JSON  |
+| :--------------------: | :------------: | :-------: | :---: |
+|       `Success`        |     无异常     | 默认值为0 |   -   |
+|     `FileNotFound`     |   未找到文件   |     -     |   -   |
+| `FilePermissionDenied` | 文件访问被拒绝 |     -     |   -   |
+|    `JsonParseError`    |  JSON解析错误  |     -     |   -   |
+| `MissingRequiredField` |  缺失需求部分  |     -     |   -   |
+|   `DataTypeMismatch`   | 数据类型不匹配 |     -     |   -   |
+|     `DuplicateId`      |    重复的ID    |     -     |   -   |
+|   `ResourceNotFound`   |   未找到源头   |     -     |   -   |
+|   `InvalidOperation`   |    非法操作    |     -     |   -   |

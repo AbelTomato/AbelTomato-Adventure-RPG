@@ -1,8 +1,8 @@
 [
   {
-    "id": 10001,
+    "id": 110001,
     "name": "人类",
-    "description": "具有极高适应能力和学习能力的种族。",
+    "description": "胆怯又贪婪，自卑又狂妄，冷漠又热忱，弱小又强大，卑劣又善良。（冷知识：lpl不是人类。）",
     "base_attr": {
       "strength": 5,
       "physique": 5,
@@ -10,48 +10,47 @@
       "esthesia": 5,
       "bewitchment": 5,
       "willpower": 5,
-      "life_growth": 10,
-      "magic_growth": 10,
+      "life_growth": 75,
+      "magic_growth": 50,
       "speed": 5,
       "luck": 10
     },
-    "race_skills": [20001]
+    "race_skills": [200001]
   },
   {
-    "id": 10002,
+    "id": 110002,
     "name": "番茄族",
-    "description": "多汁且易怒，受伤后会喷射番茄汁。",
+    "description": "完美的代名词！神圣的种族！上帝的谕旨！",
     "base_attr": {
-      "strength": 12,
-      "physique": 10,
-      "dexterity": 15,
-      "esthesia": 8,
-      "bewitchment": 5,
-      "willpower": 8,
-      "life_growth": 120,
-      "magic_growth": 80,
-      "speed": 110,
-      "luck": 20
+      "strength": 6,
+      "physique": 7,
+      "dexterity": 4,
+      "esthesia": 5,
+      "bewitchment": 4,
+      "willpower": 10,
+      "life_growth": 70,
+      "magic_growth": 40,
+      "speed": 4,
+      "luck": 13
     },
-    "race_skills": [5001,5003,5004]
+    "race_skills": [200001, 260001]
   },
   {
-      "id": 10003,
-      "name": "芳香烃族",
-      "description": "无时无刻散发出具有魅惑功效的气味，蠢萌且可爱",
-      "base_attr": {
-        "strength": 4,
-        "physique":3 ,
-        "dexterity":7 ,
-        "esthesia": 25,
-        "bewitchment":20 ,
-        "willpower": 18,
-        "life_growth": 95,
-        "magic_growth": 110,
-        "speed": 5,
-        "luck": 15
-        
-      },
-      "race_skills": [5101]
-    }
+    "id": 110003,
+    "name": "芳香烃族",
+    "description": "无时无刻散发出具有魅惑功效的气味，蠢萌且可爱（lpl诱捕器）",
+    "base_attr": {
+      "strength": 4,
+      "physique": 3,
+      "dexterity": 7,
+      "esthesia": 8,
+      "bewitchment": 10,
+      "willpower": 7,
+      "life_growth": 30,
+      "magic_growth": 90,
+      "speed": 5,
+      "luck": 15
+    },
+    "race_skills": [200001]
+  }
 ]

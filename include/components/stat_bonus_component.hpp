@@ -1,12 +1,10 @@
-#ifndef STAT_BONUS_COMPONENT_HPP
-#define STAT_BONUS_COMPONENT_HPP
+#pragma once
 
 #include <vector>
 
 #include "definitions/attribute_id.hpp"
 #include "definitions/core_attributes.hpp"
 #include "nlohmann/json.hpp"
-
 
 struct AttrModifier  // 单条属性加成信息
 {
@@ -22,5 +20,3 @@ struct StatBonusComponent  // 属性加成列表组件
 
     NLOHMANN_JSON_SERIALIZE_ENUM(StatBonusComponent, modifiers);
 };
-
-#endif

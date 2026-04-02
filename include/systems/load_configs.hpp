@@ -1,5 +1,4 @@
-#ifndef LOAD_CONFIGS_HPP
-#define LOAD_CONFIGS_HPP
+#pragma once
 
 #include <nlohmann/json.hpp>
 
@@ -26,5 +25,3 @@ private:
 
 #define G_Config ConfigManager::instance().configs
 #define G_Cache ConfigManager::instance().cache
-
-#endif

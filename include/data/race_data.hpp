@@ -1,5 +1,4 @@
-#ifndef RACE_DATA_HPP
-#define RACE_DATA_HPP
+#pragma once
 
 #include "base_data.hpp"
 #include "definitions/core_attributes.hpp"
@@ -11,5 +10,3 @@ struct RaceData : public BaseData
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(RaceData, id, name, description, base_attr, race_skills);
 };
-
-#endif
