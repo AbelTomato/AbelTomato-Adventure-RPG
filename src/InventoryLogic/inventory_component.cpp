@@ -78,7 +78,7 @@ void Inventory::add_item(const ItemData& item, int in_count)
 }
 void Inventory::remove_item(const ItemStack& item, int out_count)
 {
-    if (out_count <= 0 || item.data.has_value()) return;
+    if (out_count <= 0 || !item.data.has_value()) return;
 
     int left_to_remove = out_count;
     // 存储当前物品的索引
@@ -124,6 +124,11 @@ void Inventory::swap_item(int slot_index1, int slot_index2)
         slot_index2 >= current_capacity)
         return;
     std::swap(items[slot_index1], items[slot_index2]);
+    if (OnSlotUpdatedDelegate) 
+    {
+        OnSlotUpdatedDelegate(slot_index1);
+        OnSlotUpdatedDelegate(slot_index2);
+    }
 }
 
 void Inventory::use_item(int slot_index1)
