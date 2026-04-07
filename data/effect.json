@@ -1,29 +1,44 @@
 [
   {
-    "id": 2001,
-    "name": "基础治疗",
-    "description": "回复生命值",
-    "effect_type": "attribute_change",
-    "value_scaler": 0.5,
-    "duration_scaler": 0.0,
-    "target_sub_type_id": 1
+    "id": 300001,
+    "name": "基础物理伤害数值计算",
+    "description": "根据物理增伤属性计算物理伤害数值",
+    "func_name": "calc_base_physical_damage",
+    "logic_address": 528
   },
   {
-    "id": 2201,
-    "name": "施加脱水",
-    "description": "尝试给对手挂个脱水Buff",
-    "effect_type": "apply_buff",
-    "value_scaler": 1.0,
-    "duration_scaler": 1.0,
-    "target_sub_type_id": 4001
+    "id": 300002,
+    "name": "基础魔法伤害数值计算",
+    "description": "根据法术增伤属性计算魔法伤害数值",
+    "func_name": "calc_base_magical_damage",
+    "logic_address": 529
   },
   {
-    "id": 2202,
-    "name": "施加灼烧",
-    "description": "尝试为对手施加灼烧",
-    "effect_type": "apply_buff",
-    "value_scaler": 1.0,
-    "duration_scaler": 1.2,
-    "target_sub_type_id": 4002
+    "id": 300003,
+    "name": "判断此次物理伤害是否暴击",
+    "description": "根据物理暴击率属性判断是否暴击",
+    "func_name": "check_physical_crit",
+    "logic_address": 517
+  },
+  {
+    "id": 300004,
+    "name": "判断此次魔法伤害是否暴击",
+    "description": "根据魔法暴击率属性判断是否暴击",
+    "func_name": "check_magical_crit",
+    "logic_address": 518
+  },
+  {
+    "id": 300005,
+    "name": "物理暴击伤害数值计算",
+    "description": "根据是否触发物理暴击及物理暴击伤害属性计算物理暴击伤害数值",
+    "func_name": "calc_crit_physical_damage",
+    "logic_address": 526
+  },
+  {
+    "id": 300006,
+    "name": "魔法暴击伤害数值计算",
+    "description": "根据是否触发魔法暴击及魔法暴击伤害属性计算魔法暴击伤害数值",
+    "func_name": "calc_crit_magical_damage",
+    "logic_address": 527
   }
 ]

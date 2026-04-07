@@ -397,6 +397,15 @@
 |     `level`     |              `int`              | 装备等级 |        -         |
 | `hidden_points` |              `int`              |  隐藏分  | 范围为 $0 - 100$ |
 
+### 2.7.Condition Data
+
+#### 2.7.1.ConditionData
+
+|          属性           |   类型   |     作用     |               备注                |
+| :---------------------: | :------: | :----------: | :-------------------------------: |
+|         `type`          | `string` |   条件类型   |                 -                 |
+| [`args`](#442condition) |  `map`   | 判断条件列表 | `map`为从`string`到`double`的映射 |
+
 ## 3.Core Game Design(核心游戏设计)
 
 ### 3.1.Effect Execution Pipline(效果执行流水线)
@@ -491,9 +500,9 @@ classDiagram
 
 3.**Effect 30004**: 读 `ctx.final_value`，乘以 $0.2$，写入 `ctx.heal_value`
 
-4.**Effect 30003**: 读 `logic_key=701`（血量），令 `target` 属性 $701$ 减少 `ctx.final_value`
+4.**Effect 30003**: 读 `logic_address=701`（血量），令 `target` 属性 $701$ 减少 `ctx.final_value`
 
-5.**Effect 30005**: 读 `logic_key=701`，令 `caster` 属性 $701$ 增加 `ctx.heal_value`
+5.**Effect 30005**: 读 `logic_address=701`，令 `caster` 属性 $701$ 增加 `ctx.heal_value`
 
 ### 3.2.Base Formula & Parameter Setting(基本公式和参数设定)
 
@@ -682,6 +691,40 @@ $$
 | $\text{BaseMagicalAttackPowerPerBewitchment}$ |  $6$  |
 |  $\text{BaseMagicalAttackPowerPerWillpower}$  |  $1$  |
 
+### 3.3.Core Gameplay Design Guidelines(核心玩法设计规约)
+
+#### 3.3.1.Interaction and Action Sequence(交互与行动时序)
+
+游戏采用**基于速率比**的**半即时回合制**(Semi-Real-Time Turn-Based)
+
+- **交互逻辑**：遵循“玩家不动，世界静止”的原则。玩家的每一次指令（移动、攻击、施法、使用物品）被视为一个标准行动周期。
+- **时序演算**：系统引入**速度(Speed)**属性。每一回合，系统根据非玩家单位（NPC/怪物）与玩家的速度比值($\dfrac{V_{npc}}{V_{player}}$)动态计算行动次数。
+  - 若速度比为1.0，则交替行动；
+  - 若速度比小于1.0，则玩家行动，非玩家单位可能不行动；
+  - 若速度比大于1.0，则玩家行动一次，非玩家单位可能执行多次动作。
+
+#### 3.3.2.Spatial Architecture and Positioning(空间架构与定位)
+
+地图采用**二维笛卡尔网格(2D Square Grid)**作为基础坐标系。
+
+- **移动机制**：所有实体(Entity)的位移以网格为最小单位，支持八向移动。
+- **碰撞与交互**：每个网格具备独立的属性（地形阻挡、事件触发、环境效果）。
+- **判定逻辑**：技能释放、远程攻击及光环类效果的判定严格基于网格距离进行计算，确保战斗逻辑的数字化精确性。
+
+#### 3.3.3.World Architecture and Exploration(世界架构与探索)
+
+世界观参考MMORPG的无缝/半无缝大地图模式。
+
+- **区域分级**：游戏世界由多个各具特色的地理区域组成。
+- **场景切换**：采用大地图无缝衔接与关键节点（如进入地宫/室内）加载相结合的机制。
+- **核心玩法流**：结合了经典 RPG 的成长曲线，强调“大地图探索 - 资源采集 - 动态遇敌 - 阶梯式开荒”的循环逻辑。
+
+#### 3.3.4.Persistence and State Management(存档与状态持久化)
+
+- **全局快照机制**：游戏采用本地存档模式，记录玩家属性、背包数据以及大地图的探索进度。
+- **非线性进度记录**：记录大地图中特定区域的怪物刷新状态与任务进度，确保玩家在不同地图间切换时，世界状态保持一致。
+- **数据结构**：采用**JSON序列化**存储技术栈。
+
 ## 4.Data Import Specifications(数据导入规范)
 
 ### 4.1.Data Import Precautions(数据导入注意事项)
@@ -721,11 +764,12 @@ $$
 
 ###### 4.2.2.2.Skill ID
 
-| 数据类型 |      ID范围       |
-| :------: | :---------------: |
-| **战技** | $200001 - 229999$ |
-| **魔法** | $230001 - 259999$ |
-| **特殊** | $260001 - 289999$ |
+|     数据类型     |      ID范围       |
+| :--------------: | :---------------: |
+|     **战技**     | $200001 - 229999$ |
+|     **魔法**     | $230001 - 259999$ |
+|     **特殊**     | $260001 - 289999$ |
+| **技能载体实例** | $290001 - 299999$ |
 
 ### 4.3.Field Presence Rules(字段存在性规则)
 
@@ -915,18 +959,18 @@ $$
 |  $1$  | 正面  |
 |  $2$  | 负面  |
 
-#### 4.4.2.ConditionData(条件数据)
+#### 4.4.2.Condition
 
 ##### 4.4.2.1.type
 
-|      参数内容      |   含义   |
-| :----------------: | :------: |
-| **"attr_compare"** | 属性对比 |
-|   **"has_buff"**   | 持有buff |
+|       Value        |     含义     |
+| :----------------: | :----------: |
+| **"attr_compare"** |   属性对比   |
+|   **"has_buff"**   | 是否持有buff |
 
 ##### 4.4.2.2.args
 
-|    参数内容    |                        含义                         |
+|      Key       |                        Value                        |
 | :------------: | :-------------------------------------------------: |
 | **"operator"** |           代表大于，小于，等于等比较条件            |
 | **"attr_id"**  |   表示对应属性的[id](#12attribute-map属性映射表)    |
@@ -953,7 +997,7 @@ $$
 | :------------: | :------: | :------------------: | :------------------------------------------------------------: |
 | `trigger_type` | `string` | 表示该动作的触发时机 |                               -                                |
 |    `chance`    | `double` |       触发几率       |                               -                                |
-|  `conditions`  |  `list`  |     触发条件列表     |    `list`元素为[`ConditionData`](#442conditiondata条件数据)    |
+|  `conditions`  |  `list`  |     触发条件列表     |        `list`元素为[`ConditionData`](#271conditiondata)        |
 | `action_type`  | `string` |  表示触发的动作类型  |                               -                                |
 |  `action_id`   |  `int`   |     触发的动作id     |                               -                                |
 |    `params`    |  `map`   |       参数列表       | `map`为从`string`到`double`的映射，具体见[params](#4413params) |

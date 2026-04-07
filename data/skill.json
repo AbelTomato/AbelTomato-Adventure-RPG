@@ -3,7 +3,34 @@
     "id": 200001,
     "name": "普通攻击",
     "description": "武器不会说话，但它的轨迹，比任何言语都诚实。",
-    "display_effect": "挥动武器，造成100%物理伤害。"
+    "display_effect": "挥动武器，对单体目标造成100%物理伤害。",
+    "behaviors": {
+      "actions": [
+        {
+          "trigger_type": "on_release_attack",
+          "chance": 1.0,
+          "action_type": "create_projectile",
+          "actions_id": 290001,
+          "params": {
+            "min_range": 0,
+            "max_range": 1,
+            "target_filter": 3,
+            "is_relative_to_caster": false,
+            "is_target_must_select": false,
+
+            "speed": 0,
+            "lifespan": 0.2,
+            "shape_type": 2,
+            "rec_length": 1.2,
+            "rec_width": 0.8,
+
+            "render_id": 1001,
+            "render_layer": 5,
+            "is_flip_x": 1
+          }
+        }
+      ]
+    }
   },
   {
     "id": 5001,
