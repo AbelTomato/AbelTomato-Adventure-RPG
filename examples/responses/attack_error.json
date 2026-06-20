@@ -1,0 +1,14 @@
+{
+  "ok": false,
+  "version": 1,
+  "request_id": "req_attack_001",
+  "state": null,
+  "events": [],
+  "error": {
+    "code": "ENTITY_NOT_FOUND",
+    "message": "Target entity not found: slime_1",
+    "details": {
+      "target_id": "slime_1"
+    }
+  }
+}

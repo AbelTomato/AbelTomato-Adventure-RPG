@@ -5,3 +5,12 @@ bin/
 build/
 .idea/
 .cache
+__pycache__/
+*.pyc
+.pytest_cache/
+backend/.venv/
+backend/.pytest_cache/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/tsconfig.tsbuildinfo

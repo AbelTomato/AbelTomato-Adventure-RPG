@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "request_id": "req_attack_001",
+  "action": {
+    "type": "attack",
+    "actor_id": "player_1",
+    "target_id": "slime_1",
+    "params": {}
+  },
+  "state": {
+    "turn": {
+      "round": 1,
+      "active_entity_id": "player_1"
+    },
+    "entities": [
+      {
+        "id": "player_1",
+        "name": "Abel",
+        "type": "player",
+        "attrs": {
+          "hp": 100,
+          "max_hp": 100,
+          "physical_attack": 20,
+          "physical_defense": 5
+        },
+        "status": {
+          "alive": true
+        }
+      },
+      {
+        "id": "slime_1",
+        "name": "史莱姆",
+        "type": "monster",
+        "attrs": {
+          "hp": 50,
+          "max_hp": 50,
+          "physical_attack": 8,
+          "physical_defense": 2
+        },
+        "status": {
+          "alive": true
+        }
+      }
+    ]
+  },
+  "meta": {
+    "client": "debug",
+    "debug": true
+  }
+}
