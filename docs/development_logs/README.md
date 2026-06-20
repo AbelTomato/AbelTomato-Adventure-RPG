@@ -1,6 +1,6 @@
 # 开发日志总览
 
-最后更新：2026-06-20 18:37
+最后更新：2026-06-21 00:15
 
 本文档用于在任务中断、新对话恢复或两人协作交接时，快速判断项目当前状态、最近验证结果和下一步方向。
 
@@ -12,10 +12,11 @@
 
 ```txt
 1. docs/development_logs/README.md
-2. docs/development_logs/member_a_fastapi_react.md 或 docs/development_logs/member_b_cpp_godot.md
-3. docs/current_development_plan.md
-4. docs/api_contract.md
-5. .clinerules/terminal-timeout-and-small-step-validation.md
+2. docs/learning_collaboration_workflow.md
+3. docs/development_logs/member_a_fastapi_react.md 或 docs/development_logs/member_b_cpp_godot.md
+4. docs/current_development_plan.md
+5. docs/api_contract.md
+6. .clinerules/terminal-timeout-and-small-step-validation.md
 ```
 
 恢复流程：
@@ -31,6 +32,8 @@
   ↓
 完成后追加新日志
 ```
+
+后续默认采用学习型协作方式：开发者先尝试，Agent 负责讲方向、给验证点、纠错和解释。详细规则见 `docs/learning_collaboration_workflow.md`。
 
 ---
 
@@ -140,13 +143,23 @@ abel_core_cli < examples/requests/attack.json
 
 ### 本阶段目标
 
-### 修改文件
+### 学习目标
 
-### 实现内容
+### 你先尝试的内容
+
+### 修改文件
 
 ### 验证方式
 
 ### 验证结果
+
+### 遇到的问题
+
+### 纠错与解释
+
+### 学到的东西
+
+### 仍然不理解的问题
 
 ### 当前状态
 
@@ -155,17 +168,41 @@ abel_core_cli < examples/requests/attack.json
 
 ---
 
-## 7. Agent 交付要求
+## 7. 学习型协作要求
 
-每个小阶段默认由 Agent 主动完成实现和验证，并在阶段结束汇报：
+后续每个小阶段默认不直接由 Agent 包办实现，而是按以下方式推进：
+
+```txt
+讲清目标和概念
+  ↓
+指出要读的文件和要改的位置
+  ↓
+给出最小尝试任务
+  ↓
+开发者手动执行修改或命令
+  ↓
+Agent 根据结果纠错解释
+  ↓
+补测试、补验证、补日志
+```
+
+如果开发者明确要求“你来实现”或“帮我修”，Agent 可以切换为主动实现模式，但仍然要保持小步验证、失败即停和日志回填。
+
+---
+
+## 8. Agent 交付要求
+
+每个小阶段结束时，Agent 需要协助汇报：
 
 ```txt
 本阶段目标
+学习目标
 修改文件
 实现内容
 验证方式
 验证结果
 文档回填
+学习收获
 下一步建议
 ```
 
