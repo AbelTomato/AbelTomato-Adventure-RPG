@@ -3,6 +3,7 @@
 .vscode/
 bin/
 build/
+build-ninja/
 .idea/
 .cache
 __pycache__/
