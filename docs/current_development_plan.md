@@ -942,6 +942,54 @@ python -m pytest
 
 ---
 
+## 11.5 Phase 进度记录与下一步目标
+
+> 最后更新：2026-06-23
+
+### 已完成
+
+| Phase   | 内容                 | 负责人 | 状态                               |
+| ------- | -------------------- | ------ | ---------------------------------- |
+| Phase 0 | 接口规约             | 成员 A | ✅ 完成                             |
+| Phase 1 | FastAPI Mock Backend | 成员 A | ✅ 完成                             |
+| Phase 2 | React Debug Console  | 成员 A | ✅ 完成                             |
+| Phase 3 | Godot 接 Mock API    | 成员 B | ✅ 完成                             |
+| Phase 4 | C++ CLI Core         | 成员 B | ✅ 完成（2026-06-23 验证 8/8 通过） |
+| Phase 5 | FastAPI 切真实 C++   | 成员 A | ✅ 完成（2026-06-23 验证 5/5 通过） |
+
+### 当前目标：Phase 6 — 端到端联调
+
+负责人：两人共同
+
+#### 交付物
+
+- Godot 点击 Attack 调用 FastAPI
+- FastAPI 通过 `USE_MOCK_CORE=false` 调用 C++ CLI
+- React Debug Console 可调同一真实 C++ 路径
+- 联调问题记录与修正
+
+#### 执行切片
+
+1. 启动 FastAPI，并设置 `USE_MOCK_CORE=false`
+2. 使用 React Debug Console 调用 `/api/game/action`
+3. 使用 Godot Attack 按钮调用同一接口
+4. 检查 `request_id`、`state.entities`、`events.seq` 和 damage value
+5. 记录联调问题并修正
+
+#### 成功标准
+
+- React 和 Godot 不改请求代码
+- FastAPI 从 C++ CLI 返回统一 `GameActionResponse`
+- Godot 能根据真实 C++ 返回的 events 更新表现
+- React Debug Console 能展示真实 C++ response
+
+### 后续计划
+
+- Phase 7：存档与配置接口（成员 A）
+- Phase 8：扩展 Action（双方，建议下一个 action 为 `end_turn`）
+
+---
+
 ## 12. 总结
 
 当前阶段的核心不是先完成完整 RPG，而是先跑通稳定协作链路：

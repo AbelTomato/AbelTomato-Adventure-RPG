@@ -36,7 +36,7 @@ class EntityState(BaseModel):
 
 class GameState(BaseModel):
     turn: TurnState
-    entities: list[EntityState]
+    entities: list[EntityState]     #TODO: 此处暂时使用列表以简化逻辑，后续考虑修改为字典或保留索引等其他方案
 
 
 class GameActionRequest(BaseModel):
@@ -57,7 +57,7 @@ class GameEvent(BaseModel):
     seq: int
     type: str
 
-    model_config = {"extra": "allow"}
+    model_config = {"extra": "allow"}   # TODO: 后续需要增加Pydantic校验模型
 
 
 class GameActionResponse(BaseModel):

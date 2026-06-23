@@ -1,6 +1,6 @@
 # 开发日志总览
 
-最后更新：2026-06-21 00:15
+最后更新：2026-06-23 17:00
 
 本文档用于在任务中断、新对话恢复或两人协作交接时，快速判断项目当前状态、最近验证结果和下一步方向。
 
@@ -48,7 +48,7 @@
 
 ## 3. 当前总体状态
 
-当前项目处于 MVP 链路搭建阶段：
+当前项目处于 MVP 真实端到端联调准备阶段：
 
 ```txt
 JSON Contract
@@ -61,7 +61,9 @@ Godot Mock 接入
   ↓
 C++ CLI Core
   ↓
-端到端真实联调
+FastAPI 真实 C++ Core 接入
+  ↓
+Phase 6 端到端真实联调
 ```
 
 已完成：
@@ -77,13 +79,15 @@ C++ CLI Core
 9. React Debug Console UI 小切片。
 10. 前后端联动验证。
 11. 小步验证与 Agent 主动交付规则。
+12. Godot 调用 FastAPI Mock API。
+13. C++ `handle_json()` 与 `abel_core_cli`。
+14. FastAPI 从 mock 切换到真实 C++ CLI。
 
 未完成：
 
-1. Godot 调用 FastAPI Mock API。
-2. C++ `handle_json()` 与 `abel_core_cli`。
-3. FastAPI 从 mock 切换到真实 C++ CLI。
-4. 端到端真实 C++ 联调。
+1. Phase 6 端到端真实 C++ 联调。
+2. Phase 7 存档与配置接口。
+3. Phase 8 扩展 Action。
 
 ---
 
@@ -93,6 +97,7 @@ Backend：
 
 ```txt
 backend tests: 5 passed
+Phase 5 FastAPI -> C++ Core tests: 5 passed in 0.20s
 ```
 
 Frontend：
@@ -103,33 +108,29 @@ pnpm -C frontend exec tsc -b --pretty false: passed
 前后端联动验证: passed
 ```
 
-说明：React Debug Console 已能通过 Vite 代理调用 FastAPI Mock Backend，加载 attack 示例并返回 `damage=18`。
+说明：React Debug Console 已能通过 Vite 代理调用 FastAPI Mock Backend，加载 attack 示例并返回 `damage=18`。Phase 5 已完成后端真实 C++ Core 接入，`USE_MOCK_CORE=false` 时 `/api/game/action` 会调用 `build-ninja/abel_core_cli.exe`。
 
 ---
 
 ## 5. 当前下一步优先级
 
-优先进入下一个小阶段，建议二选一：
+优先进入 Phase 6：端到端真实 C++ 联调。
 
 ```txt
-方向 A：Godot 接 FastAPI Mock API。
-方向 B：C++ CLI Core，实现 handle_json 与 abel_core_cli。
+1. 启动 FastAPI，并设置 USE_MOCK_CORE=false。
+2. 使用 React Debug Console 调用 /api/game/action。
+3. 使用 Godot Attack 按钮调用同一接口。
+4. 检查 request_id、state.entities、events.seq 和 damage value。
+5. 记录联调问题并修正。
 ```
 
-成员 B 推荐优先做 C++ CLI Core：
+Phase 6 成功标准：
 
 ```txt
-1. 提供 handle_json(input_json) 统一入口。
-2. 提供 abel_core_cli stdin/stdout。
-3. 读取 examples/requests/attack.json。
-4. 输出符合 docs/api_contract.md 的 JSON。
-5. 第一版只支持 action.type = attack。
-```
-
-目标验证命令：
-
-```bash
-abel_core_cli < examples/requests/attack.json
+React 和 Godot 不改请求代码。
+FastAPI 从 C++ CLI 返回统一 GameActionResponse。
+Godot 能根据真实 C++ 返回的 events 更新表现。
+React Debug Console 能展示真实 C++ response。
 ```
 
 ---
