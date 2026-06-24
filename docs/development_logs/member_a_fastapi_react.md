@@ -1,6 +1,6 @@
 # 成员 A 开发日志：FastAPI + React
 
-最后更新：2026-06-24 20:10
+最后更新：2026-06-24 22:50
 
 负责人范围：
 
@@ -15,11 +15,11 @@ Mock Response
 
 ---
 
-## 2026-06-24 20:10 - Phase 6 部分端到端联调完成，Godot 验证阻塞
+## 2026-06-24 22:50 - Phase 6 端到端真实联调通过
 
 ### 本阶段目标
 
-在合入成员 B 的 Phase 3/4 分支后，验证当前源码重新构建出的 C++ CLI 能通过 FastAPI 和 React Debug Console 真实链路工作，并记录 Godot 联调阻塞原因。
+在合入成员 B 的 Phase 3/4 分支和 Godot 项目更新后，验证当前源码重新构建出的 C++ CLI 能通过 FastAPI、React Debug Console 和 Godot 真实链路工作。
 
 ### 学习目标
 
@@ -35,6 +35,8 @@ Mock Response
 6. 使用 `MinGW Makefiles` 重新配置并构建当前源码的 `abel_core_cli.exe`。
 7. 自行修改 `backend/app/services/cpp_core_client.py`，加入 `CPP_CORE_EXE_PATH` 环境变量覆盖能力。
 8. 使用 FastAPI HTTP 请求和 React Debug Console 重测真实 C++ 链路。
+9. 合入成员 B 更新后的 `godot-client/` 项目。
+10. 使用 Godot `ApiTestScene` 点击 `Attack` 验证真实 C++ 链路。
 
 ### 修改文件
 
@@ -42,6 +44,8 @@ Mock Response
 backend/app/services/cpp_core_client.py
 docs/development_logs/member_a_fastapi_react.md
 docs/current_development_plan.md
+docs/development_logs/README.md
+godot-client/
 ```
 
 ### 验证方式
@@ -92,10 +96,19 @@ pnpm -C frontend dev
 
 浏览器中加载 attack 示例并发送 Action。
 
+Godot 验证：
+
+```txt
+打开 godot-client/project.godot
+运行 godot-client/scenes/api_test_scene.tscn
+点击 Attack
+观察 Godot UI 与 FastAPI 终端日志
+```
+
 ### 验证结果
 
 ```txt
-PARTIAL PASSED / GODOT BLOCKED
+PASSED
 ```
 
 已确认：
@@ -114,13 +127,10 @@ PARTIAL PASSED / GODOT BLOCKED
 11. React Debug Console 正常展示真实 C++ response。
 12. React Debug Console 中 version=1145 返回版本错误响应。
 13. React Debug Console 中修改 actor_id / target_id 返回实体错误响应。
-```
-
-暂未验证：
-
-```txt
-Godot Attack 真实链路未验证。
-原因：本机未安装 Godot，且成员 B 日志中的 Godot 项目路径 E:\RPG\abel-tomato-adventure-rpg 在本机不存在；当前仓库 godot_client/ 为空目录。
+14. Godot ApiTestScene 点击 Attack 后成功调用同一接口。
+15. Godot UI 显示 Attack response OK、events 和最终 state。
+16. Godot 显示 damage=18，slime_1 hp 从 50 更新为 32。
+17. FastAPI 终端显示 Godot 请求 POST /api/game/action HTTP/1.1 200 OK。
 ```
 
 ### 遇到的问题
@@ -130,7 +140,8 @@ Godot Attack 真实链路未验证。
 3. 本机未安装 Ninja，`ninja --version` 不可用。
 4. `build-ninja/` 缺少 `CMakeCache.txt`，不是有效 CMake 构建目录。
 5. 后端原先硬编码 `build-ninja/abel_core_cli.exe`，无法直接调用 MinGW 新构建产物。
-6. Godot 项目没有纳入当前仓库，本机也没有 B 成员外部 Godot 项目。
+6. Godot 项目最初没有纳入当前仓库，后续通过成员 B 更新合入 `godot-client/`。
+7. Godot 首次点击 Attack 显示 `Error Code: 44`，原因是 FastAPI server 意外关闭；重启 FastAPI 后恢复。
 
 ### 纠错与解释
 
@@ -138,7 +149,7 @@ Godot Attack 真实链路未验证。
 2. VS Code 只是编辑器，不提供 C++ 构建后端；CMake 需要可用 generator，例如 Ninja、Visual Studio 或 MinGW Makefiles。
 3. 当前机器已有 MinGW，因此使用 `MinGW Makefiles` 是合适路径。
 4. FastAPI 调用 C++ CLI 的路径应可配置，因此 `CPP_CORE_EXE_PATH` 比硬编码构建目录更稳。
-5. Godot 缺失属于联调环境阻塞，应标记 `BLOCKED / NOT VERIFIED`，不能标记 Phase 6 全量完成。
+5. Godot `Error Code: 44` 本次属于后端进程未运行导致的连接问题，不是 JSON Contract 或 Godot 事件消费逻辑错误。
 
 ### 学到的东西
 
@@ -146,19 +157,19 @@ Godot Attack 真实链路未验证。
 2. 构建目录名不等于构建工具可用，例如 `build-ninja` 不代表本机有 Ninja。
 3. 环境变量必须在启动 FastAPI 的同一终端进程中提前设置。
 4. React Debug Console 的价值是验证统一 JSON Contract，而不是重新实现规则。
-5. Godot 项目应纳入仓库或明确获取方式，否则 Phase 6 无法稳定复现。
+5. Godot 项目纳入仓库后，Phase 6 可从同一代码库稳定复现。
 
 ### 仍然不理解的问题
 
-1. 是否应把 Godot 项目迁入当前仓库 `godot_client/`，作为 Phase 6 后续恢复工作的前置任务。
-2. 是否应把 `CPP_CORE_EXE_PATH` 写入后端 README 和自动化测试，避免后续再次误用旧 CLI。
+1. 是否应把 `CPP_CORE_EXE_PATH` 写入后端 README 和自动化测试，避免后续再次误用旧 CLI。
+2. 是否需要为 Godot HTTPRequest 错误码增加更明确的 UI 展示，例如同时显示 `error_string(error)`。
 
 ### 当前状态
 
-Phase 6 当前为部分通过：
+Phase 6 当前已通过：
 
 ```txt
-React Debug Console
+React Debug Console / Godot ApiTestScene
   ↓
 FastAPI /api/game/action
   ↓ USE_MOCK_CORE=false
@@ -171,15 +182,15 @@ Godot 链路状态：
 
 ```txt
 Godot Attack -> FastAPI -> C++ Core
-BLOCKED：本机缺少 Godot 编辑器和 Godot 项目文件。
+PASSED：重启 FastAPI 后点击 Attack 成功响应。
 ```
 
 ### 下一步建议
 
 1. 将 `backend/app/services/cpp_core_client.py` 的 `CPP_CORE_EXE_PATH` 改动补测试并正式提交。
 2. 更新 `backend/README.md`，说明 MinGW 构建和 `CPP_CORE_EXE_PATH` 配置方式。
-3. 获取或迁入 Godot 项目后，继续 Phase 6-3：Godot Attack 真实 C++ 链路验证。
-4. Godot 验证通过后，再将 Phase 6 标记为完整完成。
+3. 进入 Phase 7：存档与配置接口。
+4. 后续可优化 Godot HTTP 错误展示。
 
 ---
 
@@ -834,6 +845,5 @@ JSON Contract 已可作为 FastAPI、React、Godot、C++ 的协作基础。
 ### 下一步建议
 
 搭建 FastAPI Mock Backend。
-
 
 

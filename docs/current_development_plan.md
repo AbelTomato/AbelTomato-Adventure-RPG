@@ -957,24 +957,24 @@ python -m pytest
 | Phase 4 | C++ CLI Core         | 成员 B | ✅ 完成（2026-06-23 验证 8/8 通过） |
 | Phase 5 | FastAPI 切真实 C++   | 成员 A | ✅ 完成（2026-06-23 验证 5/5 通过） |
 
-### 当前目标：Phase 6 — 端到端联调（部分通过，Godot 阻塞）
+### 当前目标：Phase 6 — 端到端联调（已通过）
 
 负责人：两人共同
 
 #### 交付物
 
-- Godot 点击 Attack 调用 FastAPI（BLOCKED：本机缺少 Godot 编辑器与项目文件）
+- Godot 点击 Attack 调用 FastAPI（✅ 已通过）
 - FastAPI 通过 `USE_MOCK_CORE=false` 调用 C++ CLI（✅ 已通过）
 - React Debug Console 可调同一真实 C++ 路径（✅ 已通过）
-- 联调问题记录与修正（进行中）
+- 联调问题记录与修正（✅ 已记录）
 
 #### 执行切片
 
 1. 启动 FastAPI，并设置 `USE_MOCK_CORE=false`（✅ 已通过）
 2. 使用 React Debug Console 调用 `/api/game/action`（✅ 已通过）
-3. 使用 Godot Attack 按钮调用同一接口（BLOCKED）
-4. 检查 `request_id`、`state.entities`、`events.seq` 和 damage value（FastAPI / React 已通过，Godot 未验证）
-5. 记录联调问题并修正（进行中）
+3. 使用 Godot Attack 按钮调用同一接口（✅ 已通过）
+4. 检查 `request_id`、`state.entities`、`events.seq` 和 damage value（✅ 已通过）
+5. 记录联调问题并修正（✅ 已记录）
 
 #### 2026-06-24 联调记录
 
@@ -987,6 +987,8 @@ python -m pytest
 4. FastAPI 通过 USE_MOCK_CORE=false 调用真实 C++ CLI 返回 HTTP 200。
 5. React Debug Console 能展示真实 C++ response。
 6. React Debug Console 已验证 version 错误和 actor_id / target_id 实体错误响应。
+7. Godot ApiTestScene 点击 Attack 后成功调用同一接口并展示真实 C++ response。
+8. Godot 显示 damage=18，slime_1 hp 从 50 更新为 32。
 ```
 
 关键配置：
@@ -996,19 +998,20 @@ $env:USE_MOCK_CORE="false"
 $env:CPP_CORE_EXE_PATH="D:\AbelTomato_Files\Developer\Projects\Abel-Tomato-Soul\build-mingw\abel_core_cli.exe"
 ```
 
-阻塞项：
+问题记录：
 
 ```txt
-Godot Attack 真实链路暂未验证。
-原因：本机未安装 Godot，且成员 B 日志中的 E:\RPG\abel-tomato-adventure-rpg 在本机不存在；当前仓库 godot_client/ 为空目录。
+Godot 首次点击 Attack 显示 Error Code: 44。
+原因：FastAPI server 意外关闭，Godot 请求未发出。
+处理：重启 FastAPI 后再次点击 Attack，Godot 成功响应。
 ```
 
 #### 成功标准
 
 - React 不改请求代码（✅ 已通过）
-- Godot 不改请求代码（NOT VERIFIED）
+- Godot 不改请求代码（✅ 已通过）
 - FastAPI 从 C++ CLI 返回统一 `GameActionResponse`（✅ 已通过）
-- Godot 能根据真实 C++ 返回的 events 更新表现（BLOCKED）
+- Godot 能根据真实 C++ 返回的 events 更新表现（✅ 已通过）
 - React Debug Console 能展示真实 C++ response（✅ 已通过）
 
 ### 后续计划
