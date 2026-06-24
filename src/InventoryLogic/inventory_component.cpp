@@ -1,5 +1,7 @@
 #include "inventory/inventory_component.hpp"
 
+#include <iostream>
+
 void Inventory::add_item(const ItemData& item, int in_count)
 {
     // 缓存当前需要存储量
@@ -96,7 +98,9 @@ void Inventory::remove_item(const ItemStack& item, int out_count)
     }
     if (left_to_remove > 0)
     {
-        // TODO:打印不足以扣除
+        std::cout << "[Warning]: 物品不足以扣除 - " << item.data->name << " (ID: "
+                  << item.data->id << "), 请求扣除: " << out_count
+                  << ", 缺少: " << left_to_remove << std::endl;
         return;
     }
 
