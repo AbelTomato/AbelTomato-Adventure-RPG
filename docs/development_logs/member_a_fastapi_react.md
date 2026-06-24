@@ -1,6 +1,6 @@
 # 成员 A 开发日志：FastAPI + React
 
-最后更新：2026-06-21 00:15
+最后更新：2026-06-24
 
 负责人范围：
 
@@ -12,6 +12,229 @@ Mock Response
 后续 C++ Core Client 接入
 后续存档/配置接口
 ```
+
+---
+
+## 2026-06-24 - Phase 6 端到端真实 C++ 联调通过
+
+### 本阶段目标
+
+验证 FastAPI 在 `USE_MOCK_CORE=false` 模式下调用真实 C++ CLI，并确认 React Debug Console 与 Godot 都能通过同一个 `/api/game/action` 接口消费真实 C++ 返回结果。
+
+### 学习目标
+
+理解 Phase 6 的重点不是新增规则，而是验证四端围绕同一个 JSON Contract 的真实链路：
+
+```txt
+React / Godot
+  -> FastAPI /api/game/action
+  -> cpp_core_client.py
+  -> build-ninja/abel_core_cli.exe
+  -> GameActionResponse
+```
+
+### 你先尝试的内容
+
+1. 启动 FastAPI，并设置 `USE_MOCK_CORE=false`。
+2. 用 PowerShell 手动 POST `examples/requests/attack.json` 到 `/api/game/action`。
+3. 启动 React Debug Console，发送同一个 action。
+4. 运行 Godot `ApiTestScene`，点击 `Attack` 按钮。
+5. 检查 FastAPI 终端日志是否收到 Godot 的 POST 请求。
+
+### 修改文件
+
+```txt
+docs/development_logs/member_a_fastapi_react.md
+docs/development_logs/member_b_cpp_godot.md
+docs/development_logs/README.md
+```
+
+### 验证方式
+
+后端真实 C++ 模式启动：
+
+```powershell
+cd D:\OurCooperationRPG\AbelTomato-Adventure-RPG\backend
+$env:USE_MOCK_CORE="false"
+.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+PowerShell 手动 HTTP 验证：
+
+```powershell
+$body = [System.IO.File]::ReadAllText(
+  "D:\OurCooperationRPG\AbelTomato-Adventure-RPG\examples\requests\attack.json",
+  [System.Text.Encoding]::UTF8
+)
+Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/api/game/action" -ContentType "application/json; charset=utf-8" -Body $body
+```
+
+React 验证：
+
+```powershell
+pnpm -C frontend install
+pnpm -C frontend dev
+```
+
+浏览器打开：
+
+```txt
+http://127.0.0.1:5173/debug/action
+```
+
+Godot 验证：
+
+```txt
+打开 E:\RPG\abel-tomato-adventure-rpg
+运行 ApiTestScene
+点击 Attack
+```
+
+### 验证结果
+
+```txt
+PASSED
+```
+
+关键证据：
+
+```txt
+手动 HTTP 请求返回 ok=true。
+request_id = req_attack_001。
+damage = 18。
+slime_1 HP 从 50 变为 32。
+events seq = 1, 2, 3。
+error = null。
+React Debug Console 可发送 action 并显示响应。
+Godot UI 显示 Attack response OK、damage=18、slime_1 HP 50 -> 32。
+FastAPI 终端出现多条 POST /api/game/action HTTP/1.1 200 OK。
+```
+
+### 遇到的问题
+
+1. 一开始直接请求 `127.0.0.1:8000` 时连接失败，原因是 FastAPI 服务尚未保持运行。
+2. PowerShell 默认读取 `attack.json` 时把 UTF-8 中文读坏，导致 FastAPI 返回 `json_invalid`。
+3. 前端首次启动失败，原因是 `frontend/node_modules` 缺失，需要先运行 `pnpm -C frontend install`。
+4. C++ 返回中的中文在终端中出现乱码，但结构化字段和数值正确，不影响本阶段链路判断。
+
+### 纠错与解释
+
+1. FastAPI 必须先以 `USE_MOCK_CORE=false` 启动，且该终端保持运行。
+2. Windows PowerShell 读取 JSON 时应显式使用 `[System.Text.Encoding]::UTF8`，避免中文破坏 JSON 字符串。
+3. Phase 6 判断是否接入 C++，不能只看 Godot 是否直接连接 C++；正确链路是 Godot 只连接 FastAPI，由 FastAPI 调用 C++ CLI。
+4. 本阶段以 `damage=18`、`hp 50 -> 32`、`events.seq` 连续、FastAPI 200 日志作为核心验收信号。
+
+### 学到的东西
+
+端到端联调需要拆成可观察的小证据：先验证后端 HTTP 到 C++，再验证 React，最后验证 Godot。这样可以避免把服务未启动、编码、依赖安装、客户端展示等问题误判为 C++ 规则问题。
+
+### 仍然不理解的问题
+
+暂无。
+
+### 当前状态
+
+Phase 6 核心链路已完成：
+
+```txt
+React Debug Console -> FastAPI -> C++ CLI
+Godot Attack -> FastAPI -> C++ CLI
+```
+
+### 下一步建议
+
+1. 进入 Phase 7：存档与配置接口。
+2. 可先补 Phase 6 后的小债务：
+   - Godot 脚本中 `charest` 改为 `charset`。
+   - Godot 错误分支中 `error.get("Code")` 改为 `error.get("code")`。
+   - 后端 C++ 异常路径补统一 `CPP_CORE_ERROR` 包装。
+
+---
+
+## 2026-06-23 17:00 - 准备进入 Phase 6 端到端联调
+
+### 本阶段目标
+
+阅读成员 A 开发日志及相关文档，确认 Phase 5 后端真实 C++ 接入状态，并整理进入 Phase 6 前的交接信息。
+
+### 学习目标
+
+理解 Phase 6 联调不是新增业务规则，而是验证同一 JSON Contract 下 React / Godot / FastAPI / C++ CLI 的真实链路是否一致。
+
+### 你先尝试的内容
+
+本阶段为文档回填和联调准备，暂未修改业务代码。
+
+### 修改文件
+
+```txt
+docs/development_logs/README.md
+docs/development_logs/member_a_fastapi_react.md
+backend/README.md
+```
+
+### 验证方式
+
+读取并对齐以下文档和代码配置：
+
+```txt
+docs/current_development_plan.md
+docs/development_logs/member_a_fastapi_react.md
+docs/development_logs/README.md
+docs/api_contract.md
+backend/app/services/core_service.py
+backend/app/services/cpp_core_client.py
+```
+
+### 验证结果
+
+```txt
+PASSED
+```
+
+确认结果：
+
+```txt
+Phase 0-5 已完成。
+Phase 5 最近验证结果为 5 passed in 0.20s。
+USE_MOCK_CORE=true 走 mock response。
+USE_MOCK_CORE=false 走 build-ninja/abel_core_cli.exe。
+当前目标为 Phase 6：端到端真实 C++ 联调。
+```
+
+### 遇到的问题
+
+`docs/development_logs/README.md` 仍停留在 2026-06-21 状态，未反映 Phase 3、Phase 4、Phase 5 已完成。
+
+### 纠错与解释
+
+以 `docs/current_development_plan.md` 的 2026-06-23 Phase 进度记录和成员 A 2026-06-23 Phase 5 日志为准，回填日志总览，避免新对话恢复时误判当前阶段。
+
+### 学到的东西
+
+进入端到端联调前，应先对齐“文档状态、环境开关、可执行文件路径、验证命令、成功标准”，否则容易把配置问题误判为业务逻辑问题。
+
+### 仍然不理解的问题
+
+暂无。
+
+### 当前状态
+
+成员 A 路线已完成 Phase 5，可以配合 Phase 6：
+
+```txt
+React Debug Console / Godot
+  ↓
+FastAPI /api/game/action
+  ↓ USE_MOCK_CORE=false
+build-ninja/abel_core_cli.exe
+  ↓
+GameActionResponse
+```
+
+### 下一步建议
+
+进入 Phase 6 第一个小切片：启动 FastAPI 真实 C++ 模式，并用最小 HTTP 请求验证 `/api/game/action` 返回真实 C++ response。
 
 ---
 
@@ -501,3 +724,83 @@ JSON Contract 已可作为 FastAPI、React、Godot、C++ 的协作基础。
 ### 下一步建议
 
 搭建 FastAPI Mock Backend。
+
+---
+
+## 2026-06-23 16:24 - 打通FastAPI与C++ Core链路
+
+### 本阶段目标
+
+- 完成FastAPI与C++ Core间的通信实现
+
+### 学习目标
+
+- 理解`monkeypatch`
+- 理解`subprocess`并掌握使用方法
+- 如何通过`os.environ`读取配置
+- 应用策略模式
+
+### 修改文件
+
+```txt
+backend\app\services\core_service.py
+backend\tests\test_game_action.py
+backend\app\api\game.py
+backend\app\services\cpp_core_client.py
+```
+
+### 验证方式
+
+```bash
+cd backend
+.venv/Scripts/python.exe -m pytest tests/test_game_action.py -v
+```
+
+### 验证结果
+
+```txt
+5 passed in 0.20s
+```
+
+### 遇到的问题
+
+- 在第一次测试时，遇到`game.py`与`core_service`接口不匹配的问题，在`game.py`中，直接调用`execute_game_action`并传入字符串，但在`core_service.py`中，函数签名为`def execute_game_action(request: GameRequest) -> GameResponse:`
+- 在`debug`测试中，传入`attack`，但`mock`加载`response`目录，对应目录下文件不存在
+- 在`core_service`中对`load_mock_action_response`传入`GameRequest`类型，但期望文件名字符串
+- 环境变量名不统一，`core_service`中写`USE_MOCK_MODE`，但文档中期望`USE_MOCK_CORE`
+
+### 纠错与解释
+
+- `game.py` 负责 HTTP 路由、请求校验和调用 service，不应该把字符串传给 `execute_game_action`。
+- `/debug/example-action` 的职责是返回示例请求，因此应调用 `load_example_action("attack")`，而不是执行游戏动作。
+- `core_service.py` 负责 mock/C++ 策略选择：`USE_MOCK_CORE=true` 走 mock response，`USE_MOCK_CORE=false` 走 C++ CLI。
+- `request.model_dump()` 用于把 Pydantic model 转成 dict，再传给 `cpp_core_client.call_cpp_core()`。
+- `subprocess.run()` 通过 `input` 向 C++ CLI 的 stdin 传 JSON，并通过 stdout 读取 C++ 返回的 JSON。
+
+### 学到的东西
+
+- `monkeypatch`意为在运行时动态替换变量或方法，以达到测试的作用的行为
+- 在修改时，应注意与旧代码之间的调用依赖关系
+
+### 仍然不理解的问题
+
+暂无
+
+### 当前状态
+
+Phase 5 后端主链路已完成：
+
+```txt
+USE_MOCK_CORE=true  时返回 mock response。
+USE_MOCK_CORE=false 时调用 abel_core_cli.exe。
+React/Godot 请求接口无需变化。
+backend/tests/test_game_action.py 验证 5 passed。
+```
+
+### 下一步建议
+
+1. 更新 `docs/current_development_plan.md`，将 Phase 5 标记为完成。
+2. 进入 Phase 6：端到端联调，验证 React/Godot -> FastAPI -> C++ Core 全链路。
+3. 后续若继续成员 A 路线，可准备存档与配置接口 Phase 7。
+
+
