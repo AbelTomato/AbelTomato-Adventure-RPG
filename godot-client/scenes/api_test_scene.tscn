@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://dnptb87ik2tbe"]
+
+[ext_resource type="Script" uid="uid://gkqi51m5u5hb" path="res://scripts/api_test_scene.gd" id="1_x2sbg"]
+
+[node name="ApiTestScene" type="Control" unique_id=604178554]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_x2sbg")
+
+[node name="AttackButton" type="Button" parent="." unique_id=1449143453]
+layout_mode = 0
+offset_left = 331.0
+offset_top = 197.0
+offset_right = 442.0
+offset_bottom = 310.0
+text = "Attack
+"
+
+[node name="LogText" type="RichTextLabel" parent="." unique_id=564770760]
+layout_mode = 0
+offset_left = 444.0
+offset_top = 233.0
+offset_right = 497.0
+offset_bottom = 282.0
+text = "Ready
+"
+
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=1088607059]

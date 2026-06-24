@@ -17,3 +17,5 @@ frontend/node_modules/
 frontend/dist/
 frontend/.vite/
 frontend/tsconfig.tsbuildinfo
+godot-client/.godot/
+godot-client/android/

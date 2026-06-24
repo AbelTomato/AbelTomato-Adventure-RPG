@@ -1,6 +1,6 @@
 # 成员 B 开发日志：C++ Core + Godot
 
-最后更新：2026-06-22 11:35
+最后更新：2026-06-24
 
 负责人范围：
 
@@ -12,6 +12,226 @@ GameState / EntityState / GameEvent 解析与生成
 Godot HTTP 请求 FastAPI
 Godot events 消费与表现
 ```
+
+---
+
+## 2026-06-24 - Phase 6 Godot 调真实 C++ 链路通过
+
+### 本阶段目标
+
+验证 Godot `ApiTestScene` 点击 `Attack` 后，仍通过同一个 FastAPI `/api/game/action` 接口工作，并在后端 `USE_MOCK_CORE=false` 时消费真实 C++ CLI 返回的 `events` 和 `state`。
+
+### 学习目标
+
+理解 Godot 不直接连接 C++，而是只作为客户端消费 FastAPI 返回的 JSON：
+
+```txt
+Godot Attack Button
+  -> HTTP POST /api/game/action
+  -> FastAPI
+  -> abel_core_cli.exe
+  -> state + events
+  -> Godot UI 展示
+```
+
+### 你先尝试的内容
+
+1. 保持 FastAPI 以 `USE_MOCK_CORE=false` 运行。
+2. 打开外部 Godot 项目 `E:\RPG\abel-tomato-adventure-rpg`。
+3. 运行 `ApiTestScene`。
+4. 点击 `Attack` 按钮。
+5. 检查 Godot UI 与 FastAPI 终端日志。
+
+### 修改文件
+
+本阶段只记录验证结果，未修改 Godot 或 C++ 代码。
+
+相关 Godot 文件：
+
+```txt
+E:\RPG\abel-tomato-adventure-rpg\scenes\api_test_scene.tscn
+E:\RPG\abel-tomato-adventure-rpg\scripts\api_test_scene.gd
+```
+
+### 验证方式
+
+Godot 脚本请求地址：
+
+```gdscript
+const API_URL := "http://127.0.0.1:8000/api/game/action"
+```
+
+FastAPI 后端启动方式：
+
+```powershell
+cd D:\OurCooperationRPG\AbelTomato-Adventure-RPG\backend
+$env:USE_MOCK_CORE="false"
+.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+Godot 操作：
+
+```txt
+运行 ApiTestScene
+点击 Attack
+```
+
+### 验证结果
+
+```txt
+PASSED
+```
+
+Godot UI 显示：
+
+```txt
+Attack response OK
+Events
+1.0: player_1 attacks slime_1
+2.0: player_1 deals 18.0 physical damage to slime_1
+3.0: slime_1 HP 50.0 -> 32.0
+
+Final state:
+player_1 HP: 100.0 / 100.0
+slime_1 HP: 32.0 / 50.0
+```
+
+FastAPI 终端出现：
+
+```txt
+POST /api/game/action HTTP/1.1" 200 OK
+```
+
+### 遇到的问题
+
+1. 对“接上 C++”的理解需要澄清：Godot 不应直接接 C++，而是通过 FastAPI 间接使用 C++ Core。
+2. Godot 项目当前位于主仓库之外，无法仅通过主仓库文件判断 Godot 侧是否完成联调。
+
+### 纠错与解释
+
+Phase 6 的 Godot 验收标准不是 Godot 直接调用 C++，而是：
+
+```txt
+Godot 请求同一个 FastAPI 接口
+FastAPI 以 USE_MOCK_CORE=false 调用真实 C++ CLI
+Godot 正确消费真实 C++ 返回的 events/state
+```
+
+本次 `damage=18`、`HP 50 -> 32` 与 FastAPI `200 OK` 日志共同证明 Godot 真实链路已经通过。
+
+### 学到的东西
+
+端到端联调时，应把“客户端是否打到接口”和“后端接口内部是否调用真实 C++”分开验证。Godot 只需要保持请求契约不变，后端内部从 mock 切换到 C++ 后，Godot 不需要改请求结构。
+
+### 仍然不理解的问题
+
+暂无。
+
+### 当前状态
+
+Phase 6 Godot 侧核心验证完成。
+
+### 下一步建议
+
+1. 后续将 Godot 项目纳入主仓库或记录更明确的外部项目路径，避免恢复任务时找不到 Godot 文件。
+2. 迁移后再次检查 Godot 脚本中的请求头和错误码字段，确保使用 `charset=utf-8` 与 `error.get("code")`。
+
+---
+
+## 2026-06-24 - Godot 项目迁入主仓库
+
+### 本阶段目标
+
+将原本位于 `E:\RPG\abel-tomato-adventure-rpg` 的 Godot 项目复制到当前主仓库，方便后续统一版本管理、任务恢复和双人协作。
+
+### 学习目标
+
+理解 Godot 项目迁移时应区分“源文件”和“编辑器缓存”：
+
+```txt
+需要纳入仓库：project.godot、scenes/、scripts/、icon.svg、*.import、Godot 项目配置
+不应纳入仓库：.godot/、android/ 等生成目录
+```
+
+### 你先尝试的内容
+
+1. 检查外部 Godot 项目结构。
+2. 确认主仓库中尚无 `godot-client/` 目录。
+3. 复制必要 Godot 项目文件到 `godot-client/`。
+4. 更新根目录 `.gitignore`，排除 Godot 缓存目录。
+5. 检查迁移后的脚本仍指向 `http://127.0.0.1:8000/api/game/action`。
+
+### 修改文件
+
+```txt
+.gitignore
+godot-client/project.godot
+godot-client/icon.svg
+godot-client/icon.svg.import
+godot-client/.editorconfig
+godot-client/.gitattributes
+godot-client/.gitignore
+godot-client/scenes/api_test_scene.tscn
+godot-client/scripts/api_test_scene.gd
+godot-client/scripts/api_test_scene.gd.uid
+docs/development_logs/member_b_cpp_godot.md
+```
+
+### 验证方式
+
+文件检查：
+
+```txt
+godot-client/ 已存在。
+godot-client/.godot/ 未复制。
+godot-client/project.godot 已存在。
+godot-client/scripts/api_test_scene.gd 已存在。
+```
+
+脚本检查：
+
+```gdscript
+const API_URL := "http://127.0.0.1:8000/api/game/action"
+```
+
+### 验证结果
+
+```txt
+PASSED
+```
+
+### 遇到的问题
+
+暂无。迁移采用复制方式完成，未删除原 `E:\RPG\abel-tomato-adventure-rpg` 项目。
+
+### 纠错与解释
+
+本次迁移没有复制 `.godot/` 缓存目录。根目录 `.gitignore` 已新增：
+
+```gitignore
+godot-client/.godot/
+godot-client/android/
+```
+
+### 学到的东西
+
+Godot 项目可以作为主仓库的一个子目录维护。后续协作时应优先打开 `godot-client/project.godot`，而不是外部旧目录。
+
+### 仍然不理解的问题
+
+暂无。
+
+### 当前状态
+
+Godot 项目已迁入主仓库：
+
+```txt
+D:\OurCooperationRPG\AbelTomato-Adventure-RPG\godot-client
+```
+
+### 下一步建议
+
+用 Godot 打开 `godot-client/project.godot`，运行 `ApiTestScene`，再次点击 `Attack` 验证迁移后场景可运行。
 
 ---
 
