@@ -3,7 +3,7 @@ import json
 import os
 
 
-EXE_PATH = os.path.join(
+DEFAULT_EXE_PATH = os.path.join(
     os.path.dirname(__file__),
     "..", "..", "..",
     "build-ninja",
@@ -13,7 +13,11 @@ EXE_PATH = os.path.join(
 
 def call_cpp_core(input_json: dict) -> dict:
     json_str = json.dumps(input_json, ensure_ascii=True)
-    cmd = [EXE_PATH]
+    exe_path = os.environ.get("CPP_CORE_EXE_PATH") or DEFAULT_EXE_PATH
+    if not os.path.exists(exe_path):
+        raise RuntimeError(f"C++ Core executable not found: {exe_path}")
+
+    cmd = [exe_path]
 
     result = subprocess.run(
         cmd,

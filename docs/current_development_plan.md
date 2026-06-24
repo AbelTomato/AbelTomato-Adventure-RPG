@@ -944,7 +944,7 @@ python -m pytest
 
 ## 11.5 Phase 进度记录与下一步目标
 
-> 最后更新：2026-06-23
+> 最后更新：2026-06-24
 
 ### 已完成
 
@@ -957,31 +957,59 @@ python -m pytest
 | Phase 4 | C++ CLI Core         | 成员 B | ✅ 完成（2026-06-23 验证 8/8 通过） |
 | Phase 5 | FastAPI 切真实 C++   | 成员 A | ✅ 完成（2026-06-23 验证 5/5 通过） |
 
-### 当前目标：Phase 6 — 端到端联调
+### 当前目标：Phase 6 — 端到端联调（部分通过，Godot 阻塞）
 
 负责人：两人共同
 
 #### 交付物
 
-- Godot 点击 Attack 调用 FastAPI
-- FastAPI 通过 `USE_MOCK_CORE=false` 调用 C++ CLI
-- React Debug Console 可调同一真实 C++ 路径
-- 联调问题记录与修正
+- Godot 点击 Attack 调用 FastAPI（BLOCKED：本机缺少 Godot 编辑器与项目文件）
+- FastAPI 通过 `USE_MOCK_CORE=false` 调用 C++ CLI（✅ 已通过）
+- React Debug Console 可调同一真实 C++ 路径（✅ 已通过）
+- 联调问题记录与修正（进行中）
 
 #### 执行切片
 
-1. 启动 FastAPI，并设置 `USE_MOCK_CORE=false`
-2. 使用 React Debug Console 调用 `/api/game/action`
-3. 使用 Godot Attack 按钮调用同一接口
-4. 检查 `request_id`、`state.entities`、`events.seq` 和 damage value
-5. 记录联调问题并修正
+1. 启动 FastAPI，并设置 `USE_MOCK_CORE=false`（✅ 已通过）
+2. 使用 React Debug Console 调用 `/api/game/action`（✅ 已通过）
+3. 使用 Godot Attack 按钮调用同一接口（BLOCKED）
+4. 检查 `request_id`、`state.entities`、`events.seq` 和 damage value（FastAPI / React 已通过，Godot 未验证）
+5. 记录联调问题并修正（进行中）
+
+#### 2026-06-24 联调记录
+
+已完成：
+
+```txt
+1. 已将 origin/phase3-and-phase4 合入 integration/phase6-e2e。
+2. 已使用 MinGW Makefiles 重新构建当前源码的 build-mingw/abel_core_cli.exe。
+3. C++ CLI 验证通过：ok=true，damage.value=18，slime_1 hp=32，events.seq=1,2,3。
+4. FastAPI 通过 USE_MOCK_CORE=false 调用真实 C++ CLI 返回 HTTP 200。
+5. React Debug Console 能展示真实 C++ response。
+6. React Debug Console 已验证 version 错误和 actor_id / target_id 实体错误响应。
+```
+
+关键配置：
+
+```powershell
+$env:USE_MOCK_CORE="false"
+$env:CPP_CORE_EXE_PATH="D:\AbelTomato_Files\Developer\Projects\Abel-Tomato-Soul\build-mingw\abel_core_cli.exe"
+```
+
+阻塞项：
+
+```txt
+Godot Attack 真实链路暂未验证。
+原因：本机未安装 Godot，且成员 B 日志中的 E:\RPG\abel-tomato-adventure-rpg 在本机不存在；当前仓库 godot_client/ 为空目录。
+```
 
 #### 成功标准
 
-- React 和 Godot 不改请求代码
-- FastAPI 从 C++ CLI 返回统一 `GameActionResponse`
-- Godot 能根据真实 C++ 返回的 events 更新表现
-- React Debug Console 能展示真实 C++ response
+- React 不改请求代码（✅ 已通过）
+- Godot 不改请求代码（NOT VERIFIED）
+- FastAPI 从 C++ CLI 返回统一 `GameActionResponse`（✅ 已通过）
+- Godot 能根据真实 C++ 返回的 events 更新表现（BLOCKED）
+- React Debug Console 能展示真实 C++ response（✅ 已通过）
 
 ### 后续计划
 

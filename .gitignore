@@ -4,6 +4,8 @@
 bin/
 build/
 build-ninja/
+build-mingw/
+build-vs/
 .idea/
 .cache
 __pycache__/
