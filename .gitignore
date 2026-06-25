@@ -3,6 +3,9 @@
 .vscode/
 bin/
 build/
+build-ninja/
+build-mingw/
+build-vs/
 .idea/
 .cache
 __pycache__/
@@ -14,3 +17,5 @@ frontend/node_modules/
 frontend/dist/
 frontend/.vite/
 frontend/tsconfig.tsbuildinfo
+godot-client/.godot/
+godot-client/android/

@@ -12,3 +12,8 @@ include_directories(${PROJECT_SOURCE_DIR}/include
 file(GLOB_RECURSE SOURCES "src/*.cpp" "main.cpp")
 
 add_executable(TomatoHeroAbel ${SOURCES})
+
+add_executable(abel_core_cli
+    src/main.cpp
+    src/core/game_core.cpp
+)

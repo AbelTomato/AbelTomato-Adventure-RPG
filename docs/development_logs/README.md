@@ -1,6 +1,6 @@
 # 开发日志总览
 
-最后更新：2026-06-23 17:00
+最后更新：2026-06-24 22:50
 
 本文档用于在任务中断、新对话恢复或两人协作交接时，快速判断项目当前状态、最近验证结果和下一步方向。
 
@@ -48,7 +48,7 @@
 
 ## 3. 当前总体状态
 
-当前项目处于 MVP 真实端到端联调准备阶段：
+当前项目已完成 MVP 真实端到端联调，准备进入 Phase 7 存档与配置接口阶段：
 
 ```txt
 JSON Contract
@@ -64,6 +64,8 @@ C++ CLI Core
 FastAPI 真实 C++ Core 接入
   ↓
 Phase 6 端到端真实联调
+  ↓
+Phase 7 存档与配置接口
 ```
 
 已完成：
@@ -82,12 +84,12 @@ Phase 6 端到端真实联调
 12. Godot 调用 FastAPI Mock API。
 13. C++ `handle_json()` 与 `abel_core_cli`。
 14. FastAPI 从 mock 切换到真实 C++ CLI。
+15. Phase 6 端到端真实 C++ 联调。
 
 未完成：
 
-1. Phase 6 端到端真实 C++ 联调。
-2. Phase 7 存档与配置接口。
-3. Phase 8 扩展 Action。
+1. Phase 7 存档与配置接口。
+2. Phase 8 扩展 Action。
 
 ---
 
@@ -98,6 +100,7 @@ Backend：
 ```txt
 backend tests: 5 passed
 Phase 5 FastAPI -> C++ Core tests: 5 passed in 0.20s
+Phase 6 FastAPI / React / Godot -> C++ Core: passed
 ```
 
 Frontend：
@@ -108,13 +111,13 @@ pnpm -C frontend exec tsc -b --pretty false: passed
 前后端联动验证: passed
 ```
 
-说明：React Debug Console 已能通过 Vite 代理调用 FastAPI Mock Backend，加载 attack 示例并返回 `damage=18`。Phase 5 已完成后端真实 C++ Core 接入，`USE_MOCK_CORE=false` 时 `/api/game/action` 会调用 `build-ninja/abel_core_cli.exe`。
+说明：React Debug Console 和 Godot 均已能通过同一个 `/api/game/action` 接口联调真实 C++ Core。后端以 `USE_MOCK_CORE=false` 启动，并通过 `CPP_CORE_EXE_PATH` 指向当前构建出的 CLI 时，会返回 `damage=18`、`slime_1 hp=32` 的真实 C++ 结算结果。
 
 ---
 
 ## 5. 当前下一步优先级
 
-优先进入 Phase 6：端到端真实 C++ 联调。
+优先进入 Phase 7：存档与配置接口。
 
 ```txt
 1. 启动 FastAPI，并设置 USE_MOCK_CORE=false。
@@ -124,7 +127,7 @@ pnpm -C frontend exec tsc -b --pretty false: passed
 5. 记录联调问题并修正。
 ```
 
-Phase 6 成功标准：
+Phase 6 已通过，保留验收标准如下：
 
 ```txt
 React 和 Godot 不改请求代码。
