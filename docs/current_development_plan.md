@@ -1,13 +1,14 @@
 # 当前开发规划
 
-最后更新：2026-06-20
+最后更新：2026-06-27
+
+> 当前执行入口已迁移到 `docs/README.md` 与 `docs/原子化发展路线.md`。本文保留总体架构、职责边界和历史 Phase 规划；若当前状态与入口文档冲突，以入口文档为准。
 
 本文档用于承接当前阶段的项目规划，重点说明两人团队在 **C++ Core + FastAPI + Godot + React** 架构下的职责边界、接口选择、执行顺序和近期交付物。
 
 本文参考：
 
 - `docs/game_design_spec.md`
-- `docs/development_path.md`
 - `docs/exposed_interface_designs.md`
 - `docs/inventory_design.md`
 
@@ -15,7 +16,7 @@
 
 ## 1. 项目当前定位
 
-**爱吃番茄的勇者 Abel** 当前应定位为一个数据驱动 RPG 原型项目，而不是传统单体 C++ 命令行游戏。
+**番茄战魂** 当前应定位为一个数据驱动 RPG 原型项目，而不是传统单体 C++ 命令行游戏。
 
 项目核心目标是构建一套可扩展、可调试、可多端接入的游戏逻辑与表现架构：
 
@@ -839,7 +840,7 @@ examples/responses/*.json
 | `docs/` + `examples/` | 新增 action contract    | JSON 格式校验，人工审查字段是否与文档一致                           |
 | `backend/`            | 新增接口或 schema       | `python -m pytest`，必要时补 curl 验证                              |
 | `frontend/`           | 新增 Debug Console 功能 | 组件测试或手动调用后端，确认 request/response 展示正确              |
-| `godot_client/`       | 新增事件消费逻辑        | 使用 mock response 验证动画、血条、日志是否按 `events.seq` 执行     |
+| `godot-client/`       | 新增事件消费逻辑        | 使用 mock response 验证动画、血条、日志是否按 `events.seq` 执行     |
 | C++ Core              | 新增 action handler     | 使用 `abel_core_cli < examples/requests/{action}.json` 验证输出结构 |
 
 后端当前测试命令：

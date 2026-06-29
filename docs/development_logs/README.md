@@ -1,8 +1,8 @@
 # 开发日志总览
 
-最后更新：2026-06-24 22:50
+最后更新：2026-06-29
 
-本文档用于在任务中断、新对话恢复或两人协作交接时，快速判断项目当前状态、最近验证结果和下一步方向。
+本文档用于保存历史开发日志入口。当前执行状态以 `docs/README.md`、`docs/原子化发展路线.md`、`docs/代码评审.md` 为准。
 
 ---
 
@@ -11,12 +11,12 @@
 新对话恢复任务时，优先按以下顺序读取：
 
 ```txt
-1. docs/development_logs/README.md
-2. docs/learning_collaboration_workflow.md
-3. docs/development_logs/member_a_fastapi_react.md 或 docs/development_logs/member_b_cpp_godot.md
-4. docs/current_development_plan.md
-5. docs/api_contract.md
-6. .clinerules/terminal-timeout-and-small-step-validation.md
+1. docs/README.md
+2. docs/原子化发展路线.md
+3. docs/代码评审.md
+4. docs/api_contract.md
+5. docs/development_logs/README.md
+6. docs/development_logs/member_a_fastapi_react.md 或 docs/development_logs/member_b_cpp_godot.md
 ```
 
 恢复流程：
@@ -48,7 +48,7 @@
 
 ## 3. 当前总体状态
 
-当前项目已完成 MVP 真实端到端联调，准备进入 Phase 7 存档与配置接口阶段：
+当前项目已完成 MVP 真实端到端联调，Phase 7 已完成阶段 A、B1-B3，并完成版本字段语义拆分与 `POST /api/saves` create endpoint 骨架。后续应继续按原子切片完成 saves API，不应直接跳到前端或 Godot 接入：
 
 ```txt
 JSON Contract
@@ -65,7 +65,7 @@ FastAPI 真实 C++ Core 接入
   ↓
 Phase 6 端到端真实联调
   ↓
-Phase 7 存档与配置接口
+Phase 7 存档与配置接口（开发中，已完成版本字段拆分与 POST /api/saves）
 ```
 
 已完成：
@@ -85,11 +85,18 @@ Phase 7 存档与配置接口
 13. C++ `handle_json()` 与 `abel_core_cli`。
 14. FastAPI 从 mock 切换到真实 C++ CLI。
 15. Phase 6 端到端真实 C++ 联调。
+16. Phase 7 阶段 A：恢复后端质量闸门。
+17. Phase 7 B1：修复 `save_id` 生成，同一秒多次创建不会覆盖。
+18. Phase 7 B2：修复 `update_save()` 不落盘，更新后可重新读取到新内容。
+19. Phase 7 B3：补充 `delete_save()` service 测试，覆盖删除成功与 `SaveNotFoundError`。
+20. 版本字段语义拆分：API 使用 `contract_version`，存档落盘使用 `save_format_version`。
+21. `POST /api/saves` create endpoint 已补版本校验与成功响应。
 
-未完成：
+未完成/当前阻塞：
 
-1. Phase 7 存档与配置接口。
-2. Phase 8 扩展 Action。
+1. B4-B5：Phase 7 saves API 尚未完整实现；当前仅 `POST /api/saves` 已接入。
+2. B6：Phase 7 save examples 尚未补齐。
+3. Phase 8 扩展 Action 暂缓。
 
 ---
 
@@ -98,33 +105,43 @@ Phase 7 存档与配置接口
 Backend：
 
 ```txt
-backend tests: 5 passed
-Phase 5 FastAPI -> C++ Core tests: 5 passed in 0.20s
-Phase 6 FastAPI / React / Godot -> C++ Core: passed
+backend/.venv/Scripts/python.exe -m pytest backend/tests/test_save_service.py: PASSED（按用户确认：已完成至 B1）
+backend/.venv/Scripts/python.exe -m pytest backend/tests/test_config_api.py: PASSED（按用户确认：阶段 A 已完成）
+backend/.venv/Scripts/python.exe -m pytest backend/tests: PASSED（按用户确认：阶段 A 已完成）
+backend/.venv/Scripts/python.exe -m pytest backend/tests/test_save_service.py: PASSED（按用户确认：B2 已完成）
+backend/.venv/Scripts/python.exe -m pytest backend/tests/test_save_service.py: PASSED（按用户确认：B3 已完成）
+backend/.venv/Scripts/python.exe -m pytest backend/tests/test_game_action.py: PASSED（4 passed / 4 total）
+backend/.venv/Scripts/python.exe -m pytest backend/tests/test_save_service.py: PASSED（6 passed / 6 total）
+backend/.venv/Scripts/python.exe -m pytest backend/tests: PASSED（17 passed, 1 skipped / 18 total）
 ```
+
+说明：2026-06-29 12:59 已重新执行版本字段拆分相关后端测试，精确结果见上方新增记录。
 
 Frontend：
 
 ```txt
 pnpm -C frontend typecheck: passed
-pnpm -C frontend exec tsc -b --pretty false: passed
-前后端联动验证: passed
 ```
 
-说明：React Debug Console 和 Godot 均已能通过同一个 `/api/game/action` 接口联调真实 C++ Core。后端以 `USE_MOCK_CORE=false` 启动，并通过 `CPP_CORE_EXE_PATH` 指向当前构建出的 CLI 时，会返回 `damage=18`、`slime_1 hp=32` 的真实 C++ 结算结果。
+C++ Core：
+
+```txt
+cmake --build build-mingw --target abel_core_cli: passed
+backend/.venv/Scripts/python.exe scripts/verify_abel_core_cli.py --exe build-mingw/abel_core_cli.exe: 8 passed
+```
+
+说明：历史上 React Debug Console 和 Godot 均已能通过同一个 `/api/game/action` 接口联调真实 C++ Core。当前继续开发应从 Phase 7 B4 开始，新增 saves API 路由骨架。
 
 ---
 
 ## 5. 当前下一步优先级
 
-优先进入 Phase 7：存档与配置接口。
+继续 Phase 7，但必须保持 service 层先于 API 层、后端先于前端/Godot 的顺序。
 
 ```txt
-1. 启动 FastAPI，并设置 USE_MOCK_CORE=false。
-2. 使用 React Debug Console 调用 /api/game/action。
-3. 使用 Godot Attack 按钮调用同一接口。
-4. 检查 request_id、state.entities、events.seq 和 damage value。
-5. 记录联调问题并修正。
+1. 完成 `GET /api/saves` 列表接口和 API 测试。
+2. B5 完成读取/更新/删除 saves API。
+3. B6 补 Phase 7 save examples。
 ```
 
 Phase 6 已通过，保留验收标准如下：

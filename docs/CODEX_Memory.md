@@ -1,12 +1,14 @@
 # CODEX Memory
 
+> Archive note, updated 2026-06-27: this document records an earlier C++-centric project state. Keep it for historical context. For current execution status, use `docs/README.md`, `docs/原子化发展路线.md`, and `docs/代码评审.md`.
+
 Last updated: 2026-05-25
 
 This file records my current understanding of the project after reading `docs/game_design_spec.md`, `docs/inventory_design.md`, `data/`, `include/`, `src/`, `README.md`, `CMakeLists.txt`, and the supporting docs.
 
 ## Project Identity
 
-- Project name: `TomatoHeroAbel`, also described in README as `爱吃番茄的勇者Abel`.
+- Project name: `Abel-Tomato-Soul`, also described in README as `番茄战魂`.
 - Current implementation target: C++ console/text RPG prototype using CMake, MinGW, and bundled `nlohmann/json`.
 - Design ambition: data-driven RPG core with attributes, race/job data, skills, effects, buffs, item/inventory data, local JSON persistence, grid-based exploration, and semi-real-time turn sequencing.
 - The design spec is larger than the current executable. The codebase is currently a systems/data prototype; `src/main.cpp` is effectively empty.

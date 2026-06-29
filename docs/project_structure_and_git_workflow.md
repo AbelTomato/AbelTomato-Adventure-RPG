@@ -1,13 +1,14 @@
 # 项目结构与 Git 工作流调整方案
 
-最后更新：2026-06-20
+最后更新：2026-06-27
+
+> 本文是结构和 Git 工作流参考，不再作为当前执行入口。当前执行入口见 `docs/README.md` 和 `docs/原子化发展路线.md`。
 
 本文根据 `docs/` 目录中的现有设计文档，整理当前项目从单体 C++ 原型向多端协作 Monorepo 演进时的目录结构、职责边界与 Git 工作流建议。
 
 参考文档：
 
 - `docs/game_design_spec.md`
-- `docs/development_path.md`
 - `docs/exposed_interface_designs.md`
 - `docs/current_development_plan.md`
 - `docs/inventory_design.md`
@@ -147,7 +148,6 @@ Abel-Tomato-Soul/
 
   docs/
     game_design_spec.md
-    development_path.md
     exposed_interface_designs.md
     current_development_plan.md
     inventory_design.md

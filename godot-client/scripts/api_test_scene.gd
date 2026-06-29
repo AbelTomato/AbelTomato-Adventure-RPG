@@ -25,7 +25,7 @@ func _on_attack_pressed() -> void:
 	print("Sending attack request...")
 
 	var request_body := {
-		"version": 1,
+		"contract_version": 1,
 		"request_id": "req_attack_001",
 		"action": {
 			"type": "attack",

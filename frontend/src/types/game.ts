@@ -35,7 +35,7 @@ export interface GameState {
 }
 
 export interface GameActionRequest {
-  version: number;
+  contract_version: number;
   request_id: string;
   action: GameAction;
   state: GameState;
@@ -56,7 +56,7 @@ export interface GameError {
 
 export interface GameActionResponse {
   ok: boolean;
-  version: number;
+  contract_version: number;
   request_id: string;
   state: GameState | null;
   events: GameEvent[];
