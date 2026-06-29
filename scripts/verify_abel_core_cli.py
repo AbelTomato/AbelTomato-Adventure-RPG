@@ -52,7 +52,7 @@ def test_normal_attack(exe: Path) -> None:
     response = run_core(exe, ATTACK_REQUEST.read_bytes())
 
     assert response["ok"] is True
-    assert response["version"] == 1
+    assert response["contract_version"] == 1
     assert response["request_id"] == "req_attack_001"
     assert response["error"] is None
 
@@ -78,18 +78,18 @@ def test_invalid_json(exe: Path) -> None:
 
 
 def test_missing_schema(exe: Path) -> None:
-    response = run_core(exe, encode({"version": 1, "request_id": "req_missing"}))
+    response = run_core(exe, encode({"contract_version": 1, "request_id": "req_missing"}))
     assert_error(response, "INVALID_SCHEMA")
 
 
 def test_unsupported_version(exe: Path) -> None:
     request = load_attack_request()
-    request["version"] = 999
+    request["contract_version"] = 999
 
     response = run_core(exe, encode(request))
     assert_error(response, "UNSUPPORTED_VERSION")
     assert response["request_id"] == "req_attack_001"
-    assert response["error"]["details"]["version"] == 999
+    assert response["error"]["details"]["contract_version"] == 999
 
 
 def test_invalid_action(exe: Path) -> None:

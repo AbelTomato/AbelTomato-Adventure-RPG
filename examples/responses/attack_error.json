@@ -1,6 +1,6 @@
 {
   "ok": false,
-  "version": 1,
+  "contract_version": 1,
   "request_id": "req_attack_001",
   "state": null,
   "events": [],

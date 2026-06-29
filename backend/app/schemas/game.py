@@ -2,6 +2,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from app.core.versions import SUPPORTED_CONTRACT_VERSION
+
 
 class GameAction(BaseModel):
     type: str
@@ -40,7 +42,7 @@ class GameState(BaseModel):
 
 
 class GameActionRequest(BaseModel):
-    version: int
+    contract_version: int
     request_id: str
     action: GameAction
     state: GameState
@@ -62,24 +64,24 @@ class GameEvent(BaseModel):
 
 class GameActionResponse(BaseModel):
     ok: bool
-    version: int
+    contract_version: int
     request_id: str
     state: GameState | None
     events: list[GameEvent]
     error: GameError | None
 
     @classmethod
-    def unsupported_version(cls, request_id: str, version: int) -> "GameActionResponse":
+    def unsupported_version(cls, request_id: str, contract_version: int) -> "GameActionResponse":
         return cls(
             ok=False,
-            version=1,
+            contract_version=SUPPORTED_CONTRACT_VERSION,
             request_id=request_id,
             state=None,
             events=[],
             error=GameError(
                 code="UNSUPPORTED_VERSION",
-                message=f"Unsupported contract version: {version}",
-                details={"version": version},
+                message=f"Unsupported contract version: {contract_version}",
+                details={"contract_version": contract_version},
             ),
         )
 
@@ -87,7 +89,7 @@ class GameActionResponse(BaseModel):
     def invalid_action(cls, request_id: str, action_type: str) -> "GameActionResponse":
         return cls(
             ok=False,
-            version=1,
+            contract_version=SUPPORTED_CONTRACT_VERSION,
             request_id=request_id,
             state=None,
             events=[],
