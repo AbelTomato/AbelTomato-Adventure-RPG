@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "contract_version": 1,
+  "request_id": "req_create_save_001",
+  "save": {
+    "save_id": "save_20260702_142700_a1b2c3d4",
+    "name": "测试存档 1",
+    "created_at": "2026-07-02T22:27:00+08:00",
+    "updated_at": "2026-07-02T22:27:00+08:00",
+    "save_format_version": 1,
+    "state": {
+      "turn": {
+        "round": 1,
+        "active_entity_id": "player_1"
+      },
+      "entities": [
+        {
+          "id": "player_1",
+          "name": "Abel",
+          "type": "player",
+          "attrs": {
+            "hp": 100,
+            "max_hp": 100,
+            "physical_attack": 20,
+            "physical_defense": 5
+          },
+          "status": {
+            "alive": true
+          }
+        },
+        {
+          "id": "slime_1",
+          "name": "史莱姆",
+          "type": "monster",
+          "attrs": {
+            "hp": 32,
+            "max_hp": 50,
+            "physical_attack": 8,
+            "physical_defense": 2
+          },
+          "status": {
+            "alive": true
+          }
+        }
+      ]
+    },
+    "meta": {
+      "source": "debug_console",
+      "client": "react",
+      "note": "第一次测试存档"
+    }
+  },
+  "error": null
+}

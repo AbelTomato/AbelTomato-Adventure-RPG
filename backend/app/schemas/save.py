@@ -94,7 +94,7 @@ class SaveUpdateResponse(BaseModel):
             request_id=request_id,
             save=None,
             error=GameError(
-                code="UNSUPPROTED_VERSION",
+                code="UNSUPPORTED_VERSION",
                 message=f"Unsupported contract version: {contract_version}",
                 details={"contract_version": contract_version},
             )

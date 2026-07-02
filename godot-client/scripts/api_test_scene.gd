@@ -1,6 +1,8 @@
 extends Control
 
-const API_URL := "http://127.0.0.1:8000/api/game/action"
+const GAME_ACTION_PATH := "/api/game/action"
+
+@export var api_base_url := "http://127.0.0.1:8000"
 
 @onready var attack_button: Button = $AttackButton
 @onready var log_text: RichTextLabel = $LogText
@@ -19,6 +21,9 @@ func _ready() -> void:
 
 	attack_button.pressed.connect(_on_attack_pressed)
 	http_request.request_completed.connect(_on_request_completed)
+
+func _build_api_url(path: String) -> String:
+	return api_base_url.trim_suffix("/") + path
 
 func _on_attack_pressed() -> void:
 	log_text.text = "Sending attack request..."
@@ -78,7 +83,7 @@ func _on_attack_pressed() -> void:
 	var headers := ["Content-Type: application/json; charset=utf-8"]
 
 	var error := http_request.request(
-		API_URL,
+		_build_api_url(GAME_ACTION_PATH),
 		headers,
 		HTTPClient.METHOD_POST,
 		json_body

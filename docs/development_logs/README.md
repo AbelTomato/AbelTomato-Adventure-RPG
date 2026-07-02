@@ -1,6 +1,6 @@
 # 开发日志总览
 
-最后更新：2026-06-29
+最后更新：2026-07-02
 
 本文档用于保存历史开发日志入口。当前执行状态以 `docs/README.md`、`docs/原子化发展路线.md`、`docs/代码评审.md` 为准。
 
@@ -48,7 +48,7 @@
 
 ## 3. 当前总体状态
 
-当前项目已完成 MVP 真实端到端联调，Phase 7 已完成阶段 A、B1-B3，并完成版本字段语义拆分与 `POST /api/saves` create endpoint 骨架。后续应继续按原子切片完成 saves API，不应直接跳到前端或 Godot 接入：
+当前项目已完成 MVP 真实端到端联调，Phase 7 已完成存档后端、配置接口稳定化，以及 React 存档/配置查看页面。后续项目主线应继续按原子切片推进 Godot 保存/加载接入；该部分属于成员 B 职责，成员 A 只负责接口、文档和联调支持：
 
 ```txt
 JSON Contract
@@ -63,9 +63,7 @@ C++ CLI Core
   ↓
 FastAPI 真实 C++ Core 接入
   ↓
-Phase 6 端到端真实联调
-  ↓
-Phase 7 存档与配置接口（开发中，已完成版本字段拆分与 POST /api/saves）
+Phase 7 存档与配置接口（开发中，已完成至 E1 Godot API base URL 抽离）
 ```
 
 已完成：
@@ -90,12 +88,21 @@ Phase 7 存档与配置接口（开发中，已完成版本字段拆分与 POST 
 18. Phase 7 B2：修复 `update_save()` 不落盘，更新后可重新读取到新内容。
 19. Phase 7 B3：补充 `delete_save()` service 测试，覆盖删除成功与 `SaveNotFoundError`。
 20. 版本字段语义拆分：API 使用 `contract_version`，存档落盘使用 `save_format_version`。
-21. `POST /api/saves` create endpoint 已补版本校验与成功响应。
+21. Phase 7 B4：`GET /api/saves` 与 `POST /api/saves` API 骨架完成。
+22. Phase 7 B5：读取、更新、删除 saves API 完成。
+23. Phase 7 B6：save examples 完成。
+24. Phase 7 C1：配置白名单完成。
+25. Phase 7 C2：配置版本接口完成。
+26. Phase 7 D1：前端 Save 类型定义完成。
+27. Phase 7 D2：前端 saveClient 完成。
+28. Phase 7 D3：前端 SaveList 页面完成。
+29. Phase 7 D4：前端 ConfigViewer 页面完成。
+30. Phase 7 E1：Godot API base URL 抽离完成。
 
 未完成/当前阻塞：
 
-1. B4-B5：Phase 7 saves API 尚未完整实现；当前仅 `POST /api/saves` 已接入。
-2. B6：Phase 7 save examples 尚未补齐。
+1. 成员 B：E2-E3 Godot 保存/加载按钮尚未接入。
+2. 成员 A：配合验证 saves API、补充接口说明、支持联调，不直接修改 Godot 场景或脚本。
 3. Phase 8 扩展 Action 暂缓。
 
 ---
@@ -113,6 +120,9 @@ backend/.venv/Scripts/python.exe -m pytest backend/tests/test_save_service.py: P
 backend/.venv/Scripts/python.exe -m pytest backend/tests/test_game_action.py: PASSED（4 passed / 4 total）
 backend/.venv/Scripts/python.exe -m pytest backend/tests/test_save_service.py: PASSED（6 passed / 6 total）
 backend/.venv/Scripts/python.exe -m pytest backend/tests: PASSED（17 passed, 1 skipped / 18 total）
+backend/.venv/Scripts/python.exe -m pytest backend/tests/test_save_api.py: PASSED（9 passed / 9 total）
+backend/.venv/Scripts/python.exe -m pytest backend/tests/test_config_api.py: PASSED（6 passed, 1 skipped / 7 total）
+backend/.venv/Scripts/python.exe -m pytest backend/tests: PASSED（27 passed, 1 skipped / 28 total）
 ```
 
 说明：2026-06-29 12:59 已重新执行版本字段拆分相关后端测试，精确结果见上方新增记录。
@@ -121,6 +131,7 @@ Frontend：
 
 ```txt
 pnpm -C frontend typecheck: passed
+pnpm -C frontend typecheck: PASSED（D1/D2/D3/D4）
 ```
 
 C++ Core：
@@ -130,18 +141,20 @@ cmake --build build-mingw --target abel_core_cli: passed
 backend/.venv/Scripts/python.exe scripts/verify_abel_core_cli.py --exe build-mingw/abel_core_cli.exe: 8 passed
 ```
 
-说明：历史上 React Debug Console 和 Godot 均已能通过同一个 `/api/game/action` 接口联调真实 C++ Core。当前继续开发应从 Phase 7 B4 开始，新增 saves API 路由骨架。
+说明：历史上 React Debug Console 和 Godot 均已能通过同一个 `/api/game/action` 接口联调真实 C++ Core。当前项目主线从 Phase 7 E2 开始，增加 Godot Save 按钮；这是成员 B 的 Godot 切片，成员 A 不应直接承担该实现。
 
 ---
 
 ## 5. 当前下一步优先级
 
-继续 Phase 7，但必须保持 service 层先于 API 层、后端先于前端/Godot 的顺序。
+继续 Phase 7，但必须保持职责边界：成员 B 推进 Godot 保存/加载，成员 A 保持 FastAPI、React、JSON Contract 和 examples 稳定。
 
 ```txt
-1. 完成 `GET /api/saves` 列表接口和 API 测试。
-2. B5 完成读取/更新/删除 saves API。
-3. B6 补 Phase 7 save examples。
+1. 成员 B：E2 增加 Godot Save 按钮。
+2. 成员 B：E3 增加 Godot Load Latest 按钮。
+3. 成员 A：验证 /api/saves 创建、列表、读取接口可供 Godot 接入。
+4. 成员 A：必要时补充 docs/api_contract.md 或 examples 中的 saves 接口说明。
+5. Phase 8 扩展 Action 暂缓。
 ```
 
 Phase 6 已通过，保留验收标准如下：

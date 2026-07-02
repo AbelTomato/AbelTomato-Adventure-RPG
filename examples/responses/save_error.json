@@ -1,0 +1,13 @@
+{
+  "ok": false,
+  "contract_version": 1,
+  "request_id": "req_create_save_001",
+  "save": null,
+  "error": {
+    "code": "SAVE_NOT_FOUND",
+    "message": "Save not found: save_missing",
+    "details": {
+      "save_id": "save_missing"
+    }
+  }
+}

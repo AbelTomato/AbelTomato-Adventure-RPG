@@ -1,6 +1,6 @@
 # 成员 A 开发日志：FastAPI + React
 
-最后更新：2026-06-29 16:35
+最后更新：2026-07-02 23:18
 
 负责人范围：
 
@@ -12,6 +12,148 @@ Mock Response
 后续 C++ Core Client 接入
 后续存档/配置接口
 ```
+
+## 2026-07-02 22:57 - Phase 7 D3 SaveList 页面完成
+
+### 本阶段目标
+
+完成 `docs/原子化发展路线.md` 中阶段 D3：新增 React 存档列表页面，展示 loading/error/empty/list 基本状态，并支持读取单个存档详情。
+
+### 学习目标
+
+1. 理解 React 页面层如何消费 API client 返回的完整响应对象。
+2. 理解列表摘要与单个完整存档详情的职责区别。
+3. 理解当前无路由结构下，可以先用最小页签把新页面接入主入口。
+
+### 修改文件
+
+```txt
+frontend/src/pages/SaveList.tsx
+frontend/src/main.tsx
+docs/development_logs/member_a_fastapi_react.md
+docs/development_logs/README.md
+```
+
+### 实现内容
+
+1. 新增 `frontend/src/pages/SaveList.tsx`。
+2. 页面挂载时调用 `listSaves()`，展示存档数量、名称、`save_id`、更新时间和 `save_format_version`。
+3. 覆盖 loading、error、empty、list 四种基本状态。
+4. 点击“查看”时调用 `getSave(saveId)`，右侧展示完整存档 JSON。
+5. 在 `frontend/src/main.tsx` 增加最小页签，在 `Saves` 与原 `DebugAction` 间切换。
+
+### 验证方式
+
+```powershell
+pnpm -C frontend typecheck
+```
+
+### 验证结果
+
+```txt
+pnpm -C frontend typecheck: PASSED
+```
+
+### 文档回填
+
+```txt
+已更新：docs/development_logs/member_a_fastapi_react.md
+已更新：docs/development_logs/README.md
+```
+
+### 学到的东西
+
+1. D3 只需要展示存档摘要和详情，不应提前加入创建、更新、删除交互，那属于后续页面增强。
+2. 当前 `SaveSummary` 不含 `state`，页面必须在用户选择单个存档后再请求详情。
+3. 没有正式路由前，主入口页签足够支撑开发 Portal 的最小导航。
+
+### 当前状态
+
+```txt
+Phase 7 当前进度：
+阶段 A：已完成
+B1-B6：存档 service、API、examples 已完成
+C1-C2：配置白名单与版本接口已完成
+D1：Save 类型定义，已完成
+D2：saveClient，已完成
+D3：SaveList 页面，已完成
+下一步：D4 增加 ConfigViewer 页面
+```
+
+### 下一步建议
+
+只执行一个最小切片：**D4 增加 ConfigViewer 页面**。
+
+D4 应新增 `frontend/src/pages/ConfigViewer.tsx`，支持选择白名单配置并展示 JSON；不要同时做 Godot 保存/加载接入。
+
+---
+
+## 2026-06-29 18:45 - Git 分支整理完成
+
+### 本阶段目标
+
+整理当前本地与远程 Git 分支状态，使仓库最终只保留 `main` 分支，降低后续开发时的分支歧义。
+
+### 初始状态
+
+```txt
+当前分支：integration/phase6-e2e
+本地分支：feature/core-service、integration/phase6-e2e、main
+远程分支：origin/feature/core-service、origin/integration/phase6-e2e、origin/main、origin/phase3-and-phase4
+本地 main：落后 origin/main
+```
+
+### 执行内容
+
+1. 确认工作区状态。
+2. 切换到 `main`。
+3. 使用 `git pull --ff-only` 将本地 `main` 快进同步到 `origin/main`。
+4. 删除本地非 `main` 分支：
+   - `feature/core-service`
+   - `integration/phase6-e2e`
+5. 删除远程非 `main` 分支：
+   - `origin/feature/core-service`
+   - `origin/integration/phase6-e2e`
+   - `origin/phase3-and-phase4`
+6. 执行 `git fetch --prune` 清理远程跟踪引用。
+
+### 验证方式
+
+```powershell
+git status --short --branch
+git pull --ff-only
+git branch -D feature/core-service
+git branch -D integration/phase6-e2e
+git push origin --delete feature/core-service
+git push origin --delete integration/phase6-e2e
+git push origin --delete phase3-and-phase4
+git fetch --prune
+git branch -vv
+git branch -r -vv
+git status --short --branch
+```
+
+### 验证结果
+
+```txt
+本地分支：仅 main
+远程分支：仅 origin/main 与 origin/HEAD -> origin/main
+当前提交：fb7b748 Merge pull request #3 from AbelTomato/integration/phase6-e2e
+工作区状态：main...origin/main，无未提交改动
+```
+
+### 当前状态
+
+```txt
+Git 分支整理：已完成
+本地 main：已同步 origin/main
+本地非 main 分支：已删除
+远程非 main 分支：已删除
+```
+
+### 下一步建议
+
+后续开发从 `main` 新建短生命周期功能分支，完成后通过 PR 合回 `main`，合并后及时删除功能分支。
 
 ---
 
@@ -1315,6 +1457,570 @@ JSON Contract 已可作为 FastAPI、React、Godot、C++ 的协作基础。
 ### 下一步建议
 
 搭建 FastAPI Mock Backend。
+
+
+
+
+
+---
+
+## 2026-07-02 22:27 - Phase 7 B5 saves API 读取更新删除完成
+
+### 本阶段目标
+
+完成 `docs/原子化发展路线.md` 中 Phase 7 B5：实现单个存档读取、更新、删除 API，并将 service 层错误映射为稳定的存档错误响应。
+
+### 学习目标
+
+1. 理解 REST CRUD 中 `GET`、`PUT`、`DELETE` 的基础语义。
+2. 理解 API 层应把 service 层异常转换为契约内 `GameError`，避免泄漏 500。
+3. 理解协议版本错误码需要保持拼写稳定，测试应覆盖错误分支。
+
+### 修改文件
+
+```txt
+backend/app/api/saves.py
+backend/app/schemas/save.py
+backend/tests/test_save_api.py
+docs/development_logs/member_a_fastapi_react.md
+```
+
+### 实现内容
+
+1. `backend/app/api/saves.py`
+   - 新增 `GET /api/saves/{save_id}`，返回完整 `SaveRecord`。
+   - 新增 `PUT /api/saves/{save_id}`，整体覆盖 `name`、`state`、`meta`，保留 service 层既有持久化语义。
+   - 新增 `DELETE /api/saves/{save_id}`，成功时返回 `deleted=true`。
+   - 捕获 `SaveServiceError`，映射 `SAVE_NOT_FOUND`、`INVALID_SAVE_ID` 等错误码。
+2. `backend/app/schemas/save.py`
+   - 修正 `SaveUpdateResponse.unsupported_version()` 中的错误码拼写：`UNSUPPROTED_VERSION` -> `UNSUPPORTED_VERSION`。
+3. `backend/tests/test_save_api.py`
+   - 覆盖单个存档读取成功。
+   - 覆盖更新存档成功与更新后重新读取。
+   - 覆盖更新接口不支持 `contract_version`。
+   - 覆盖删除存档成功与删除后读取返回 `SAVE_NOT_FOUND`。
+   - 覆盖读取、更新、删除的 `SAVE_NOT_FOUND` 与 `INVALID_SAVE_ID` 分支。
+
+### 验证方式
+
+```powershell
+backend\.venv\Scripts\python.exe -m pytest backend\tests\test_save_api.py
+backend\.venv\Scripts\python.exe -m pytest backend\tests\test_save_service.py
+backend\.venv\Scripts\python.exe -m pytest backend\tests
+```
+
+### 验证结果
+
+```txt
+backend/tests/test_save_api.py: 9 passed / 9 total
+backend/tests/test_save_service.py: 4 passed / 4 total
+backend/tests: 24 passed, 1 skipped / 25 total
+```
+
+全量后端测试仍有 1 条既有 warning：`backend/tests/test_cpp_core_client.py:58` 中正则字符串 `"C\+\+ Core executable not found"` 触发 Python 3.14 invalid escape sequence 警告。本阶段未修改该测试。
+
+### 文档回填
+
+```txt
+已更新：docs/development_logs/member_a_fastapi_react.md
+NOT BACKFILLED：docs/api_contract.md 中 Phase 7 示例仍有旧字段 contract_version，应在 B6 examples 或独立文档回填切片中同步修正为 save_format_version。
+```
+
+### 学到的东西
+
+1. B5 的核心不是新增 service 能力，而是把已有 service CRUD 稳定暴露为 HTTP 契约。
+2. 错误映射必须覆盖不存在存档和非法 `save_id`，否则客户端会遇到非契约响应或 500。
+3. 更新接口的版本错误分支需要单独测试，否则错误码拼写问题不容易被发现。
+
+### 当前状态
+
+```txt
+Phase 7 当前进度：
+阶段 A：已完成
+B1：save_id 生成修复，已完成
+B2：update_save() 持久化修复，已完成
+B3：delete_save() service 测试，已完成
+B4：saves API 路由骨架，已完成
+B5：saves API 读取/更新/删除，已完成
+下一步：B6 补 Phase 7 examples
+```
+
+### 下一步建议
+
+只执行一个最小切片：**B6 补 Phase 7 examples**。
+
+B6 应新增 `examples/requests/save_create.json`、`examples/responses/save_create_success.json`、`examples/responses/save_error.json`，并同步修正 `docs/api_contract.md` 中存档示例里的 `save_format_version` 字段，不要同时进入 React 或 Godot 接入。
+
+---
+
+## 2026-07-02 22:34 - Phase 7 B6 save examples 完成
+
+### 本阶段目标
+
+完成 `docs/原子化发展路线.md` 中 Phase 7 B6：补齐存档接口 examples，并同步修正 `docs/api_contract.md` 中 Phase 7 存档示例的版本字段。
+
+### 学习目标
+
+1. 理解 examples、API Contract、后端 schema 三者必须保持字段一致。
+2. 理解 API 契约版本 `contract_version` 与存档格式版本 `save_format_version` 的使用边界。
+3. 理解 JSON 示例需要用 `json.tool` 独立校验，避免格式错误进入联调阶段。
+
+### 修改文件
+
+```txt
+examples/requests/save_create.json
+examples/responses/save_create_success.json
+examples/responses/save_error.json
+docs/api_contract.md
+docs/development_logs/member_a_fastapi_react.md
+```
+
+### 实现内容
+
+1. 新增 `examples/requests/save_create.json`：覆盖 `POST /api/saves` 创建存档请求样例。
+2. 新增 `examples/responses/save_create_success.json`：覆盖创建成功响应，`save` 对象使用 `save_format_version`。
+3. 新增 `examples/responses/save_error.json`：覆盖存档错误响应样例，使用 `SAVE_NOT_FOUND`。
+4. 更新 `docs/api_contract.md`：
+   - 创建、读取、落盘示例中的存档对象统一使用 `save_format_version`。
+   - 更新请求示例保留 `contract_version`，避免混淆请求协议版本和落盘格式版本。
+   - 更新文档最后更新时间。
+
+### 验证方式
+
+```powershell
+backend\.venv\Scripts\python.exe -m json.tool examples\requests\save_create.json
+backend\.venv\Scripts\python.exe -m json.tool examples\responses\save_create_success.json
+backend\.venv\Scripts\python.exe -m json.tool examples\responses\save_error.json
+backend\.venv\Scripts\python.exe -m pytest backend\tests\test_save_api.py
+```
+
+### 验证结果
+
+```txt
+examples/requests/save_create.json: JSON parse passed
+examples/responses/save_create_success.json: JSON parse passed
+examples/responses/save_error.json: JSON parse passed
+backend/tests/test_save_api.py: 9 passed / 9 total
+```
+
+### 文档回填
+
+```txt
+已更新：docs/api_contract.md
+已更新：docs/development_logs/member_a_fastapi_react.md
+```
+
+### 学到的东西
+
+1. `contract_version` 只属于 API 请求/响应顶层和客户端请求体，不能写入存档对象。
+2. `save_format_version` 属于 `SaveRecord` 与落盘 JSON，用于后续存档格式迁移。
+3. 文档字段替换需要区分上下文，更新请求示例仍然必须使用 `contract_version`。
+
+### 当前状态
+
+```txt
+Phase 7 当前进度：
+阶段 A：已完成
+B1：save_id 生成修复，已完成
+B2：update_save() 持久化修复，已完成
+B3：delete_save() service 测试，已完成
+B4：saves API 路由骨架，已完成
+B5：saves API 读取/更新/删除，已完成
+B6：Phase 7 save examples，已完成
+下一步：阶段 C 配置接口稳定化，或阶段 D React 接入存档/配置页面
+```
+
+### 下一步建议
+
+按 `docs/原子化发展路线.md`，下一个最小切片建议进入 **阶段 C1：增加配置白名单**。不要直接进入 React/Godot，除非确认配置接口稳定化暂缓。
+
+---
+
+## 2026-07-02 22:38 - Phase 7 C1 配置白名单完成
+
+### 本阶段目标
+
+完成 `docs/原子化发展路线.md` 中阶段 C1：为配置只读接口增加白名单，只允许暴露明确列出的配置文件。
+
+### 学习目标
+
+1. 理解 API 暴露边界应采用白名单，而不是允许读取任意 JSON。
+2. 理解白名单检查与路径穿越防护是两层不同防线。
+3. 理解测试应覆盖合法配置、非白名单配置、路径穿越和 symlink 越界。
+
+### 修改文件
+
+```txt
+backend/app/api/config.py
+backend/tests/test_config_api.py
+docs/development_logs/member_a_fastapi_react.md
+```
+
+### 实现内容
+
+1. `backend/app/api/config.py`
+   - 新增 `ALLOWED_CONFIG_FILES`。
+   - 只允许读取：`config.json`、`race.json`、`job.json`、`skill.json`、`effect.json`、`buff.json`。
+   - 非白名单配置返回 404。
+   - 保留 `Path.resolve()` 与 `is_relative_to(DATA_PATH.resolve())` 的路径越界防护。
+2. `backend/tests/test_config_api.py`
+   - 将合法读取测试改为白名单内 `config.json`。
+   - 增加非白名单 JSON 被拒绝测试。
+   - 调整路径穿越测试：`../users.json` 因先命中白名单检查，返回 404。
+   - 保留 symlink 越界测试，使用白名单内 `config.json` 作为 symlink 文件名以验证第二层路径防护。
+
+### 验证方式
+
+```powershell
+backend\.venv\Scripts\python.exe -m pytest backend\tests\test_config_api.py
+backend\.venv\Scripts\python.exe -m pytest backend\tests
+```
+
+### 验证结果
+
+```txt
+backend/tests/test_config_api.py: 4 passed, 1 skipped / 5 total
+backend/tests: 25 passed, 1 skipped / 26 total
+```
+
+### 文档回填
+
+```txt
+已更新：docs/development_logs/member_a_fastapi_react.md
+NOT BACKFILLED：docs/api_contract.md 未单独记录配置白名单字段；当前白名单与 docs/原子化发展路线.md C1 保持一致。
+```
+
+### 学到的东西
+
+1. 白名单检查应在文件读取前执行，避免把 `data/` 下的调试或临时 JSON 意外暴露给客户端。
+2. 路径穿越字符串和 symlink 越界需要分别处理；白名单能挡住前者，`resolve()` 后的相对路径检查能挡住后者。
+3. Windows 下 symlink 测试可能因权限不足 skip，因此全量结果中保留 1 skipped 是可接受状态。
+
+### 当前状态
+
+```txt
+Phase 7 当前进度：
+阶段 A：已完成
+B1-B6：存档 service、API、examples 已完成
+C1：配置白名单，已完成
+下一步：C2 增加配置版本接口
+```
+
+### 下一步建议
+
+只执行一个最小切片：**C2 增加配置版本接口**。
+
+C2 应实现 `GET /api/config/version`，返回稳定 JSON；不要同时进入 React/Godot 接入。
+
+---
+
+## 2026-07-02 22:42 - Phase 7 C2 配置版本接口完成
+
+### 本阶段目标
+
+完成 `docs/原子化发展路线.md` 中阶段 C2：增加配置版本接口，供客户端后续做配置缓存判断。
+
+### 学习目标
+
+1. 理解配置版本接口应返回稳定 JSON，避免客户端解析多种形态。
+2. 理解当 `data/config.json` 暂无版本字段时，需要有明确默认值。
+3. 理解 FastAPI 路由顺序：`/version` 应在 `/{config_name}` 前注册，避免被动态路径吞掉。
+
+### 修改文件
+
+```txt
+backend/app/api/config.py
+backend/tests/test_config_api.py
+docs/development_logs/member_a_fastapi_react.md
+```
+
+### 实现内容
+
+1. `backend/app/api/config.py`
+   - 新增 `DEFAULT_CONFIG_VERSION = 1`。
+   - 新增 `GET /api/config/version`。
+   - 若 `config.json` 包含 `config_version`，返回该值与 `source=config.json`。
+   - 若 `config.json` 不存在或不包含 `config_version`，返回默认结构：`config_version=1`、`source=default`。
+2. `backend/tests/test_config_api.py`
+   - 新增配置文件带 `config_version` 时的版本接口测试。
+   - 新增配置文件不带 `config_version` 时的默认版本测试。
+
+### 验证方式
+
+```powershell
+backend\.venv\Scripts\python.exe -m pytest backend\tests\test_config_api.py
+backend\.venv\Scripts\python.exe -m pytest backend\tests
+```
+
+### 验证结果
+
+```txt
+backend/tests/test_config_api.py: 6 passed, 1 skipped / 7 total
+backend/tests: 27 passed, 1 skipped / 28 total
+```
+
+### 文档回填
+
+```txt
+已更新：docs/development_logs/member_a_fastapi_react.md
+NOT BACKFILLED：docs/api_contract.md 未新增配置版本接口章节；如后续前端/Godot 依赖该接口，应补正式契约。
+```
+
+### 学到的东西
+
+1. 当前 `data/config.json` 没有版本字段，因此接口必须定义默认返回，不能让客户端依赖缺失字段。
+2. `GET /api/config/version` 与 `GET /api/config/{config_name}` 共存时，静态路由应写在动态路由之前。
+3. 版本接口先返回最小稳定结构即可，后续可以在契约中扩展配置包 hash 或更新时间。
+
+### 当前状态
+
+```txt
+Phase 7 当前进度：
+阶段 A：已完成
+B1-B6：存档 service、API、examples 已完成
+C1：配置白名单，已完成
+C2：配置版本接口，已完成
+下一步：阶段 D React 接入存档/配置页面
+```
+
+### 下一步建议
+
+按路线进入 **阶段 D1：增加 Save 类型定义**。不要同时实现 SaveList 与 ConfigViewer，先固定前端类型边界。
+
+---
+
+## 2026-07-02 22:45 - Phase 7 D1 Save 类型定义完成
+
+### 本阶段目标
+
+完成 `docs/原子化发展路线.md` 中阶段 D1：在 React 前端新增 Save 类型定义，与后端 Pydantic schema 对齐。
+
+### 学习目标
+
+1. 理解 TypeScript interface 与后端 Pydantic schema 的字段对齐方式。
+2. 理解后端 `datetime` 在前端应按 JSON 字符串处理。
+3. 理解 D1 只固定类型边界，不实现 API client 或页面。
+
+### 修改文件
+
+```txt
+frontend/src/types/save.ts
+docs/development_logs/member_a_fastapi_react.md
+```
+
+### 实现内容
+
+1. 新增 `frontend/src/types/save.ts`。
+2. 复用 `GameState` 与 `GameError`。
+3. 定义：
+   - `SaveRecord`
+   - `SaveSummary`
+   - `SaveCreateRequest`
+   - `SaveUpdateRequest`
+   - `SaveCreateResponse`
+   - `SaveListResponse`
+   - `SaveGetSingleResponse`
+   - `SaveUpdateResponse`
+   - `SaveDeleteResponse`
+4. `created_at`、`updated_at` 使用 `string`，对应后端 JSON 序列化后的 ISO datetime。
+
+### 验证方式
+
+```powershell
+pnpm -C frontend typecheck
+```
+
+### 验证结果
+
+```txt
+pnpm -C frontend typecheck: PASSED
+```
+
+### 文档回填
+
+```txt
+已更新：docs/development_logs/member_a_fastapi_react.md
+```
+
+### 学到的东西
+
+1. 前端类型应表达 HTTP JSON 形态，而不是 Python/Pydantic 内部类型。
+2. `SaveSummary` 不包含 `state`，应与列表接口“只返回摘要”的契约保持一致。
+3. 类型切片完成后再做 `saveClient`，可以避免页面实现时临时猜字段。
+
+### 当前状态
+
+```txt
+Phase 7 当前进度：
+阶段 A：已完成
+B1-B6：存档 service、API、examples 已完成
+C1-C2：配置白名单与版本接口已完成
+D1：Save 类型定义，已完成
+下一步：D2 增加 saveClient
+```
+
+### 下一步建议
+
+只执行一个最小切片：**D2 增加 saveClient**。
+
+D2 应新增 `frontend/src/services/saveClient.ts`，先实现 `listSaves()` 与 `getSave(saveId)`，不要同时做 SaveList 页面。
+
+---
+
+## 2026-07-02 22:48 - Phase 7 D2 saveClient 完成
+
+### 本阶段目标
+
+完成 `docs/原子化发展路线.md` 中阶段 D2：新增前端 save API client，先提供存档列表和单个存档读取能力。
+
+### 学习目标
+
+1. 理解前端 API client 分层：页面不直接拼 fetch 细节。
+2. 理解 `encodeURIComponent()` 对路径参数的基本保护作用。
+3. 理解 D2 只实现 client 方法，不实现 SaveList 页面。
+
+### 修改文件
+
+```txt
+frontend/src/services/saveClient.ts
+docs/development_logs/member_a_fastapi_react.md
+```
+
+### 实现内容
+
+1. 新增 `frontend/src/services/saveClient.ts`。
+2. 复用现有 `apiClient.ts` 的 `API_BASE_URL` 与 `requestJson<TResponse>()` 风格。
+3. 实现：
+   - `listSaves(): Promise<SaveListResponse>` -> `GET /api/saves`
+   - `getSave(saveId): Promise<SaveGetSingleResponse>` -> `GET /api/saves/{save_id}`
+4. `saveId` 通过 `encodeURIComponent()` 放入路径。
+
+### 验证方式
+
+```powershell
+pnpm -C frontend typecheck
+```
+
+### 验证结果
+
+```txt
+pnpm -C frontend typecheck: PASSED
+```
+
+### 文档回填
+
+```txt
+已更新：docs/development_logs/member_a_fastapi_react.md
+```
+
+### 学到的东西
+
+1. API client 先返回完整响应对象，让页面层自行处理 `ok/error`，与当前 Debug Console 风格一致。
+2. D2 不需要引入状态管理或 React hooks，否则会提前进入 D3 页面范围。
+3. 路径参数即使来自后端列表，也应在 client 层编码，避免后续手动输入 ID 时产生路径歧义。
+
+### 当前状态
+
+```txt
+Phase 7 当前进度：
+阶段 A：已完成
+B1-B6：存档 service、API、examples 已完成
+C1-C2：配置白名单与版本接口已完成
+D1：Save 类型定义，已完成
+D2：saveClient，已完成
+下一步：D3 增加 SaveList 页面
+```
+
+### 下一步建议
+
+只执行一个最小切片：**D3 增加 SaveList 页面**。
+
+D3 应新增 `frontend/src/pages/SaveList.tsx`，展示 loading/error/empty/list 四种基本状态；不要同时做 ConfigViewer。
+
+---
+
+## 2026-07-02 23:18 - Phase 7 D4 ConfigViewer 页面完成
+
+### 本阶段目标
+
+完成 `docs/原子化发展路线.md` 中阶段 D4：新增 React 配置查看页面，可选择白名单配置文件并展示 JSON。
+
+### 学习目标
+
+1. 理解配置接口当前返回裸 JSON，前端 client 应按 `unknown` 承接具体配置内容。
+2. 理解配置版本接口与配置文件接口是两个不同请求。
+3. 理解 D4 只做配置查看，不进入 Godot 保存/加载接入。
+
+### 修改文件
+
+```txt
+frontend/src/services/configClient.ts
+frontend/src/pages/ConfigViewer.tsx
+frontend/src/main.tsx
+docs/development_logs/member_a_fastapi_react.md
+docs/development_logs/README.md
+```
+
+### 实现内容
+
+1. 新增 `frontend/src/services/configClient.ts`。
+   - 固定白名单配置：`config.json`、`race.json`、`job.json`、`skill.json`、`effect.json`、`buff.json`。
+   - 实现 `getConfigVersion()` 调用 `GET /api/config/version`。
+   - 实现 `getConfigFile(configName)` 调用 `GET /api/config/{config_name}`。
+2. 新增 `frontend/src/pages/ConfigViewer.tsx`。
+   - 展示配置文件选择列表。
+   - 展示配置版本与来源。
+   - 展示选中配置的 JSON 内容。
+   - 覆盖 loading 与 error 状态。
+3. 更新 `frontend/src/main.tsx`。
+   - 增加 `Configs` 页签。
+   - 保留 `Saves` 与 `Debug` 页签。
+
+### 验证方式
+
+```powershell
+pnpm -C frontend typecheck
+```
+
+### 验证结果
+
+```txt
+pnpm -C frontend typecheck: PASSED
+```
+
+### 文档回填
+
+```txt
+已更新：docs/development_logs/member_a_fastapi_react.md
+已更新：docs/development_logs/README.md
+```
+
+### 学到的东西
+
+1. 配置 JSON 的具体结构按文件变化，前端页面应先作为调试工具展示原始 JSON，而不是提前定义过细类型。
+2. `GET /api/config/version` 可和配置文件内容并行读取，页面只需要稳定展示版本号和来源。
+3. D4 完成后，React 已具备存档列表与配置查看两个 Phase 7 Portal 页面。
+
+### 当前状态
+
+```txt
+Phase 7 当前进度：
+阶段 A：已完成
+B1-B6：存档 service、API、examples 已完成
+C1-C2：配置白名单与版本接口已完成
+D1-D4：React Save 类型、saveClient、SaveList、ConfigViewer 已完成
+下一步项目主线：阶段 E Godot 接入保存/加载（成员 B 负责）
+```
+
+### 下一步建议
+
+成员 A 不直接实现阶段 E 的 Godot 内容。成员 A 的下一步应限定为：验证 `/api/saves` 创建、列表、读取接口可供 Godot 接入；必要时补充 `docs/api_contract.md` 或 examples 中的 saves 接口说明；配合成员 B 联调 E2/E3。
+
+
+
+
+
+
 
 
 

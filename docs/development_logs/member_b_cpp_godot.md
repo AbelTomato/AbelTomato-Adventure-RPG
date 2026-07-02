@@ -1,6 +1,6 @@
 # 成员 B 开发日志：C++ Core + Godot
 
-最后更新：2026-06-24
+最后更新：2026-07-02
 
 负责人范围：
 
@@ -900,3 +900,106 @@ PASS death event
 ### 当前状态
 
 Phase 4D 已完成：后续修改 C++ Core 行为时，可以优先运行 `python scripts\verify_abel_core_cli.py` 做最小回归验证。
+
+---
+
+## 2026-07-02 23:33 - Phase 7 E1 Godot API base URL 抽离完成
+
+### 本阶段目标
+
+完成 `docs/原子化发展路线.md` 中阶段 E1：抽离 Godot API base URL，避免把完整 endpoint 硬编码在 Attack 请求逻辑中。
+
+### 学习目标
+
+1. 理解 base URL 与 API path 的职责区别。
+2. 理解 Godot `@export` 变量可在 Inspector 中调整，适合暴露本地调试地址。
+3. 理解 E1 只调整 URL 管理方式，不增加 Save/Load 按钮。
+
+### 修改文件
+
+```txt
+godot-client/scripts/api_test_scene.gd
+docs/development_logs/member_b_cpp_godot.md
+```
+
+### 实现内容
+
+1. 将原完整地址：
+
+```gdscript
+const API_URL := "http://127.0.0.1:8000/api/game/action"
+```
+
+拆分为：
+
+```gdscript
+const GAME_ACTION_PATH := "/api/game/action"
+@export var api_base_url := "http://127.0.0.1:8000"
+```
+
+2. 新增 `_build_api_url(path: String) -> String`：
+
+```gdscript
+return api_base_url.trim_suffix("/") + path
+```
+
+3. Attack 请求改为：
+
+```gdscript
+_build_api_url(GAME_ACTION_PATH)
+```
+
+### 验证方式
+
+```txt
+静态检查：搜索 Godot 脚本中 API URL 相关写法。
+```
+
+执行命令：
+
+```powershell
+git status --short --branch
+```
+
+并检查 `godot-client/scripts/api_test_scene.gd` 中只保留：
+
+```txt
+GAME_ACTION_PATH
+api_base_url
+_build_api_url(...)
+```
+
+### 验证结果
+
+```txt
+PASSED：`API_URL` 硬编码已移除，Attack 请求通过 base URL + path 生成。
+```
+
+说明：本环境未启动 Godot Editor，未做场景运行验证；E1 的运行验证需在 Godot 中打开 `ApiTestScene` 点击 Attack 确认。
+
+### 文档回填
+
+```txt
+已更新：docs/development_logs/member_b_cpp_godot.md
+```
+
+### 学到的东西
+
+1. 完整 endpoint 硬编码会让后续环境切换和新增 Save/Load endpoint 变得重复。
+2. base URL 抽成 `@export` 后，可以在 Godot Inspector 中改后端地址，不需要改请求逻辑。
+3. path 常量保留在脚本内，可以让不同 API 动作共享同一个 base URL。
+
+### 当前状态
+
+```txt
+Phase 7 当前进度：
+阶段 A-D：后端、配置接口、React Portal 已完成
+E1：Godot API base URL 抽离，已完成
+下一步：E2 增加 Godot Save 按钮
+```
+
+### 下一步建议
+
+只执行一个最小切片：**E2 增加 Godot Save 按钮**。
+
+E2 应新增 Save 按钮并调用 `POST /api/saves`，不要同时实现 Load Latest。

@@ -1,6 +1,6 @@
 # API Contract
 
-最后更新：2026-06-29
+最后更新：2026-07-02
 
 > 当前执行入口见 `docs/README.md`。本文只维护跨端 JSON/API 契约；开发顺序见 `docs/原子化发展路线.md`。
 
@@ -118,13 +118,13 @@ UNSUPPORTED_VERSION
 }
 ```
 
-| 字段         | 类型        | 必填 | 说明                             |
-| ------------ | ----------- | ---- | -------------------------------- |
+| 字段               | 类型        | 必填 | 说明                             |
+| ------------------ | ----------- | ---- | -------------------------------- |
 | `contract_version` | `int`       | 是   | API 契约版本，第一阶段固定为 `1` |
-| `request_id` | `string`    | 是   | 请求追踪 ID，响应必须原样返回    |
-| `action`     | `Action`    | 是   | 本次动作描述                     |
-| `state`      | `GameState` | 是   | 当前游戏状态                     |
-| `meta`       | `object`    | 否   | 客户端来源、debug 标记等附加信息 |
+| `request_id`       | `string`    | 是   | 请求追踪 ID，响应必须原样返回    |
+| `action`           | `Action`    | 是   | 本次动作描述                     |
+| `state`            | `GameState` | 是   | 当前游戏状态                     |
+| `meta`             | `object`    | 否   | 客户端来源、debug 标记等附加信息 |
 
 ---
 
@@ -162,14 +162,14 @@ UNSUPPORTED_VERSION
 }
 ```
 
-| 字段         | 类型             | 必填 | 说明                              |
-| ------------ | ---------------- | ---- | --------------------------------- |
-| `ok`         | `bool`           | 是   | 本次请求是否成功                  |
+| 字段               | 类型             | 必填 | 说明                              |
+| ------------------ | ---------------- | ---- | --------------------------------- |
+| `ok`               | `bool`           | 是   | 本次请求是否成功                  |
 | `contract_version` | `int`            | 是   | API 契约版本                      |
-| `request_id` | `string`         | 是   | 回传请求 ID                       |
-| `state`      | `GameState/null` | 是   | 成功时为新状态，失败时为 `null`   |
-| `events`     | `GameEvent[]`    | 是   | 本次动作产生的过程事件            |
-| `error`      | `GameError/null` | 是   | 成功时为 `null`，失败时为错误对象 |
+| `request_id`       | `string`         | 是   | 回传请求 ID                       |
+| `state`            | `GameState/null` | 是   | 成功时为新状态，失败时为 `null`   |
+| `events`           | `GameEvent[]`    | 是   | 本次动作产生的过程事件            |
+| `error`            | `GameError/null` | 是   | 成功时为 `null`，失败时为错误对象 |
 
 ---
 
@@ -548,13 +548,13 @@ POST /api/saves
 }
 ```
 
-| 字段         | 类型        | 必填 | 说明                                     |
-| ------------ | ----------- | ---- | ---------------------------------------- |
+| 字段               | 类型        | 必填 | 说明                                     |
+| ------------------ | ----------- | ---- | ---------------------------------------- |
 | `contract_version` | `int`       | 是   | API 契约版本，第一版固定为 `1`           |
-| `request_id` | `string`    | 是   | 请求追踪 ID，响应原样返回                |
-| `name`       | `string`    | 是   | 玩家可见的存档名                         |
-| `state`      | `GameState` | 是   | 当前完整游戏状态，复用动作接口状态结构   |
-| `meta`       | `object`    | 否   | 来源、客户端、备注、debug 信息等附加字段 |
+| `request_id`       | `string`    | 是   | 请求追踪 ID，响应原样返回                |
+| `name`             | `string`    | 是   | 玩家可见的存档名                         |
+| `state`            | `GameState` | 是   | 当前完整游戏状态，复用动作接口状态结构   |
+| `meta`             | `object`    | 否   | 来源、客户端、备注、debug 信息等附加字段 |
 
 ### 16.3 创建存档响应
 
@@ -568,7 +568,7 @@ POST /api/saves
     "name": "测试存档 1",
     "created_at": "2026-06-26T14:00:00+08:00",
     "updated_at": "2026-06-26T14:00:00+08:00",
-    "contract_version": 1,
+    "save_format_version": 1,
     "state": {
       "turn": {
         "round": 1,
@@ -628,7 +628,7 @@ GET /api/saves/{save_id}
     "name": "测试存档 1",
     "created_at": "2026-06-26T14:00:00+08:00",
     "updated_at": "2026-06-26T14:00:00+08:00",
-    "contract_version": 1,
+    "save_format_version": 1,
     "state": {
       "turn": {
         "round": 1,
@@ -705,7 +705,7 @@ backend/storage/saves/{save_id}.json
   "name": "测试存档 1",
   "created_at": "2026-06-26T14:00:00+08:00",
   "updated_at": "2026-06-26T14:00:00+08:00",
-  "contract_version": 1,
+  "save_format_version": 1,
   "state": {},
   "meta": {}
 }
@@ -745,7 +745,7 @@ backend/storage/saves/{save_id}.json
 | `SAVE_NOT_FOUND`      | 存档不存在                               |
 | `INVALID_SAVE_ID`     | `save_id` 包含非法字符或存在路径穿越风险 |
 | `SAVE_IO_ERROR`       | 存档文件读写失败                         |
-| `UNSUPPORTED_VERSION` | API 契约版本不支持                           |
+| `UNSUPPORTED_VERSION` | API 契约版本不支持                       |
 | `INTERNAL_ERROR`      | 未分类内部错误                           |
 
 ### 16.10 Phase 7 实施步骤
