@@ -1,6 +1,6 @@
 # 学习型开发协作流程
 
-最后更新：2026-06-21
+最后更新：2026-08-04
 
 本文档用于约定本项目后续“边开发边学习”的协作方式。目标不是由 Agent 一次性包办所有实现，而是让开发者在真实项目中通过小切片、手动验证、单元测试和纠错复盘逐步理解工程实践。
 
@@ -93,7 +93,7 @@
 
 ## 5. 日志要求
 
-每个小阶段完成后，在对应成员日志顶部追加记录。
+每个小阶段完成后，追加到对应日期的 `docs/development_logs/YYYY-MM-DD.md` 文件末尾，并在标题后写明负责人；同日记录按时间正序排列。
 
 日志不仅记录“完成了什么”，也记录：
 
@@ -107,6 +107,8 @@
 
 ```md
 ## YYYY-MM-DD HH:mm - 阶段名称
+
+> 负责人：成员 A 或 成员 B
 
 ### 本阶段目标
 
@@ -140,7 +142,7 @@
 ```txt
 1. docs/development_logs/README.md
 2. docs/learning_collaboration_workflow.md
-3. docs/development_logs/member_a_fastapi_react.md 或 docs/development_logs/member_b_cpp_godot.md
+3. docs/development_logs/YYYY-MM-DD.md（从最新日期向前读取）
 4. docs/current_development_plan.md
 5. docs/api_contract.md
 6. .clinerules/terminal-timeout-and-small-step-validation.md

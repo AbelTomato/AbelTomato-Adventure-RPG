@@ -1,6 +1,6 @@
 # 文档入口
 
-最后更新：2026-06-27
+最后更新：2026-08-04
 
 本文是 `docs/` 的当前入口。新对话、恢复任务或人工继续开发时，优先从这里开始，而不是直接阅读历史日志。
 
@@ -42,8 +42,7 @@
 - `docs/CODEX_Memory_CN.md`
 - `docs/cooperation_rule.md`
 - `docs/bug_list.md`
-- `docs/development_logs/member_a_fastapi_react.md`
-- `docs/development_logs/member_b_cpp_godot.md`
+- `docs/development_logs/`：按日期归档的开发日志；从 `docs/development_logs/README.md` 的日期索引进入。
 
 这些文档保留历史上下文，但不作为当前执行入口。若与 `docs/README.md`、`docs/原子化发展路线.md`、`docs/代码评审.md` 冲突，以后三者为准。
 

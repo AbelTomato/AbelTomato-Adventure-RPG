@@ -1,6 +1,6 @@
 # 开发日志总览
 
-最后更新：2026-07-02
+最后更新：2026-08-04
 
 本文档用于保存历史开发日志入口。当前执行状态以 `docs/README.md`、`docs/原子化发展路线.md`、`docs/代码评审.md` 为准。
 
@@ -16,7 +16,7 @@
 3. docs/代码评审.md
 4. docs/api_contract.md
 5. docs/development_logs/README.md
-6. docs/development_logs/member_a_fastapi_react.md 或 docs/development_logs/member_b_cpp_godot.md
+6. docs/development_logs/YYYY-MM-DD.md（从最新日期向前读取）
 ```
 
 恢复流程：
@@ -37,12 +37,21 @@
 
 ---
 
-## 2. 两人分工日志
+## 2. 日期日志索引与职责边界
 
-| 成员   | 负责范围                              | 日志文件                                          |
-| ------ | ------------------------------------- | ------------------------------------------------- |
-| 成员 A | FastAPI Backend + React Debug Console | `docs/development_logs/member_a_fastapi_react.md` |
-| 成员 B | C++ Core + Godot Client               | `docs/development_logs/member_b_cpp_godot.md`     |
+日志现已按日期归档。成员归属以每条记录的“负责人”字段为准；历史记录中的旧成员日志路径属于当时的修改记录，不应替换。
+
+| 日期 | 日志文件 | 主要内容 |
+| --- | --- | --- |
+| 2026-06-20 | `2026-06-20.md` | API Contract、FastAPI Mock、React Console、成员 B 接手准备 |
+| 2026-06-21 | `2026-06-21.md` | 成员 A / B 学习型协作流程启用 |
+| 2026-06-22 | `2026-06-22.md` | Godot Mock 接入、C++ CLI Core 与自动验证 |
+| 2026-06-23 | `2026-06-23.md` | FastAPI 对接 C++ Core、Phase 6 联调准备 |
+| 2026-06-24 | `2026-06-24.md` | Godot 真实链路、Godot 项目迁入、Phase 6 联调 |
+| 2026-06-29 | `2026-06-29.md` | Phase 7 存档 API、版本语义与 Git 分支整理 |
+| 2026-07-02 | `2026-07-02.md` | Phase 7 B5-E1：存档、配置、React Portal、Godot URL |
+
+职责边界：成员 A 负责 FastAPI、React、JSON Contract 与 examples；成员 B 负责 C++ Core 与 Godot Client。跨端联调记录可同时涉及两方，按记录中的明确责任范围判断。
 
 ---
 
@@ -170,10 +179,12 @@ React Debug Console 能展示真实 C++ response。
 
 ## 6. 日志追加模板
 
-每完成一个小阶段，在对应成员日志顶部追加：
+每完成一个小阶段，追加到对应日期的 `docs/development_logs/YYYY-MM-DD.md` 文件末尾；同日记录按时间正序排列。当天文件不存在时创建，并更新本节日期索引和“最后更新”。
 
 ```md
 ## YYYY-MM-DD HH:mm - 阶段名称
+
+> 负责人：成员 A 或 成员 B
 
 ### 本阶段目标
 
